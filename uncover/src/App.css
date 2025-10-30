@@ -1,38 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
+  min-height: 100vh;
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  padding: 3rem 1rem 2rem;
+  border-bottom: 4px solid #023e8a;
+}
+
+.site-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.tagline {
+  margin-top: 0.5rem;
+  font-weight: 400;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Navigation Bar */
+.navbar {
+  background-color: #1e1e2f;
+  padding: 1.2rem 2rem;
+  display: flex;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
   color: white;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1.2rem;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
-.App-link {
-  color: #61dafb;
+.nav-links li:hover {
+  color: #00b4d8;
+  transform: scale(1.05);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.nav-links .active {
+  color: #00b4d8;
+  font-weight: 600;
+}
+
+/* Middle Section */
+.content {
+  flex: 1;
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+  text-align: left;
+  color: #fff;
+}
+
+.content h2 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+/* Footer */
+.footer {
+  background-color: #1e1e2f;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  margin-top: auto;
+  border-top: 3px solid #00b4d8;
+}
+
+/* Mobile Stylings */
+@media (max-width: 600px) {
+  .site-title {
+    font-size: 2.2rem;
   }
-  to {
-    transform: rotate(360deg);
+
+  .nav-links {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .navbar {
+    justify-content: center;
+  }
+
+  .content {
+    padding: 0 1rem;
   }
 }
