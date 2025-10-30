@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
+import ContactForm from "./ContactForm";
 
 function App() {
   const [activePage, setActivePage] = useState("Home");
@@ -52,8 +53,7 @@ function App() {
       case "Contact":
         return (
           <section className="content">
-            <h2>Contact Us</h2>
-            <p>Feel free to contact us at the email form I'll put in later</p>
+            <ContactForm />
           </section>
         );
       default:
