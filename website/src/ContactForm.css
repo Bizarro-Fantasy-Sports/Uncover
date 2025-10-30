@@ -1,0 +1,95 @@
+.contact-form-container {
+  max-width: 600px;
+  margin: 3rem auto;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e1e2f;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.contact-form-container h2 {
+  text-align: center;
+  color: #0077b6;
+  margin-bottom: 0.5rem;
+}
+
+.contact-form-container p {
+  text-align: center;
+  color: #333;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.contact-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1e1e2f;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #0077b6;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #00b4d8;
+}
+
+.contact-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.contact-form button {
+  width: 100%;
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.contact-form button:hover {
+  background: linear-gradient(135deg, #0096c7, #023e8a);
+  transform: scale(1.02);
+}
+
+.thank-you {
+  text-align: center;
+  padding: 2rem;
+}
+
+.thank-you h3 {
+  color: #0077b6;
+  margin-bottom: 1rem;
+}
+
+.thank-you button {
+  background: #1e1e2f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.thank-you button:hover {
+  background: #333;
+}
