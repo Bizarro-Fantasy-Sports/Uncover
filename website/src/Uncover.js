@@ -1,20 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Uncover.css";
 
-const playerData = {
-  Name: "Jimmy McJamz",
-  Bio: "DOB: Nov 3, 2024 & in Arcadia, CA",
-  "Player Information": "5'6 & 130lbs & Pitcher",
-  "Draft Information": "Drafted 2024",
-  "Years Active": "1999–2023",
-  "Teams Played On": "Los Angeles",
-  "Jersey Numbers": "14 & 67 & 32",
-  "Career Stats": "Hit %: 32 & Catch %: 88",
-  "Personal Achievements": "MVP & GOAT & Best Player",
-  Photo: ["https://via.placeholder.com/300"],
-};
+const topics = [
+  "Bio",
+  "Player Information",
+  "Draft Information",
+  "Years Active",
+  "Teams Played On",
+  "Jersey Numbers",
+  "Career Stats",
+  "Personal Achievements",
+  "Photo",
+];
 
-// HELPER FUNCTION: Approximate string matching (up to 4 letters off)
+// Helper Function for Name Guessing
 const lev = (a, b) => {
   const dp = Array.from({ length: a.length + 1 }, () =>
     Array(b.length + 1).fill(0)
@@ -34,19 +33,8 @@ const lev = (a, b) => {
 
 const normalize = (str) => str.toLowerCase().replace(/\s/g, "");
 
-const topics = [
-  "Bio",
-  "Player Information",
-  "Draft Information",
-  "Years Active",
-  "Teams Played On",
-  "Jersey Numbers",
-  "Career Stats",
-  "Personal Achievements",
-  "Photo",
-];
-
 const Uncover = () => {
+  const [playerData, setPlayerData] = useState(null);
   const [playerName, setPlayerName] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
@@ -55,7 +43,34 @@ const Uncover = () => {
   const [tilesFlippedCount, setTilesFlippedCount] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
 
+  useEffect(() => {
+    fetch("/UncoverBaseballData.json")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          // Retrieve last played index from localStorage
+          const storedIndex = parseInt(
+            localStorage.getItem("playerIndex") || "0",
+            10
+          );
+
+          // Ensure valid index (wrap around if out of range)
+          const currentIndex = storedIndex % data.length;
+          setPlayerData(data[currentIndex]);
+
+          // Calculate next index and store for next visit
+          const nextIndex = (currentIndex + 1) % data.length;
+          localStorage.setItem("playerIndex", nextIndex);
+        } else {
+          console.error("UncoverBaseballData.json is empty or invalid.");
+        }
+      })
+      .catch((err) => console.error("Error loading player data:", err));
+  }, []);
+
   const handleNameSubmit = () => {
+    if (!playerData) return;
+
     const a = normalize(playerName);
     const b = normalize(playerData.Name);
     const distance = lev(a, b);
@@ -81,6 +96,8 @@ const Uncover = () => {
   };
 
   const handleTileClick = (index) => {
+    if (!playerData) return;
+
     if (flippedTiles[index]) {
       // allow re-click only if Photo tile (to open modal)
       if (topics[index] === "Photo") setModalOpen(true);
@@ -94,6 +111,14 @@ const Uncover = () => {
 
     if (topics[index] === "Photo") setModalOpen(true);
   };
+
+  if (!playerData) {
+    return (
+      <div className="uncover-game">
+        <p>Loading player data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="uncover-game">
@@ -117,7 +142,9 @@ const Uncover = () => {
             <div className={`tile-inner ${flippedTiles[i] ? "flipped" : ""}`}>
               <div className="tile-front">{topic}</div>
               <div className="tile-back">
-                {topic === "Photo" ? "Click to view photo" : playerData[topic]}
+                {topic === "Photo"
+                  ? "Click to view photo"
+                  : playerData[topic] || "No data"}
               </div>
             </div>
           </div>
@@ -130,11 +157,11 @@ const Uncover = () => {
             <button className="close" onClick={() => setModalOpen(false)}>
               ✕
             </button>
-            <img
-              src={playerData.Photo[0]}
-              alt="Player"
-              className="full-photo"
-            />
+            {playerData.Photo ? (
+              <img src={playerData.Photo} alt="Player" className="full-photo" />
+            ) : (
+              <p>No photo available.</p>
+            )}
           </div>
         </div>
       )}
