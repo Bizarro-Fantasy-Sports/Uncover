@@ -33,40 +33,75 @@ const lev = (a, b) => {
 
 const normalize = (str = "") => str.toLowerCase().replace(/\s/g, "");
 
+const sportFiles = {
+  baseball: "/UncoverBaseballData.json",
+  basketball: "/UncoverBasketballData.json",
+  football: "/UncoverFootballData.json",
+};
+
+const initialState = {
+  playersList: null,
+  playerData: null,
+  playerName: "",
+  message: "",
+  messageType: "",
+  previousCloseGuess: "",
+  flippedTiles: Array(9).fill(false),
+  tilesFlippedCount: 0,
+  photoModalOpen: false,
+  score: 100,
+  hint: "",
+  finalRank: "",
+};
+
 const Uncover = () => {
-  const [playersList, setPlayersList] = useState(null);
-  const [playerData, setPlayerData] = useState(null);
+  const [activeSport, setActiveSport] = useState("baseball");
 
-  const [playerName, setPlayerName] = useState("");
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("");
-  const [previousCloseGuess, setPreviousCloseGuess] = useState("");
-
-  const [flippedTiles, setFlippedTiles] = useState(Array(9).fill(false));
-  const [tilesFlippedCount, setTilesFlippedCount] = useState(0);
-
-  const [photoModalOpen, setPhotoModalOpen] = useState(false);
-
-  const [score, setScore] = useState(100);
-  const [hint, setHint] = useState("");
-  const [finalRank, setFinalRank] = useState("");
+  const [gameState, setGameState] = useState({
+    baseball: { ...initialState },
+    basketball: { ...initialState },
+    football: { ...initialState },
+  });
 
   // Load players JSON sequentially
   useEffect(() => {
-    fetch("/UncoverBaseballData.json")
+    const state = gameState[activeSport];
+
+    // Already loaded → do nothing
+    if (state.playersList && state.playerData) return;
+
+    // Load once
+    fetch(sportFiles[activeSport])
       .then((res) => res.json())
       .then((data) => {
-        setPlayersList(data);
+        const key = `playerIndex_${activeSport}`;
+        const storedIndex = parseInt(localStorage.getItem(key) || "0");
 
-        const storedIndex = parseInt(
-          localStorage.getItem("playerIndex") || "0"
-        );
         const index = storedIndex % data.length;
-        setPlayerData(data[index]);
-        localStorage.setItem("playerIndex", (index + 1) % data.length);
-      })
-      .catch((err) => console.error("Error loading player data:", err));
-  }, []);
+        const playerData = data[index];
+
+        localStorage.setItem(key, (index + 1) % data.length);
+
+        setGameState((prev) => ({
+          ...prev,
+          [activeSport]: {
+            ...prev[activeSport],
+            playersList: data,
+            playerData,
+          },
+        }));
+      });
+  }, [activeSport, gameState]);
+
+  const s = gameState[activeSport];
+  if (!s.playerData) return <p>Loading player data...</p>;
+
+  const updateState = (patch) => {
+    setGameState((prev) => ({
+      ...prev,
+      [activeSport]: { ...prev[activeSport], ...patch },
+    }));
+  };
 
   const evaluateRank = (points) => {
     if (points >= 95) return "Amazing";
@@ -76,126 +111,152 @@ const Uncover = () => {
   };
 
   const handleNameSubmit = () => {
-    if (!playerData) return;
-
-    const a = normalize(playerName);
+    const playerData = s.playerData;
+    const a = normalize(s.playerName);
     const b = normalize(playerData.Name);
     const distance = lev(a, b);
 
     if (a === b) {
-      setMessage("You guessed it right!");
-      setMessageType("success");
-      setPreviousCloseGuess("");
-
-      const rank = evaluateRank(score);
-      setFinalRank(rank);
-
-      setHint("");
+      const rank = evaluateRank(s.score);
+      updateState({
+        message: "You guessed it right!",
+        messageType: "success",
+        previousCloseGuess: "",
+        finalRank: rank,
+        hint: "",
+      });
       return;
     }
 
-    setScore((prev) => {
-      const newScore = prev - 2;
-      if (newScore < 70 && !hint) {
-        const initials = playerData.Name.split(" ")
-          .map((w) => w[0])
-          .join(".");
-        setHint(initials);
-      }
-      return newScore;
-    });
+    let newScore = s.score - 2;
+    let newHint = s.hint;
+
+    if (newScore < 70 && !s.hint) {
+      newHint = playerData.Name.split(" ")
+        .map((w) => w[0])
+        .join(".");
+    }
 
     if (distance <= 2) {
-      if (previousCloseGuess && previousCloseGuess !== a) {
-        setMessage(
-          `Correct, you were close! Player's name: ${playerData.Name}`
-        );
-        setMessageType("close");
-        setPreviousCloseGuess("");
+      if (s.previousCloseGuess && s.previousCloseGuess !== a) {
+        updateState({
+          message: `Correct, you were close! Player's name: ${playerData.Name}`,
+          messageType: "close",
+          previousCloseGuess: "",
+          score: newScore,
+          hint: newHint,
+        });
       } else {
-        setMessage("You're close! Off by a few letters.");
-        setMessageType("almost");
-        setPreviousCloseGuess(a);
+        updateState({
+          message: "You're close! Off by a few letters.",
+          messageType: "almost",
+          previousCloseGuess: a,
+          score: newScore,
+          hint: newHint,
+        });
       }
       return;
     }
 
     if (distance <= 4) {
-      setMessage(`Correct, you were close! Player's name: ${playerData.Name}`);
-      setMessageType("close");
-      setPreviousCloseGuess("");
+      updateState({
+        message: `Correct, you were close! Player's name: ${playerData.Name}`,
+        messageType: "close",
+        previousCloseGuess: "",
+        score: newScore,
+        hint: newHint,
+      });
       return;
     }
 
-    setMessage(`Wrong guess: "${playerName}"`);
-    setMessageType("error");
+    updateState({
+      message: `Wrong guess: "${s.playerName}"`,
+      messageType: "error",
+      score: newScore,
+      hint: newHint,
+    });
   };
 
   const handleTileClick = (index) => {
-    if (flippedTiles[index]) {
-      if (topics[index] === "Photo") setPhotoModalOpen(true);
+    if (s.flippedTiles[index]) {
+      if (topics[index] === "Photo") updateState({ photoModalOpen: true });
       return;
     }
 
-    const updated = [...flippedTiles];
+    const updated = [...s.flippedTiles];
     updated[index] = true;
-    setFlippedTiles(updated);
-    setTilesFlippedCount((prev) => prev + 1);
 
-    setScore((prev) => {
-      const loss = topics[index] === "Photo" ? 6 : 3;
-      const newScore = prev - loss;
-      if (newScore < 70 && !hint) {
-        const initials = playerData.Name.split(" ")
-          .map((w) => w[0])
-          .join(".");
-        setHint(initials);
-      }
-      return newScore;
+    let newScore = s.score - (topics[index] === "Photo" ? 6 : 3);
+
+    let newHint = s.hint;
+    if (newScore < 70 && !s.hint) {
+      newHint = s.playerData.Name.split(" ")
+        .map((w) => w[0])
+        .join(".");
+    }
+
+    updateState({
+      flippedTiles: updated,
+      tilesFlippedCount: s.tilesFlippedCount + 1,
+      score: newScore,
+      hint: newHint,
     });
 
     if (topics[index] === "Photo") {
-      setTimeout(() => setPhotoModalOpen(true), 350);
+      setTimeout(() => updateState({ photoModalOpen: true }), 350);
     }
   };
 
-  if (!playerData) return <p>Loading player data...</p>;
-
-  const photoUrl = playerData.Photo[0];
+  const photoUrl = s.playerData.Photo[0];
 
   return (
     <div className="uncover-game">
-      {message && <p className={`guess-message ${messageType}`}>{message}</p>}
+      <div className="sports-navbar">
+        {["baseball", "basketball", "football"].map((sport) => (
+          <div
+            key={sport}
+            className={`nav-tab ${activeSport === sport ? "active" : ""}`}
+            onClick={() => setActiveSport(sport)}
+          >
+            {sport.toUpperCase()}
+          </div>
+        ))}
+      </div>
+
+      {s.message && (
+        <p className={`guess-message ${s.messageType}`}>{s.message}</p>
+      )}
+
       <div className="guess-and-rank">
-        {hint && !finalRank && (
-          <p className="guess-message hint">Hint: Player Initials — {hint}</p>
+        {s.hint && !s.finalRank && (
+          <p className="guess-message hint">Hint: Player Initials — {s.hint}</p>
         )}
 
-        {finalRank && <p className="final-rank">Your Rank: {finalRank}</p>}
+        {s.finalRank && <p className="final-rank">Your Rank: {s.finalRank}</p>}
       </div>
 
       <div className="player-input">
         <input
           type="text"
           placeholder="Enter player name..."
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
+          value={s.playerName}
+          onChange={(e) => updateState({ playerName: e.target.value })}
         />
         <button onClick={handleNameSubmit}>Submit</button>
       </div>
 
-      <h3>Score: {score}</h3>
-      <h3>Tiles Flipped: {tilesFlippedCount}</h3>
+      <h3>Score: {s.score}</h3>
+      <h3>Tiles Flipped: {s.tilesFlippedCount}</h3>
 
       <div className="grid">
         {topics.map((topic, index) => (
           <div
-            className="tile"
             key={index}
+            className="tile"
             onClick={() => handleTileClick(index)}
           >
             <div
-              className={`tile-inner ${flippedTiles[index] ? "flipped" : ""}`}
+              className={`tile-inner ${s.flippedTiles[index] ? "flipped" : ""}`}
             >
               <div className="tile-front">{topic}</div>
               <div className="tile-back">
@@ -211,7 +272,7 @@ const Uncover = () => {
                     }}
                   />
                 ) : (
-                  playerData[topic]
+                  s.playerData[topic]
                 )}
               </div>
             </div>
@@ -219,10 +280,16 @@ const Uncover = () => {
         ))}
       </div>
 
-      {photoModalOpen && (
-        <div className="modal" onClick={() => setPhotoModalOpen(false)}>
+      {s.photoModalOpen && (
+        <div
+          className="modal"
+          onClick={() => updateState({ photoModalOpen: false })}
+        >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close" onClick={() => setPhotoModalOpen(false)}>
+            <button
+              className="close"
+              onClick={() => updateState({ photoModalOpen: false })}
+            >
               ✕
             </button>
             <img src={photoUrl} alt="Player" className="full-photo" />

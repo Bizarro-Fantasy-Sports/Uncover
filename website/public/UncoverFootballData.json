@@ -1,0 +1,62 @@
+[
+  {
+    "Name": "Shohei Ohtani",
+    "Bio": "DOB: July 5, 1994 & in Oshu, Japan",
+    "Player Information": "6'3\" & 210lbs & Designated Hitter & Pitcher, Bats: Left, Throws: Right",
+    "Draft Information": "Undrafted",
+    "Years Active": "2018-Present",
+    "Teams Played On": "LAA, LAD",
+    "Jersey Numbers": "17",
+    "Career Stats": ".282 BA, 280 HR, 165 SB, 51.5 WAR",
+    "Personal Achievements": "3x MVP, Rookie of the Year, 5x All-Star, 1x World Series, 3x Silver Slugger",
+    "Photo": ["https://images.unsplash.com/photo-1502685104226-ee32379fefbe"]
+  },
+  {
+    "Name": "Buster Posey",
+    "Bio": "DOB: March 27, 1987 & in Leesburg, GA",
+    "Player Information": "6'1\" & 213lbs & Catcher & First Baseman, Bats: Right, Throws: Right",
+    "Draft Information": "1st Rd (5th) from Florida State University",
+    "Years Active": "2009-2021",
+    "Teams Played On": "SFG",
+    "Jersey Numbers": "28",
+    "Career Stats": ".302 BA, 158 HR, 23 SB, 45.0 WAR",
+    "Personal Achievements": "1x MVP, Rookie of the Year, 7x All-Star, 3x World Series, 1x Gold Glove, 5x Silver Slugger",
+    "Photo": ["https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"]
+  },
+  {
+    "Name": "Nick Castellanos",
+    "Bio": "DOB: March 4, 1992 & in Hialeah, FL",
+    "Player Information": "6'3\" & 203lbs & Rightfielder & Third Baseman, Bats: Right, Throws: Right",
+    "Draft Information": "1st Rd (44th) from Archbishop McCarthy HS",
+    "Years Active": "2013-Present",
+    "Teams Played On": "DET, CHC, CIN, PHI",
+    "Jersey Numbers": "30, 9, 6, 2, 8",
+    "Career Stats": ".250 BA, 250 HR, 42 SB, 13.0 WAR",
+    "Personal Achievements": "2x All-Star, 1x Silver Slugger",
+    "Photo": ["https://images.unsplash.com/photo-1494790108377-be9c29b29330"]
+  },
+  {
+    "Name": "Boog Powell",
+    "Bio": "DOB: August 17, 1941 & in Lakeland, FL",
+    "Player Information": "6'4\" & 230lbs & First Baseman & Leftfielder",
+    "Draft Information": "Undrafted",
+    "Years Active": "1961-1977",
+    "Teams Played On": "BAL, CLE, LAD",
+    "Jersey Numbers": "30, 16, 26, 8, 26, 22",
+    "Career Stats": ".266 BA, 339 HR, 20 SB, 39.1 WAR",
+    "Personal Achievements": "1x MVP, 4x All-Star, 2x World Series",
+    "Photo": ["https://images.unsplash.com/photo-1534777401752-71d2a490f3e6"]
+  },
+  {
+    "Name": "Orlando Cabrera",
+    "Bio": "DOB: November 2, 1974 & in Cartagena, Colombia",
+    "Player Information": "5'10\" & 195lbs & Shortstop & Second Baseman",
+    "Draft Information": "Undrafted",
+    "Years Active": "1997-2011",
+    "Teams Played On": "MON, BOS, LAA, CHW, OAK, MIN, CIN, CLE, SFG",
+    "Jersey Numbers": "2, 18, 36, 44, 18, 2, 20, 43, 6",
+    "Career Stats": ".272 BA, 123 HR, 216 SB, 21.3 WAR",
+    "Personal Achievements": "2x Gold Glove, 1x World Series",
+    "Photo": ["https://images.unsplash.com/photo-1552058544-f2b08422138a"]
+  }
+]
