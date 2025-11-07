@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Uncover.css";
 
 const topics = [
@@ -31,42 +31,49 @@ const lev = (a, b) => {
   return dp[a.length][b.length];
 };
 
-const normalize = (str) => str.toLowerCase().replace(/\s/g, "");
+const normalize = (str = "") => str.toLowerCase().replace(/\s/g, "");
 
 const Uncover = () => {
+  const [playersList, setPlayersList] = useState(null);
   const [playerData, setPlayerData] = useState(null);
+
   const [playerName, setPlayerName] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [previousCloseGuess, setPreviousCloseGuess] = useState("");
+
   const [flippedTiles, setFlippedTiles] = useState(Array(9).fill(false));
   const [tilesFlippedCount, setTilesFlippedCount] = useState(0);
-  const [modalOpen, setModalOpen] = useState(false);
 
+  const [photoModalOpen, setPhotoModalOpen] = useState(false);
+
+  const [score, setScore] = useState(100);
+  const [hint, setHint] = useState("");
+  const [finalRank, setFinalRank] = useState("");
+
+  // Load players JSON sequentially
   useEffect(() => {
     fetch("/UncoverBaseballData.json")
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          // Retrieve last played index from localStorage
-          const storedIndex = parseInt(
-            localStorage.getItem("playerIndex") || "0",
-            10
-          );
+        setPlayersList(data);
 
-          // Ensure valid index (wrap around if out of range)
-          const currentIndex = storedIndex % data.length;
-          setPlayerData(data[currentIndex]);
-
-          // Calculate next index and store for next visit
-          const nextIndex = (currentIndex + 1) % data.length;
-          localStorage.setItem("playerIndex", nextIndex);
-        } else {
-          console.error("UncoverBaseballData.json is empty or invalid.");
-        }
+        const storedIndex = parseInt(
+          localStorage.getItem("playerIndex") || "0"
+        );
+        const index = storedIndex % data.length;
+        setPlayerData(data[index]);
+        localStorage.setItem("playerIndex", (index + 1) % data.length);
       })
       .catch((err) => console.error("Error loading player data:", err));
   }, []);
+
+  const evaluateRank = (points) => {
+    if (points >= 95) return "Amazing";
+    if (points >= 90) return "Elite";
+    if (points >= 80) return "Solid";
+    return "";
+  };
 
   const handleNameSubmit = () => {
     if (!playerData) return;
@@ -78,51 +85,94 @@ const Uncover = () => {
     if (a === b) {
       setMessage("You guessed it right!");
       setMessageType("success");
-    } else if (distance <= 2) {
+      setPreviousCloseGuess("");
+
+      const rank = evaluateRank(score);
+      setFinalRank(rank);
+
+      setHint("");
+      return;
+    }
+
+    setScore((prev) => {
+      const newScore = prev - 2;
+      if (newScore < 70 && !hint) {
+        const initials = playerData.Name.split(" ")
+          .map((w) => w[0])
+          .join(".");
+        setHint(initials);
+      }
+      return newScore;
+    });
+
+    if (distance <= 2) {
       if (previousCloseGuess && previousCloseGuess !== a) {
         setMessage(
           `Correct, you were close! Player's name: ${playerData.Name}`
         );
         setMessageType("close");
+        setPreviousCloseGuess("");
       } else {
         setMessage("You're close! Off by a few letters.");
         setMessageType("almost");
         setPreviousCloseGuess(a);
       }
-    } else {
-      setMessage(`Wrong guess: "${playerName}"`);
-      setMessageType("error");
-    }
-  };
-
-  const handleTileClick = (index) => {
-    if (!playerData) return;
-
-    if (flippedTiles[index]) {
-      // allow re-click only if Photo tile (to open modal)
-      if (topics[index] === "Photo") setModalOpen(true);
       return;
     }
 
-    const newFlipped = [...flippedTiles];
-    newFlipped[index] = true;
-    setFlippedTiles(newFlipped);
-    setTilesFlippedCount((prev) => prev + 1);
+    if (distance <= 4) {
+      setMessage(`Correct, you were close! Player's name: ${playerData.Name}`);
+      setMessageType("close");
+      setPreviousCloseGuess("");
+      return;
+    }
 
-    if (topics[index] === "Photo") setModalOpen(true);
+    setMessage(`Wrong guess: "${playerName}"`);
+    setMessageType("error");
   };
 
-  if (!playerData) {
-    return (
-      <div className="uncover-game">
-        <p>Loading player data...</p>
-      </div>
-    );
-  }
+  const handleTileClick = (index) => {
+    if (flippedTiles[index]) {
+      if (topics[index] === "Photo") setPhotoModalOpen(true);
+      return;
+    }
+
+    const updated = [...flippedTiles];
+    updated[index] = true;
+    setFlippedTiles(updated);
+    setTilesFlippedCount((prev) => prev + 1);
+
+    setScore((prev) => {
+      const loss = topics[index] === "Photo" ? 6 : 3;
+      const newScore = prev - loss;
+      if (newScore < 70 && !hint) {
+        const initials = playerData.Name.split(" ")
+          .map((w) => w[0])
+          .join(".");
+        setHint(initials);
+      }
+      return newScore;
+    });
+
+    if (topics[index] === "Photo") {
+      setTimeout(() => setPhotoModalOpen(true), 350);
+    }
+  };
+
+  if (!playerData) return <p>Loading player data...</p>;
+
+  const photoUrl = playerData.Photo[0];
 
   return (
     <div className="uncover-game">
       {message && <p className={`guess-message ${messageType}`}>{message}</p>}
+      <div className="guess-and-rank">
+        {hint && !finalRank && (
+          <p className="guess-message hint">Hint: Player Initials — {hint}</p>
+        )}
+
+        {finalRank && <p className="final-rank">Your Rank: {finalRank}</p>}
+      </div>
 
       <div className="player-input">
         <input
@@ -134,34 +184,48 @@ const Uncover = () => {
         <button onClick={handleNameSubmit}>Submit</button>
       </div>
 
+      <h3>Score: {score}</h3>
       <h3>Tiles Flipped: {tilesFlippedCount}</h3>
 
       <div className="grid">
-        {topics.map((topic, i) => (
-          <div className="tile" key={i} onClick={() => handleTileClick(i)}>
-            <div className={`tile-inner ${flippedTiles[i] ? "flipped" : ""}`}>
+        {topics.map((topic, index) => (
+          <div
+            className="tile"
+            key={index}
+            onClick={() => handleTileClick(index)}
+          >
+            <div
+              className={`tile-inner ${flippedTiles[index] ? "flipped" : ""}`}
+            >
               <div className="tile-front">{topic}</div>
               <div className="tile-back">
-                {topic === "Photo"
-                  ? "Click to view photo"
-                  : playerData[topic] || "No data"}
+                {topic === "Photo" ? (
+                  <img
+                    src={photoUrl}
+                    alt="Player"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                  />
+                ) : (
+                  playerData[topic]
+                )}
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {modalOpen && (
-        <div className="modal" onClick={() => setModalOpen(false)}>
+      {photoModalOpen && (
+        <div className="modal" onClick={() => setPhotoModalOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close" onClick={() => setModalOpen(false)}>
+            <button className="close" onClick={() => setPhotoModalOpen(false)}>
               ✕
             </button>
-            {playerData.Photo ? (
-              <img src={playerData.Photo} alt="Player" className="full-photo" />
-            ) : (
-              <p>No photo available.</p>
-            )}
+            <img src={photoUrl} alt="Player" className="full-photo" />
           </div>
         </div>
       )}

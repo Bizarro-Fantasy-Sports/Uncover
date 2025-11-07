@@ -9,7 +9,7 @@
     "Jersey Numbers": "14 & 67 & 32",
     "Career Stats": "Hit %: 32 & Catch %: 88",
     "Personal Achievements": "MVP & GOAT & Best Player",
-    "Photo": "https://via.placeholder.com/300"
+    "Photo": ["https://images.unsplash.com/photo-1502685104226-ee32379fefbe"]
   },
   {
     "Name": "Em Mitt",
@@ -21,7 +21,7 @@
     "Jersey Numbers": "22 & 45",
     "Career Stats": "Hit %: 28 & Catch %: 91",
     "Personal Achievements": "All-Star & Gold Glove",
-    "Photo": "https://via.placeholder.com/300/22a"
+    "Photo": ["https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"]
   },
   {
     "Name": "Mike Truk",
@@ -33,6 +33,6 @@
     "Jersey Numbers": "9",
     "Career Stats": "Hit %: 30 & Catch %: 85",
     "Personal Achievements": "Rookie of the Year",
-    "Photo": "https://via.placeholder.com/300/44c"
+    "Photo": ["https://images.unsplash.com/photo-1494790108377-be9c29b29330"]
   }
 ]
