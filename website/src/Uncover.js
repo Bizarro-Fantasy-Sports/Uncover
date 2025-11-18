@@ -48,7 +48,8 @@ const initialState = {
   previousCloseGuess: "",
   flippedTiles: Array(9).fill(false),
   tilesFlippedCount: 0,
-  photoModalOpen: false,
+  photoRevealed: false,
+  returningFromPhoto: false,
   score: 100,
   hint: "",
   finalRank: "",
@@ -178,15 +179,56 @@ const Uncover = () => {
   };
 
   const handleTileClick = (index) => {
-    if (s.flippedTiles[index]) {
-      if (topics[index] === "Photo") updateState({ photoModalOpen: true });
+    // If photo is already revealed, allow clicking to toggle back
+    if (s.photoRevealed) {
+      updateState({ photoRevealed: false, returningFromPhoto: true });
+      // Clear the returningFromPhoto flag after the flip animation completes
+      setTimeout(() => {
+        updateState({ returningFromPhoto: false });
+      }, 650);
       return;
     }
 
+    // If clicking an already-flipped Photo tile, reveal the photo again
+    if (s.flippedTiles[index] && topics[index] === "Photo") {
+      updateState({ photoRevealed: true, returningFromPhoto: false });
+      return;
+    }
+
+    if (s.flippedTiles[index]) {
+      return;
+    }
+
+    // If Photo tile is clicked for the first time, reveal the photo puzzle immediately
+    if (topics[index] === "Photo") {
+      const updated = [...s.flippedTiles];
+      updated[index] = true;
+
+      let newScore = s.score - 6;
+
+      let newHint = s.hint;
+      if (newScore < 70 && !s.hint) {
+        newHint = s.playerData.Name.split(" ")
+          .map((w) => w[0])
+          .join(".");
+      }
+
+      updateState({
+        flippedTiles: updated,
+        tilesFlippedCount: s.tilesFlippedCount + 1,
+        score: newScore,
+        hint: newHint,
+        photoRevealed: true,
+        returningFromPhoto: false,
+      });
+      return;
+    }
+
+    // Regular tile flip
     const updated = [...s.flippedTiles];
     updated[index] = true;
 
-    let newScore = s.score - (topics[index] === "Photo" ? 6 : 3);
+    let newScore = s.score - 3;
 
     let newHint = s.hint;
     if (newScore < 70 && !s.hint) {
@@ -201,13 +243,22 @@ const Uncover = () => {
       score: newScore,
       hint: newHint,
     });
-
-    if (topics[index] === "Photo") {
-      setTimeout(() => updateState({ photoModalOpen: true }), 350);
-    }
   };
 
   const photoUrl = s.playerData.Photo[0];
+
+  // Calculate background position for photo segments (3x3 grid)
+  const getPhotoSegmentStyle = (index) => {
+    const col = index % 3;
+    const row = Math.floor(index / 3);
+    const xPos = col * 150; // tile width
+    const yPos = row * 150; // tile height
+
+    return {
+      backgroundImage: `url(${photoUrl})`,
+      backgroundPosition: `-${xPos}px -${yPos}px`,
+    };
+  };
 
   return (
     <div className="uncover-game">
@@ -256,46 +307,47 @@ const Uncover = () => {
             onClick={() => handleTileClick(index)}
           >
             <div
-              className={`tile-inner ${s.flippedTiles[index] ? "flipped" : ""}`}
+              className={`tile-inner ${
+                s.photoRevealed
+                  ? "photo-reveal"
+                  : s.returningFromPhoto
+                    ? s.flippedTiles[index]
+                      ? "flipped no-slide-anim returning-from-photo"
+                      : "returning-from-photo"
+                    : s.flippedTiles[index]
+                      ? "flipped"
+                      : ""
+              }`}
             >
               <div className="tile-front">{topic}</div>
-              <div className="tile-back">
-                {topic === "Photo" ? (
-                  <img
-                    src={photoUrl}
-                    alt="Player"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
-                  />
-                ) : (
-                  s.playerData[topic]
+              <div
+                className={`tile-back ${s.photoRevealed ? "photo-segment" : ""}`}
+                style={s.photoRevealed ? getPhotoSegmentStyle(index) : {}}
+              >
+                {!s.photoRevealed && (
+                  topic === "Photo" ? (
+                    <img
+                      src={photoUrl}
+                      alt="Player"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                    />
+                  ) : (
+                    s.playerData[topic]
+                  )
+                )}
+                {s.photoRevealed && index === 2 && (
+                  <div className="flip-back-arrow">↻</div>
                 )}
               </div>
             </div>
           </div>
         ))}
       </div>
-
-      {s.photoModalOpen && (
-        <div
-          className="modal"
-          onClick={() => updateState({ photoModalOpen: false })}
-        >
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="close"
-              onClick={() => updateState({ photoModalOpen: false })}
-            >
-              ✕
-            </button>
-            <img src={photoUrl} alt="Player" className="full-photo" />
-          </div>
-        </div>
-      )}
     </div>
   );
 };

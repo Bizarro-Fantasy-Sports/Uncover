@@ -55,31 +55,65 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 160px);
-  grid-gap: 15px;
+  grid-template-columns: repeat(3, 150px);
+  grid-gap: 7.5px;
   justify-content: center;
   margin-top: 20px;
 }
 
 .tile {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border: 2px solid #0077b6;
+  border-radius: 8px;
   perspective: 1000px;
-  width: 160px;
-  height: 120px;
 }
 
 .tile-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
   cursor: pointer;
-  border: 2px solid #0077b6;
-  border-radius: 8px;
 }
 
-.tile-inner.flipped {
+/* Transition for returning from photo reveal */
+.tile-inner.returning-from-photo {
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease-out;
+}
+
+/* Hide content during flip back to prevent text from showing during animation */
+.tile-inner.returning-from-photo .tile-back {
+  color: transparent;
+}
+
+.tile-inner.returning-from-photo .tile-back img {
+  opacity: 0;
+}
+
+.tile-inner.returning-from-photo .tile-front {
+  color: transparent;
+}
+
+/* Slide animation for regular tiles */
+.tile-inner.flipped:not(.photo-reveal):not(.no-slide-anim) .tile-front {
+  transform: translateX(-100%);
+  transition: transform 0.6s ease-out;
+}
+
+/* No slide animation - just show the back immediately */
+.tile-inner.flipped.no-slide-anim .tile-front {
+  transform: translateX(-100%);
+  transition: none;
+}
+
+/* Flip animation for photo reveal */
+.tile-inner.photo-reveal {
+  transform-style: preserve-3d;
   transform: rotateY(180deg);
+  transition: transform 0.6s ease-out;
 }
 
 .tile-front,
@@ -87,7 +121,6 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -101,13 +134,48 @@
 .tile-front {
   background-color: #0077b6;
   color: white;
+  z-index: 2;
 }
 
 .tile-back {
   background-color: #90e0ef;
   color: #000;
-  transform: rotateY(180deg);
   overflow: auto;
+  z-index: 1;
+}
+
+/* Only apply 3D transforms for photo reveal */
+.tile-inner.photo-reveal .tile-front,
+.tile-inner.photo-reveal .tile-back {
+  backface-visibility: hidden;
+}
+
+.tile-inner.photo-reveal .tile-back {
+  transform: rotateY(180deg);
+}
+
+.tile-back.photo-segment {
+  background-size: 450px 450px;
+  background-repeat: no-repeat;
+  padding: 0;
+}
+
+.flip-back-arrow {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 24px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .tile-back img {
