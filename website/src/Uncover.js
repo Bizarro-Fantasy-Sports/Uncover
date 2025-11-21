@@ -116,6 +116,11 @@ const Uncover = () => {
   };
 
   const handleNameSubmit = () => {
+    // Don't allow empty guesses
+    if (!s.playerName.trim()) {
+      return;
+    }
+
     const playerData = s.playerData;
     const a = normalize(s.playerName);
     const b = normalize(playerData.Name);
@@ -297,7 +302,9 @@ const Uncover = () => {
           value={s.playerName}
           onChange={(e) => updateState({ playerName: e.target.value })}
         />
-        <button onClick={handleNameSubmit}>Submit</button>
+        <button onClick={handleNameSubmit} disabled={!s.playerName.trim()}>
+          Submit
+        </button>
       </div>
 
       <h3>Score: {s.score}</h3>
