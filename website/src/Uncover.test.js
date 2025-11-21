@@ -437,8 +437,8 @@ describe("Uncover Component", () => {
     });
   });
 
-  describe("Photo Modal", () => {
-    test("clicking photo tile opens modal", async () => {
+  describe("Photo Puzzle", () => {
+    test("clicking photo tile reveals photo puzzle", async () => {
       render(<Uncover />);
 
       await waitFor(() => {
@@ -449,12 +449,13 @@ describe("Uncover Component", () => {
       fireEvent.click(photoTile);
 
       await waitFor(() => {
-        const modals = document.querySelectorAll(".modal");
-        expect(modals.length).toBeGreaterThan(0);
+        // Check that tiles have photo-reveal class
+        const photoRevealTiles = document.querySelectorAll(".photo-reveal");
+        expect(photoRevealTiles.length).toBeGreaterThan(0);
       });
     });
 
-    test("clicking close button closes modal", async () => {
+    test("clicking after photo reveal returns to normal view", async () => {
       render(<Uncover />);
 
       await waitFor(() => {
@@ -462,23 +463,26 @@ describe("Uncover Component", () => {
       });
 
       const photoTile = screen.getByText("Photo").closest(".tile");
+
+      // First click reveals photo puzzle
       fireEvent.click(photoTile);
 
       await waitFor(() => {
-        const closeButton = document.querySelector(".close");
-        expect(closeButton).toBeInTheDocument();
+        const photoRevealTiles = document.querySelectorAll(".photo-reveal");
+        expect(photoRevealTiles.length).toBeGreaterThan(0);
       });
 
-      const closeButton = document.querySelector(".close");
-      fireEvent.click(closeButton);
+      // Second click anywhere returns to normal
+      const anyTile = document.querySelector(".tile");
+      fireEvent.click(anyTile);
 
       await waitFor(() => {
-        const modals = document.querySelectorAll(".modal");
-        expect(modals.length).toBe(0);
+        const returningTiles = document.querySelectorAll(".returning-from-photo");
+        expect(returningTiles.length).toBeGreaterThan(0);
       });
     });
 
-    test("clicking modal background closes modal", async () => {
+    test("photo puzzle shows background images on tiles", async () => {
       render(<Uncover />);
 
       await waitFor(() => {
@@ -489,16 +493,15 @@ describe("Uncover Component", () => {
       fireEvent.click(photoTile);
 
       await waitFor(() => {
-        const modal = document.querySelector(".modal");
-        expect(modal).toBeInTheDocument();
-      });
+        // Check that photo segments have background styles
+        const photoSegments = document.querySelectorAll(".photo-segment");
+        expect(photoSegments.length).toBeGreaterThan(0);
 
-      const modal = document.querySelector(".modal");
-      fireEvent.click(modal);
-
-      await waitFor(() => {
-        const modals = document.querySelectorAll(".modal");
-        expect(modals.length).toBe(0);
+        // Verify at least one has a background-image style
+        const hasBackgroundImage = Array.from(photoSegments).some(
+          segment => segment.style.backgroundImage.includes("url")
+        );
+        expect(hasBackgroundImage).toBe(true);
       });
     });
   });
@@ -765,14 +768,70 @@ describe("Uncover Component", () => {
       });
 
       const submitButton = screen.getByRole("button", { name: /submit/i });
+
+      // Button should be disabled when input is empty
+      expect(submitButton).toBeDisabled();
+
+      // Clicking disabled button should not trigger any action
       fireEvent.click(submitButton);
 
+      // No message should appear
+      expect(screen.queryByText(/wrong guess/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/you guessed it right/i)).not.toBeInTheDocument();
+    });
+
+    test("button is enabled when player name is entered", async () => {
+      render(<Uncover />);
+
       await waitFor(() => {
-        expect(screen.getByText(/wrong guess/i)).toBeInTheDocument();
+        expect(
+          screen.getByPlaceholderText(/enter player name/i)
+        ).toBeInTheDocument();
       });
+
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      const submitButton = screen.getByRole("button", { name: /submit/i });
+
+      // Initially disabled
+      expect(submitButton).toBeDisabled();
+
+      // Type something
+      fireEvent.change(input, { target: { value: "Test Name" } });
+
+      // Should be enabled
+      expect(submitButton).not.toBeDisabled();
+
+      // Clear the input
+      fireEvent.change(input, { target: { value: "" } });
+
+      // Should be disabled again
+      expect(submitButton).toBeDisabled();
+    });
+
+    test("whitespace-only input keeps button disabled", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByPlaceholderText(/enter player name/i)
+        ).toBeInTheDocument();
+      });
+
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      const submitButton = screen.getByRole("button", { name: /submit/i });
+
+      // Type only spaces
+      fireEvent.change(input, { target: { value: "   " } });
+
+      // Button should still be disabled
+      expect(submitButton).toBeDisabled();
     });
 
     test("handles fetch errors gracefully", async () => {
+      // Suppress console.error for this test since we expect an error
+      const originalError = console.error;
+      console.error = jest.fn();
+
       // Override the default mock to simulate a network error
       global.fetch.mockClear();
       global.fetch.mockRejectedValue(new Error("Network error"));
@@ -781,6 +840,15 @@ describe("Uncover Component", () => {
 
       // Component should handle error without crashing
       expect(screen.getByText(/loading player data/i)).toBeInTheDocument();
+
+      // Verify console.error was called (error handling occurred)
+      expect(console.error).toHaveBeenCalledWith(
+        "Error loading player data:",
+        expect.any(Error)
+      );
+
+      // Restore console.error
+      console.error = originalError;
     });
 
     test("handles missing localStorage data", async () => {
