@@ -122,7 +122,8 @@ describe("Uncover Component", () => {
       render(<Uncover />);
 
       await waitFor(() => {
-        expect(screen.getByText(/score: 100/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("100");
       });
     });
 
@@ -336,7 +337,8 @@ describe("Uncover Component", () => {
       render(<Uncover />);
 
       await waitFor(() => {
-        expect(screen.getByText(/score: 100/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("100");
       });
 
       const input = screen.getByPlaceholderText(/enter player name/i);
@@ -346,7 +348,8 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/score: 98/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("98");
       });
     });
   });
@@ -388,14 +391,16 @@ describe("Uncover Component", () => {
       render(<Uncover />);
 
       await waitFor(() => {
-        expect(screen.getByText(/score: 100/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("100");
       });
 
       const bioTile = screen.getByText("Bio").closest(".tile");
       fireEvent.click(bioTile);
 
       await waitFor(() => {
-        expect(screen.getByText(/score: 97/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("97");
       });
     });
 
@@ -403,14 +408,16 @@ describe("Uncover Component", () => {
       render(<Uncover />);
 
       await waitFor(() => {
-        expect(screen.getByText(/score: 100/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("100");
       });
 
       const photoTile = screen.getByText("Photo").closest(".tile");
       fireEvent.click(photoTile);
 
       await waitFor(() => {
-        expect(screen.getByText(/score: 94/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("94");
       });
     });
 
@@ -426,19 +433,21 @@ describe("Uncover Component", () => {
       // First click
       fireEvent.click(bioTile);
       await waitFor(() => {
-        expect(screen.getByText(/score: 97/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("97");
       });
 
       // Second click on same tile
       fireEvent.click(bioTile);
       await waitFor(() => {
-        expect(screen.getByText(/score: 97/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("97");
       });
     });
   });
 
-  describe("Photo Modal", () => {
-    test("clicking photo tile opens modal", async () => {
+  describe("Photo Puzzle", () => {
+    test("clicking photo tile reveals photo puzzle", async () => {
       render(<Uncover />);
 
       await waitFor(() => {
@@ -449,12 +458,13 @@ describe("Uncover Component", () => {
       fireEvent.click(photoTile);
 
       await waitFor(() => {
-        const modals = document.querySelectorAll(".modal");
-        expect(modals.length).toBeGreaterThan(0);
+        // Check that tiles have photo-reveal class
+        const photoRevealTiles = document.querySelectorAll(".photo-reveal");
+        expect(photoRevealTiles.length).toBeGreaterThan(0);
       });
     });
 
-    test("clicking close button closes modal", async () => {
+    test("clicking after photo reveal returns to normal view", async () => {
       render(<Uncover />);
 
       await waitFor(() => {
@@ -462,23 +472,26 @@ describe("Uncover Component", () => {
       });
 
       const photoTile = screen.getByText("Photo").closest(".tile");
+
+      // First click reveals photo puzzle
       fireEvent.click(photoTile);
 
       await waitFor(() => {
-        const closeButton = document.querySelector(".close");
-        expect(closeButton).toBeInTheDocument();
+        const photoRevealTiles = document.querySelectorAll(".photo-reveal");
+        expect(photoRevealTiles.length).toBeGreaterThan(0);
       });
 
-      const closeButton = document.querySelector(".close");
-      fireEvent.click(closeButton);
+      // Second click anywhere returns to normal
+      const anyTile = document.querySelector(".tile");
+      fireEvent.click(anyTile);
 
       await waitFor(() => {
-        const modals = document.querySelectorAll(".modal");
-        expect(modals.length).toBe(0);
+        const returningTiles = document.querySelectorAll(".returning-from-photo");
+        expect(returningTiles.length).toBeGreaterThan(0);
       });
     });
 
-    test("clicking modal background closes modal", async () => {
+    test("photo puzzle shows background images on tiles", async () => {
       render(<Uncover />);
 
       await waitFor(() => {
@@ -489,16 +502,15 @@ describe("Uncover Component", () => {
       fireEvent.click(photoTile);
 
       await waitFor(() => {
-        const modal = document.querySelector(".modal");
-        expect(modal).toBeInTheDocument();
-      });
+        // Check that photo segments have background styles
+        const photoSegments = document.querySelectorAll(".photo-segment");
+        expect(photoSegments.length).toBeGreaterThan(0);
 
-      const modal = document.querySelector(".modal");
-      fireEvent.click(modal);
-
-      await waitFor(() => {
-        const modals = document.querySelectorAll(".modal");
-        expect(modals.length).toBe(0);
+        // Verify at least one has a background-image style
+        const hasBackgroundImage = Array.from(photoSegments).some(
+          segment => segment.style.backgroundImage.includes("url")
+        );
+        expect(hasBackgroundImage).toBe(true);
       });
     });
   });
@@ -706,7 +718,8 @@ describe("Uncover Component", () => {
 
       await waitFor(() => {
         expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
-        expect(screen.getByText(/score: 97/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("97");
       });
 
       // Switch to basketball
@@ -715,7 +728,8 @@ describe("Uncover Component", () => {
       // Basketball should have fresh state
       await waitFor(() => {
         expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
-        expect(screen.getByText(/score: 100/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("100");
       });
 
       // Switch back to baseball
@@ -724,7 +738,8 @@ describe("Uncover Component", () => {
       // Baseball state should be preserved
       await waitFor(() => {
         expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
-        expect(screen.getByText(/score: 97/i)).toBeInTheDocument();
+        const scoreBox = document.querySelector(".score-box");
+        expect(scoreBox).toHaveTextContent("97");
       });
     });
   });

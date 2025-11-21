@@ -53,6 +53,8 @@ const initialState = {
   score: 100,
   hint: "",
   finalRank: "",
+  incorrectGuesses: 0,
+  showResultsModal: false,
 };
 
 const Uncover = () => {
@@ -129,6 +131,7 @@ const Uncover = () => {
         previousCloseGuess: "",
         finalRank: rank,
         hint: "",
+        showResultsModal: true,
       });
       return;
     }
@@ -179,6 +182,7 @@ const Uncover = () => {
       messageType: "error",
       score: newScore,
       hint: newHint,
+      incorrectGuesses: s.incorrectGuesses + 1,
     });
   };
 
@@ -290,6 +294,16 @@ const Uncover = () => {
         {s.finalRank && <p className="final-rank">Your Rank: {s.finalRank}</p>}
       </div>
 
+      <div className="score-section">
+        <p className="score-label">Score</p>
+        <div className="score-box">{s.score}</div>
+      </div>
+
+      <div className="stats-container">
+        <h3>Tiles Flipped: {s.tilesFlippedCount}</h3>
+        <h3>Incorrect Guesses: {s.incorrectGuesses}</h3>
+      </div>
+
       <div className="player-input">
         <input
           type="text"
@@ -299,9 +313,6 @@ const Uncover = () => {
         />
         <button onClick={handleNameSubmit}>Submit</button>
       </div>
-
-      <h3>Score: {s.score}</h3>
-      <h3>Tiles Flipped: {s.tilesFlippedCount}</h3>
 
       <div className="grid">
         {topics.map((topic, index) => (
@@ -352,6 +363,34 @@ const Uncover = () => {
           </div>
         ))}
       </div>
+
+      {s.showResultsModal && (
+        <div className="results-modal" onClick={() => updateState({ showResultsModal: false })}>
+          <div className="results-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="close-results"
+              onClick={() => updateState({ showResultsModal: false })}
+            >
+              ✕
+            </button>
+            <h2 className="results-title">Correct! Your score is {s.score}!</h2>
+            <p className="average-score">The average score today is 85</p>
+
+            <div className="results-grid">
+              {topics.map((topic, index) => (
+                <div
+                  key={index}
+                  className={`results-tile ${s.flippedTiles[index] ? "flipped" : "unflipped"}`}
+                >
+                  {s.flippedTiles[index] ? "✓" : ""}
+                </div>
+              ))}
+            </div>
+
+            <button className="share-button">Share</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
