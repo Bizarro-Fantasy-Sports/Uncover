@@ -16,8 +16,8 @@ const ContactForm = () => {
 
   const formatPhoneNumber = (value) => {
     const digits = value.replace(/\D/g, "");
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    if (digits.length <= 3) {return digits;}
+    if (digits.length <= 6) {return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;}
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(
       6,
       10
@@ -40,9 +40,9 @@ const ContactForm = () => {
     const newErrors = {};
 
     // Required fields: Name, Subject, Message, and One Contact Method
-    if (!formData.name.trim()) newErrors.name = "Name is required.";
-    if (!formData.subject.trim()) newErrors.subject = "Subject is required.";
-    if (!formData.message.trim()) newErrors.message = "Message is required.";
+    if (!formData.name.trim()) {newErrors.name = "Name is required.";}
+    if (!formData.subject.trim()) {newErrors.subject = "Subject is required.";}
+    if (!formData.message.trim()) {newErrors.message = "Message is required.";}
 
     if (!formData.email.trim() && !formData.phone.trim()) {
       newErrors.contact = "Please provide either an email or phone number.";

@@ -18,8 +18,8 @@ const lev = (a, b) => {
   const dp = Array.from({ length: a.length + 1 }, () =>
     Array(b.length + 1).fill(0)
   );
-  for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 0; i <= a.length; i++) {dp[i][0] = i;}
+  for (let j = 0; j <= b.length; j++) {dp[0][j] = j;}
   for (let i = 1; i <= a.length; i++) {
     for (let j = 1; j <= b.length; j++) {
       dp[i][j] =
@@ -69,7 +69,7 @@ const Uncover = () => {
     const state = gameState[activeSport];
 
     // Already loaded → do nothing
-    if (state.playersList && state.playerData) return;
+    if (state.playersList && state.playerData) {return;}
 
     // Load once
     fetch(sportFiles[activeSport])
@@ -99,7 +99,7 @@ const Uncover = () => {
   }, [activeSport, gameState]);
 
   const s = gameState[activeSport];
-  if (!s.playerData) return <p>Loading player data...</p>;
+  if (!s.playerData) {return <p>Loading player data...</p>;}
 
   const updateState = (patch) => {
     setGameState((prev) => ({
@@ -109,9 +109,9 @@ const Uncover = () => {
   };
 
   const evaluateRank = (points) => {
-    if (points >= 95) return "Amazing";
-    if (points >= 90) return "Elite";
-    if (points >= 80) return "Solid";
+    if (points >= 95) {return "Amazing";}
+    if (points >= 90) {return "Elite";}
+    if (points >= 80) {return "Solid";}
     return "";
   };
 
@@ -133,7 +133,7 @@ const Uncover = () => {
       return;
     }
 
-    let newScore = s.score - 2;
+    const newScore = s.score - 2;
     let newHint = s.hint;
 
     if (newScore < 70 && !s.hint) {
@@ -208,7 +208,7 @@ const Uncover = () => {
       const updated = [...s.flippedTiles];
       updated[index] = true;
 
-      let newScore = s.score - 6;
+      const newScore = s.score - 6;
 
       let newHint = s.hint;
       if (newScore < 70 && !s.hint) {
@@ -232,7 +232,7 @@ const Uncover = () => {
     const updated = [...s.flippedTiles];
     updated[index] = true;
 
-    let newScore = s.score - 3;
+    const newScore = s.score - 3;
 
     let newHint = s.hint;
     if (newScore < 70 && !s.hint) {

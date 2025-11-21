@@ -11,7 +11,7 @@ global.fetch = jest.fn();
 
 // Mock localStorage
 const localStorageMock = (() => {
-  let store = {};
+  const store = {};
   return {
     getItem: jest.fn((key) => store[key] || null),
     setItem: jest.fn((key, value) => {
@@ -23,7 +23,7 @@ const localStorageMock = (() => {
   };
 })();
 
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
   writable: true,
 });
