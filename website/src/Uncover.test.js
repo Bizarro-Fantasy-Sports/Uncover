@@ -841,11 +841,13 @@ describe("Uncover Component", () => {
       // Component should handle error without crashing
       expect(screen.getByText(/loading player data/i)).toBeInTheDocument();
 
-      // Verify console.error was called (error handling occurred)
-      expect(console.error).toHaveBeenCalledWith(
-        "Error loading player data:",
-        expect.any(Error)
-      );
+      // Wait for console.error to be called (error handling occurred)
+      await waitFor(() => {
+        expect(console.error).toHaveBeenCalledWith(
+          "Error loading player data:",
+          expect.any(Error)
+        );
+      });
 
       // Restore console.error
       console.error = originalError;
