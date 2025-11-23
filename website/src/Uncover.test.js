@@ -1525,14 +1525,70 @@ describe("Uncover Component", () => {
       });
 
       const submitButton = screen.getByRole("button", { name: /submit/i });
+
+      // Button should be disabled when input is empty
+      expect(submitButton).toBeDisabled();
+
+      // Clicking disabled button should not trigger any action
       fireEvent.click(submitButton);
 
+      // No message should appear
+      expect(screen.queryByText(/wrong guess/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/you guessed it right/i)).not.toBeInTheDocument();
+    });
+
+    test("button is enabled when player name is entered", async () => {
+      render(<Uncover />);
+
       await waitFor(() => {
-        expect(screen.getByText(/wrong guess/i)).toBeInTheDocument();
+        expect(
+          screen.getByPlaceholderText(/enter player name/i)
+        ).toBeInTheDocument();
       });
+
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      const submitButton = screen.getByRole("button", { name: /submit/i });
+
+      // Initially disabled
+      expect(submitButton).toBeDisabled();
+
+      // Type something
+      fireEvent.change(input, { target: { value: "Test Name" } });
+
+      // Should be enabled
+      expect(submitButton).not.toBeDisabled();
+
+      // Clear the input
+      fireEvent.change(input, { target: { value: "" } });
+
+      // Should be disabled again
+      expect(submitButton).toBeDisabled();
+    });
+
+    test("whitespace-only input keeps button disabled", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByPlaceholderText(/enter player name/i)
+        ).toBeInTheDocument();
+      });
+
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      const submitButton = screen.getByRole("button", { name: /submit/i });
+
+      // Type only spaces
+      fireEvent.change(input, { target: { value: "   " } });
+
+      // Button should still be disabled
+      expect(submitButton).toBeDisabled();
     });
 
     test("handles fetch errors gracefully", async () => {
+      // Suppress console.error for this test since we expect an error
+      const originalError = console.error;
+      console.error = jest.fn();
+
       // Override the default mock to simulate a network error
       global.fetch.mockClear();
       global.fetch.mockRejectedValue(new Error("Network error"));
@@ -1541,6 +1597,17 @@ describe("Uncover Component", () => {
 
       // Component should handle error without crashing
       expect(screen.getByText(/loading player data/i)).toBeInTheDocument();
+
+      // Wait for console.error to be called (error handling occurred)
+      await waitFor(() => {
+        expect(console.error).toHaveBeenCalledWith(
+          "Error loading player data:",
+          expect.any(Error)
+        );
+      });
+
+      // Restore console.error
+      console.error = originalError;
     });
 
     test("handles missing localStorage data", async () => {

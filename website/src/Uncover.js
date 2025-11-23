@@ -106,7 +106,8 @@ const Uncover = () => {
         console.error("Error loading player data:", error);
         // Keep showing loading state if fetch fails
       });
-  }, [activeSport, gameState]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSport]); // gameState intentionally excluded to prevent infinite re-renders
 
   const s = gameState[activeSport];
   if (!s.playerData) {
@@ -134,6 +135,11 @@ const Uncover = () => {
   };
 
   const handleNameSubmit = () => {
+    // Don't allow empty guesses
+    if (!s.playerName.trim()) {
+      return;
+    }
+
     const playerData = s.playerData;
     const a = normalize(s.playerName);
     const b = normalize(playerData.Name);
@@ -400,7 +406,9 @@ const Uncover = () => {
           value={s.playerName}
           onChange={(e) => updateState({ playerName: e.target.value })}
         />
-        <button onClick={handleNameSubmit}>Submit</button>
+        <button onClick={handleNameSubmit} disabled={!s.playerName.trim()}>
+          Submit
+        </button>
       </div>
 
       <div className="grid">
