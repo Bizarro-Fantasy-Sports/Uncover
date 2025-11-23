@@ -57,6 +57,10 @@ const initialState = {
   score: 100,
   hint: "",
   finalRank: "",
+  incorrectGuesses: 0,
+  showResultsModal: false,
+  copiedText: "",
+  lastSubmittedGuess: "",
 };
 
 const Uncover = () => {
@@ -135,6 +139,20 @@ const Uncover = () => {
     const b = normalize(playerData.Name);
     const distance = lev(a, b);
 
+    // If game is already won, only allow reopening modal with correct answer
+    if (s.finalRank) {
+      if (a === b) {
+        updateState({ showResultsModal: true });
+      }
+      return;
+    }
+
+    // Prevent submitting the same incorrect guess consecutively
+    // Only block if there was a previous guess (lastSubmittedGuess is not empty)
+    if (a !== b && s.lastSubmittedGuess && a === s.lastSubmittedGuess) {
+      return;
+    }
+
     if (a === b) {
       const rank = evaluateRank(s.score);
       updateState({
@@ -143,6 +161,8 @@ const Uncover = () => {
         previousCloseGuess: "",
         finalRank: rank,
         hint: "",
+        showResultsModal: true,
+        lastSubmittedGuess: a,
       });
       return;
     }
@@ -164,6 +184,7 @@ const Uncover = () => {
           previousCloseGuess: "",
           score: newScore,
           hint: newHint,
+          lastSubmittedGuess: a,
         });
       } else {
         updateState({
@@ -172,6 +193,7 @@ const Uncover = () => {
           previousCloseGuess: a,
           score: newScore,
           hint: newHint,
+          lastSubmittedGuess: a,
         });
       }
       return;
@@ -184,6 +206,7 @@ const Uncover = () => {
         previousCloseGuess: "",
         score: newScore,
         hint: newHint,
+        lastSubmittedGuess: a,
       });
       return;
     }
@@ -193,6 +216,8 @@ const Uncover = () => {
       messageType: "error",
       score: newScore,
       hint: newHint,
+      incorrectGuesses: s.incorrectGuesses + 1,
+      lastSubmittedGuess: a,
     });
   };
 
@@ -222,7 +247,43 @@ const Uncover = () => {
       const updated = [...s.flippedTiles];
       updated[index] = true;
 
-      const newScore = s.score - 6;
+      // Only update score/counters if game is not won
+      if (!s.finalRank) {
+        let newScore = s.score - 6;
+
+        let newHint = s.hint;
+        if (newScore < 70 && !s.hint) {
+          newHint = s.playerData.Name.split(" ")
+            .map((w) => w[0])
+            .join(".");
+        }
+
+        updateState({
+          flippedTiles: updated,
+          tilesFlippedCount: s.tilesFlippedCount + 1,
+          score: newScore,
+          hint: newHint,
+          photoRevealed: true,
+          returningFromPhoto: false,
+        });
+      } else {
+        // Game won - just update visual state
+        updateState({
+          flippedTiles: updated,
+          photoRevealed: true,
+          returningFromPhoto: false,
+        });
+      }
+      return;
+    }
+
+    // Regular tile flip
+    const updated = [...s.flippedTiles];
+    updated[index] = true;
+
+    // Only update score/counters if game is not won
+    if (!s.finalRank) {
+      let newScore = s.score - 3;
 
       let newHint = s.hint;
       if (newScore < 70 && !s.hint) {
@@ -236,31 +297,13 @@ const Uncover = () => {
         tilesFlippedCount: s.tilesFlippedCount + 1,
         score: newScore,
         hint: newHint,
-        photoRevealed: true,
-        returningFromPhoto: false,
       });
-      return;
+    } else {
+      // Game won - just update visual state
+      updateState({
+        flippedTiles: updated,
+      });
     }
-
-    // Regular tile flip
-    const updated = [...s.flippedTiles];
-    updated[index] = true;
-
-    const newScore = s.score - 3;
-
-    let newHint = s.hint;
-    if (newScore < 70 && !s.hint) {
-      newHint = s.playerData.Name.split(" ")
-        .map((w) => w[0])
-        .join(".");
-    }
-
-    updateState({
-      flippedTiles: updated,
-      tilesFlippedCount: s.tilesFlippedCount + 1,
-      score: newScore,
-      hint: newHint,
-    });
   };
 
   const photoUrl = s.playerData.Photo[0];
@@ -276,6 +319,42 @@ const Uncover = () => {
       backgroundImage: `url(${photoUrl})`,
       backgroundPosition: `-${xPos}px -${yPos}px`,
     };
+  };
+
+  const handleShare = () => {
+    // Get daily number from playerData or default to 1
+    const dailyNumber = s.playerData.dailyNumber || 1;
+
+    // Build the share text
+    let shareText = `Daily Uncover #${dailyNumber}\n`;
+
+    // Create a 3x3 grid using emojis
+    for (let i = 0; i < 9; i++) {
+      // Yellow emoji for flipped, blue emoji for unflipped
+      shareText += s.flippedTiles[i] ? "🟨" : "🟦";
+      // Add newline after every 3 tiles (end of row)
+      if ((i + 1) % 3 === 0) {
+        shareText += "\n";
+      }
+    }
+
+    // Add score at the end
+    shareText += `Score: ${s.score}`;
+
+    // Copy to clipboard
+    navigator.clipboard
+      .writeText(shareText)
+      .then(() => {
+        // Show what was copied
+        updateState({ copiedText: shareText });
+        // Clear the message after 3 seconds
+        setTimeout(() => {
+          updateState({ copiedText: "" });
+        }, 3000);
+      })
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+      });
   };
 
   return (
@@ -304,6 +383,16 @@ const Uncover = () => {
         {s.finalRank && <p className="final-rank">Your Rank: {s.finalRank}</p>}
       </div>
 
+      <div className="score-section">
+        <p className="score-label">Score</p>
+        <div className="score-box">{s.score}</div>
+      </div>
+
+      <div className="stats-container">
+        <h3>Tiles Flipped: {s.tilesFlippedCount}</h3>
+        <h3>Incorrect Guesses: {s.incorrectGuesses}</h3>
+      </div>
+
       <div className="player-input">
         <input
           type="text"
@@ -313,9 +402,6 @@ const Uncover = () => {
         />
         <button onClick={handleNameSubmit}>Submit</button>
       </div>
-
-      <h3>Score: {s.score}</h3>
-      <h3>Tiles Flipped: {s.tilesFlippedCount}</h3>
 
       <div className="grid">
         {topics.map((topic, index) => (
@@ -365,6 +451,49 @@ const Uncover = () => {
           </div>
         ))}
       </div>
+
+      {s.showResultsModal && (
+        <div
+          className="results-modal"
+          onClick={() => updateState({ showResultsModal: false })}
+        >
+          <div
+            className="results-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="close-results"
+              onClick={() => updateState({ showResultsModal: false })}
+            >
+              ✕
+            </button>
+            <h2 className="results-title">Correct! Your score is {s.score}!</h2>
+            <p className="average-score">The average score today is 85</p>
+
+            <div className="results-grid">
+              {topics.map((topic, index) => (
+                <div
+                  key={index}
+                  className={`results-tile ${s.flippedTiles[index] ? "flipped" : "unflipped"}`}
+                >
+                  {s.flippedTiles[index] ? "↻" : ""}
+                </div>
+              ))}
+            </div>
+
+            <button className="share-button" onClick={handleShare}>
+              Share
+            </button>
+
+            {s.copiedText && (
+              <div className="copied-message">
+                <pre>{s.copiedText}</pre>
+                <p>has been copied</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
