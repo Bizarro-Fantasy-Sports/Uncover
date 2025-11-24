@@ -2,16 +2,16 @@
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 // Suppress act() warnings - we're properly handling async with waitFor
 const originalError = console.error;
 beforeAll(() => {
   console.error = (...args) => {
     if (
-      typeof args[0] === 'string' &&
-      args[0].includes('An update to') &&
-      args[0].includes('inside a test was not wrapped in act')
+      typeof args[0] === "string" &&
+      args[0].includes("An update to") &&
+      args[0].includes("inside a test was not wrapped in act")
     ) {
       return;
     }

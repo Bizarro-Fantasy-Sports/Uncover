@@ -1,0 +1,45 @@
+{
+  "extends": [
+    "react-app",
+    "react-app/jest"
+  ],
+  "rules": {
+    "no-console": "off",
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "no-debugger": "warn",
+    "prefer-const": "warn",
+    "no-var": "error",
+    "eqeqeq": ["warn", "always"],
+    "curly": ["warn", "all"],
+    "brace-style": ["warn", "1tbs"],
+    "no-multiple-empty-lines": ["warn", { "max": 1 }],
+    "no-trailing-spaces": "warn",
+    "comma-dangle": ["warn", "only-multiline"],
+    "quotes": ["warn", "double", { "avoidEscape": true }],
+    "semi": ["warn", "always"],
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "object-curly-spacing": ["warn", "always"],
+    "array-bracket-spacing": ["warn", "never"],
+    "arrow-spacing": "warn",
+    "keyword-spacing": "warn",
+    "space-before-blocks": "warn",
+    "space-infix-ops": "warn",
+    "testing-library/no-wait-for-multiple-assertions": "off",
+    "testing-library/no-node-access": "off"
+  },
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
+}

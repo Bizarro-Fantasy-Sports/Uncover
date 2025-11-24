@@ -18,8 +18,12 @@ const lev = (a, b) => {
   const dp = Array.from({ length: a.length + 1 }, () =>
     Array(b.length + 1).fill(0)
   );
-  for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 0; i <= a.length; i++) {
+    dp[i][0] = i;
+  }
+  for (let j = 0; j <= b.length; j++) {
+    dp[0][j] = j;
+  }
   for (let i = 1; i <= a.length; i++) {
     for (let j = 1; j <= b.length; j++) {
       dp[i][j] =
@@ -73,7 +77,9 @@ const Uncover = () => {
     const state = gameState[activeSport];
 
     // Already loaded → do nothing
-    if (state.playersList && state.playerData) return;
+    if (state.playersList && state.playerData) {
+      return;
+    }
 
     // Load once
     fetch(sportFiles[activeSport])
@@ -104,7 +110,9 @@ const Uncover = () => {
   }, [activeSport]); // gameState intentionally excluded to prevent infinite re-renders
 
   const s = gameState[activeSport];
-  if (!s.playerData) return <p>Loading player data...</p>;
+  if (!s.playerData) {
+    return <p>Loading player data...</p>;
+  }
 
   const updateState = (patch) => {
     setGameState((prev) => ({
@@ -114,9 +122,15 @@ const Uncover = () => {
   };
 
   const evaluateRank = (points) => {
-    if (points >= 95) return "Amazing";
-    if (points >= 90) return "Elite";
-    if (points >= 80) return "Solid";
+    if (points >= 95) {
+      return "Amazing";
+    }
+    if (points >= 90) {
+      return "Elite";
+    }
+    if (points >= 80) {
+      return "Solid";
+    }
     return "";
   };
 
@@ -159,7 +173,7 @@ const Uncover = () => {
       return;
     }
 
-    let newScore = s.score - 2;
+    const newScore = s.score - 2;
     let newHint = s.hint;
 
     if (newScore < 70 && !s.hint) {
@@ -334,16 +348,19 @@ const Uncover = () => {
     shareText += `Score: ${s.score}`;
 
     // Copy to clipboard
-    navigator.clipboard.writeText(shareText).then(() => {
-      // Show what was copied
-      updateState({ copiedText: shareText });
-      // Clear the message after 3 seconds
-      setTimeout(() => {
-        updateState({ copiedText: "" });
-      }, 3000);
-    }).catch(err => {
-      console.error("Failed to copy:", err);
-    });
+    navigator.clipboard
+      .writeText(shareText)
+      .then(() => {
+        // Show what was copied
+        updateState({ copiedText: shareText });
+        // Clear the message after 3 seconds
+        setTimeout(() => {
+          updateState({ copiedText: "" });
+        }, 3000);
+      })
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+      });
   };
 
   return (
@@ -419,8 +436,8 @@ const Uncover = () => {
                 className={`tile-back ${s.photoRevealed ? "photo-segment" : ""}`}
                 style={s.photoRevealed ? getPhotoSegmentStyle(index) : {}}
               >
-                {!s.photoRevealed && (
-                  topic === "Photo" ? (
+                {!s.photoRevealed &&
+                  (topic === "Photo" ? (
                     <img
                       src={photoUrl}
                       alt="Player"
@@ -433,8 +450,7 @@ const Uncover = () => {
                     />
                   ) : (
                     s.playerData[topic]
-                  )
-                )}
+                  ))}
                 {s.photoRevealed && index === 2 && (
                   <div className="flip-back-arrow">↻</div>
                 )}
@@ -445,8 +461,14 @@ const Uncover = () => {
       </div>
 
       {s.showResultsModal && (
-        <div className="results-modal" onClick={() => updateState({ showResultsModal: false })}>
-          <div className="results-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="results-modal"
+          onClick={() => updateState({ showResultsModal: false })}
+        >
+          <div
+            className="results-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="close-results"
               onClick={() => updateState({ showResultsModal: false })}
@@ -467,7 +489,9 @@ const Uncover = () => {
               ))}
             </div>
 
-            <button className="share-button" onClick={handleShare}>Share</button>
+            <button className="share-button" onClick={handleShare}>
+              Share
+            </button>
 
             {s.copiedText && (
               <div className="copied-message">

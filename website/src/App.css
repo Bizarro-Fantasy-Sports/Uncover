@@ -59,7 +59,9 @@ body {
   cursor: pointer;
   font-weight: 500;
   font-size: 1.2rem;
-  transition: color 0.3s ease, transform 0.2s ease;
+  transition:
+    color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .nav-links li:hover {
