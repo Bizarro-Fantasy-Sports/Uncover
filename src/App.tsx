@@ -3,8 +3,10 @@ import "./App.css";
 import ContactForm from "./ContactForm";
 import Uncover from "./Uncover";
 
+type PageType = "Home" | "Daily Fact" | "Uncover" | "Projects" | "Contact";
+
 function App() {
-  const [activePage, setActivePage] = useState("Home");
+  const [activePage, setActivePage] = useState<PageType>("Home");
 
   const renderPage = () => {
     switch (activePage) {

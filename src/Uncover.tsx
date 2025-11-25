@@ -14,7 +14,7 @@ const topics = [
 ];
 
 // Helper Function for Name Guessing
-const lev = (a, b) => {
+const lev = (a: string, b: string): number => {
   const dp = Array.from({ length: a.length + 1 }, () =>
     Array(b.length + 1).fill(0)
   );
@@ -35,15 +35,52 @@ const lev = (a, b) => {
   return dp[a.length][b.length];
 };
 
-const normalize = (str = "") => str.toLowerCase().replace(/\s/g, "");
+const normalize = (str = ""): string => str.toLowerCase().replace(/\s/g, "");
 
-const sportFiles = {
+type SportType = "baseball" | "basketball" | "football";
+
+const sportFiles: Record<SportType, string> = {
   baseball: "/UncoverBaseballData.json",
   basketball: "/UncoverBasketballData.json",
   football: "/UncoverFootballData.json",
 };
 
-const initialState = {
+interface PlayerData {
+  Name: string;
+  Bio: string;
+  "Player Information": string;
+  "Draft Information": string;
+  "Years Active": string;
+  "Teams Played On": string;
+  "Jersey Numbers": string;
+  "Career Stats": string;
+  "Personal Achievements": string;
+  Photo: string[];
+  dailyNumber?: number;
+  [key: string]: string | string[] | number | undefined;
+}
+
+interface GameState {
+  playersList: PlayerData[] | null;
+  playerData: PlayerData | null;
+  playerName: string;
+  message: string;
+  messageType: string;
+  previousCloseGuess: string;
+  flippedTiles: boolean[];
+  tilesFlippedCount: number;
+  photoRevealed: boolean;
+  returningFromPhoto: boolean;
+  score: number;
+  hint: string;
+  finalRank: string;
+  incorrectGuesses: number;
+  showResultsModal: boolean;
+  copiedText: string;
+  lastSubmittedGuess: string;
+}
+
+const initialState: GameState = {
   playersList: null,
   playerData: null,
   playerName: "",
@@ -63,10 +100,10 @@ const initialState = {
   lastSubmittedGuess: "",
 };
 
-const Uncover = () => {
-  const [activeSport, setActiveSport] = useState("baseball");
+const Uncover: React.FC = () => {
+  const [activeSport, setActiveSport] = useState<SportType>("baseball");
 
-  const [gameState, setGameState] = useState({
+  const [gameState, setGameState] = useState<Record<SportType, GameState>>({
     baseball: { ...initialState },
     basketball: { ...initialState },
     football: { ...initialState },
@@ -84,14 +121,14 @@ const Uncover = () => {
     // Load once
     fetch(sportFiles[activeSport])
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: PlayerData[]) => {
         const key = `playerIndex_${activeSport}`;
         const storedIndex = parseInt(localStorage.getItem(key) || "0");
 
         const index = storedIndex % data.length;
         const playerData = data[index];
 
-        localStorage.setItem(key, (index + 1) % data.length);
+        localStorage.setItem(key, ((index + 1) % data.length).toString());
 
         setGameState((prev) => ({
           ...prev,
@@ -114,14 +151,14 @@ const Uncover = () => {
     return <p>Loading player data...</p>;
   }
 
-  const updateState = (patch) => {
+  const updateState = (patch: Partial<GameState>) => {
     setGameState((prev) => ({
       ...prev,
       [activeSport]: { ...prev[activeSport], ...patch },
     }));
   };
 
-  const evaluateRank = (points) => {
+  const evaluateRank = (points: number): string => {
     if (points >= 95) {
       return "Amazing";
     }
@@ -140,7 +177,7 @@ const Uncover = () => {
       return;
     }
 
-    const playerData = s.playerData;
+    const playerData = s.playerData!;
     const a = normalize(s.playerName);
     const b = normalize(playerData.Name);
     const distance = lev(a, b);
@@ -227,7 +264,7 @@ const Uncover = () => {
     });
   };
 
-  const handleTileClick = (index) => {
+  const handleTileClick = (index: number) => {
     // If photo is already revealed, allow clicking to toggle back
     if (s.photoRevealed) {
       updateState({ photoRevealed: false, returningFromPhoto: true });
@@ -259,7 +296,7 @@ const Uncover = () => {
 
         let newHint = s.hint;
         if (newScore < 70 && !s.hint) {
-          newHint = s.playerData.Name.split(" ")
+          newHint = s.playerData!.Name.split(" ")
             .map((w) => w[0])
             .join(".");
         }
@@ -293,7 +330,7 @@ const Uncover = () => {
 
       let newHint = s.hint;
       if (newScore < 70 && !s.hint) {
-        newHint = s.playerData.Name.split(" ")
+        newHint = s.playerData!.Name.split(" ")
           .map((w) => w[0])
           .join(".");
       }
@@ -315,7 +352,7 @@ const Uncover = () => {
   const photoUrl = s.playerData.Photo[0];
 
   // Calculate background position for photo segments (3x3 grid)
-  const getPhotoSegmentStyle = (index) => {
+  const getPhotoSegmentStyle = (index: number): React.CSSProperties => {
     const col = index % 3;
     const row = Math.floor(index / 3);
     const xPos = col * 150; // tile width
@@ -329,7 +366,7 @@ const Uncover = () => {
 
   const handleShare = () => {
     // Get daily number from playerData or default to 1
-    const dailyNumber = s.playerData.dailyNumber || 1;
+    const dailyNumber = s.playerData!.dailyNumber || 1;
 
     // Build the share text
     let shareText = `Daily Uncover #${dailyNumber}\n`;
@@ -366,7 +403,7 @@ const Uncover = () => {
   return (
     <div className="uncover-game">
       <div className="sports-navbar">
-        {["baseball", "basketball", "football"].map((sport) => (
+        {(["baseball", "basketball", "football"] as SportType[]).map((sport) => (
           <div
             key={sport}
             className={`nav-tab ${activeSport === sport ? "active" : ""}`}
@@ -449,7 +486,7 @@ const Uncover = () => {
                       }}
                     />
                   ) : (
-                    s.playerData[topic]
+                    s.playerData![topic]
                   ))}
                 {s.photoRevealed && index === 2 && (
                   <div className="flip-back-arrow">↻</div>

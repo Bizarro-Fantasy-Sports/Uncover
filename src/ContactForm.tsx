@@ -2,8 +2,25 @@ import React, { useState } from "react";
 import "./App.css";
 import "./ContactForm.css";
 
-const ContactForm = () => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
+interface FormErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+  subject?: string;
+  message?: string;
+  contact?: string;
+}
+
+const ContactForm: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phone: "",
@@ -11,10 +28,10 @@ const ContactForm = () => {
     message: "",
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
 
-  const formatPhoneNumber = (value) => {
+  const formatPhoneNumber = (value: string): string => {
     const digits = value.replace(/\D/g, "");
     if (digits.length <= 3) {
       return digits;
@@ -28,7 +45,9 @@ const ContactForm = () => {
     )}`;
   };
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
     let formattedValue = value;
@@ -40,8 +59,8 @@ const ContactForm = () => {
     setErrors({ ...errors, [name]: "" });
   };
 
-  const validate = () => {
-    const newErrors = {};
+  const validate = (): FormErrors => {
+    const newErrors: FormErrors = {};
 
     // Required fields: Name, Subject, Message, and One Contact Method
     if (!formData.name.trim()) {
@@ -69,7 +88,7 @@ const ContactForm = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const validationErrors = validate();
 
@@ -126,7 +145,7 @@ const ContactForm = () => {
             placeholder="(123) 456-7890"
             value={formData.phone}
             onChange={handleChange}
-            maxLength="14"
+            maxLength={14}
           />
           {errors.phone && <p className="error">{errors.phone}</p>}
         </label>
@@ -148,7 +167,7 @@ const ContactForm = () => {
           Message*:
           <textarea
             name="message"
-            rows="5"
+            rows={5}
             value={formData.message}
             onChange={handleChange}
           ></textarea>

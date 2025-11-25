@@ -7,20 +7,26 @@ import Uncover from "./Uncover";
 jest.mock("./Uncover.css", () => ({}));
 
 // Mock fetch
-global.fetch = jest.fn();
+global.fetch = jest.fn() as jest.Mock;
+
+interface LocalStorageMock {
+  getItem: jest.Mock;
+  setItem: jest.Mock;
+  clear: jest.Mock;
+}
 
 // Mock localStorage
 const localStorageMock = (() => {
-  const store = {};
+  const store: Record<string, string> = {};
   return {
-    getItem: jest.fn((key) => store[key] || null),
-    setItem: jest.fn((key, value) => {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
       store[key] = value.toString();
     }),
     clear: jest.fn(() => {
       Object.keys(store).forEach((key) => delete store[key]);
     }),
-  };
+  } as LocalStorageMock;
 })();
 
 Object.defineProperty(window, "localStorage", {
@@ -28,8 +34,21 @@ Object.defineProperty(window, "localStorage", {
   writable: true,
 });
 
+interface PlayerData {
+  Name: string;
+  Bio: string;
+  "Player Information": string;
+  "Draft Information": string;
+  "Years Active": string;
+  "Teams Played On": string;
+  "Jersey Numbers": string;
+  "Career Stats": string;
+  "Personal Achievements": string;
+  Photo: string[];
+}
+
 // Sample test data
-const mockBaseballData = [
+const mockBaseballData: PlayerData[] = [
   {
     Name: "Babe Ruth",
     Bio: "Greatest baseball player",
@@ -67,8 +86,8 @@ describe("Uncover Component", () => {
     localStorageMock.clear();
 
     // Setup default fetch mock
-    global.fetch.mockClear();
-    global.fetch.mockResolvedValue({
+    (global.fetch as jest.Mock).mockClear();
+    (global.fetch as jest.Mock).mockResolvedValue({
       json: async () => mockBaseballData,
     });
   });
@@ -155,16 +174,27 @@ describe("Uncover Component", () => {
         );
         expect(localStorageMock.setItem).toHaveBeenCalledWith(
           "playerIndex_baseball",
-          1
+          "1"
         );
       });
     });
 
     test("loads basketball data when basketball tab is clicked", async () => {
-      const mockBasketballData = [
-        { Name: "Michael Jordan", Bio: "GOAT", Photo: ["/mj.jpg"] },
+      const mockBasketballData: PlayerData[] = [
+        {
+          Name: "Michael Jordan",
+          Bio: "GOAT",
+          "Player Information": "",
+          "Draft Information": "",
+          "Years Active": "",
+          "Teams Played On": "",
+          "Jersey Numbers": "",
+          "Career Stats": "",
+          "Personal Achievements": "",
+          Photo: ["/mj.jpg"],
+        },
       ];
-      global.fetch
+      (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
           json: async () => mockBaseballData,
         })
@@ -197,7 +227,7 @@ describe("Uncover Component", () => {
         // Should wrap around to 0
         expect(localStorageMock.setItem).toHaveBeenCalledWith(
           "playerIndex_baseball",
-          0
+          "0"
         );
       });
     });
@@ -463,7 +493,7 @@ describe("Uncover Component", () => {
       });
 
       const bioTile = screen.getByText("Bio").closest(".tile");
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
 
       await waitFor(() => {
         expect(
@@ -480,7 +510,7 @@ describe("Uncover Component", () => {
       });
 
       const bioTile = screen.getByText("Bio").closest(".tile");
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
 
       await waitFor(() => {
         expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
@@ -496,7 +526,7 @@ describe("Uncover Component", () => {
       });
 
       const bioTile = screen.getByText("Bio").closest(".tile");
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
 
       await waitFor(() => {
         const scoreBox = document.querySelector(".score-box");
@@ -513,7 +543,7 @@ describe("Uncover Component", () => {
       });
 
       const photoTile = screen.getByText("Photo").closest(".tile");
-      fireEvent.click(photoTile);
+      fireEvent.click(photoTile!);
 
       await waitFor(() => {
         const scoreBox = document.querySelector(".score-box");
@@ -531,14 +561,14 @@ describe("Uncover Component", () => {
       const bioTile = screen.getByText("Bio").closest(".tile");
 
       // First click
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
       await waitFor(() => {
         const scoreBox = document.querySelector(".score-box");
         expect(scoreBox).toHaveTextContent("97");
       });
 
       // Second click on same tile
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
       await waitFor(() => {
         const scoreBox = document.querySelector(".score-box");
         expect(scoreBox).toHaveTextContent("97");
@@ -555,7 +585,7 @@ describe("Uncover Component", () => {
       });
 
       const photoTile = screen.getByText("Photo").closest(".tile");
-      fireEvent.click(photoTile);
+      fireEvent.click(photoTile!);
 
       await waitFor(() => {
         // Check that tiles have photo-reveal class
@@ -574,7 +604,7 @@ describe("Uncover Component", () => {
       const photoTile = screen.getByText("Photo").closest(".tile");
 
       // First click reveals photo puzzle
-      fireEvent.click(photoTile);
+      fireEvent.click(photoTile!);
 
       await waitFor(() => {
         const photoRevealTiles = document.querySelectorAll(".photo-reveal");
@@ -583,7 +613,7 @@ describe("Uncover Component", () => {
 
       // Second click anywhere returns to normal
       const anyTile = document.querySelector(".tile");
-      fireEvent.click(anyTile);
+      fireEvent.click(anyTile!);
 
       await waitFor(() => {
         const returningTiles = document.querySelectorAll(".returning-from-photo");
@@ -599,7 +629,7 @@ describe("Uncover Component", () => {
       });
 
       const photoTile = screen.getByText("Photo").closest(".tile");
-      fireEvent.click(photoTile);
+      fireEvent.click(photoTile!);
 
       await waitFor(() => {
         // Check that photo segments have background styles
@@ -608,7 +638,7 @@ describe("Uncover Component", () => {
 
         // Verify at least one has a background-image style
         const hasBackgroundImage = Array.from(photoSegments).some(
-          segment => segment.style.backgroundImage.includes("url")
+          segment => (segment as HTMLElement).style.backgroundImage.includes("url")
         );
         expect(hasBackgroundImage).toBe(true);
       });
@@ -773,11 +803,22 @@ describe("Uncover Component", () => {
 
   describe("Sport Switching", () => {
     test("switching sports loads new player data", async () => {
-      const mockFootballData = [
-        { Name: "Tom Brady", Bio: "QB GOAT", Photo: ["/tb.jpg"] },
+      const mockFootballData: PlayerData[] = [
+        {
+          Name: "Tom Brady",
+          Bio: "QB GOAT",
+          "Player Information": "",
+          "Draft Information": "",
+          "Years Active": "",
+          "Teams Played On": "",
+          "Jersey Numbers": "",
+          "Career Stats": "",
+          "Personal Achievements": "",
+          Photo: ["/tb.jpg"],
+        },
       ];
 
-      global.fetch
+      (global.fetch as jest.Mock)
         .mockResolvedValueOnce({ json: async () => mockBaseballData })
         .mockResolvedValueOnce({ json: async () => mockFootballData });
 
@@ -795,11 +836,22 @@ describe("Uncover Component", () => {
     });
 
     test("each sport maintains separate game state", async () => {
-      const mockBasketballData = [
-        { Name: "LeBron James", Bio: "King", Photo: ["/lbj.jpg"] },
+      const mockBasketballData: PlayerData[] = [
+        {
+          Name: "LeBron James",
+          Bio: "King",
+          "Player Information": "",
+          "Draft Information": "",
+          "Years Active": "",
+          "Teams Played On": "",
+          "Jersey Numbers": "",
+          "Career Stats": "",
+          "Personal Achievements": "",
+          Photo: ["/lbj.jpg"],
+        },
       ];
 
-      global.fetch
+      (global.fetch as jest.Mock)
         .mockResolvedValueOnce({ json: async () => mockBaseballData })
         .mockResolvedValueOnce({ json: async () => mockBasketballData });
 
@@ -814,7 +866,7 @@ describe("Uncover Component", () => {
 
       // Flip a tile in baseball
       const bioTile = screen.getByText("Bio").closest(".tile");
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
 
       await waitFor(() => {
         expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
@@ -966,7 +1018,7 @@ describe("Uncover Component", () => {
 
       // Flip a tile
       const bioTile = screen.getByText("Bio").closest(".tile");
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
 
       await waitFor(() => {
         expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
@@ -1102,7 +1154,7 @@ describe("Uncover Component", () => {
       fireEvent.click(shareButton);
 
       await waitFor(() => {
-        const copiedText = navigator.clipboard.writeText.mock.calls[0][0];
+        const copiedText = (navigator.clipboard.writeText as jest.Mock).mock.calls[0][0];
         expect(copiedText).toContain("Daily Uncover #");
         expect(copiedText).toContain("Score: 100");
         // Should contain emoji squares
@@ -1119,7 +1171,7 @@ describe("Uncover Component", () => {
 
       // Flip one tile
       const bioTile = screen.getByText("Bio").closest(".tile");
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
 
       await waitFor(() => {
         expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
@@ -1139,7 +1191,7 @@ describe("Uncover Component", () => {
       fireEvent.click(shareButton);
 
       await waitFor(() => {
-        const copiedText = navigator.clipboard.writeText.mock.calls[0][0];
+        const copiedText = (navigator.clipboard.writeText as jest.Mock).mock.calls[0][0];
         // Should have both yellow (flipped) and blue (unflipped)
         expect(copiedText).toContain("🟨");
         expect(copiedText).toContain("🟦");
@@ -1198,8 +1250,8 @@ describe("Uncover Component", () => {
       await waitFor(() => {
         const copiedMessage = document.querySelector(".copied-message");
         expect(copiedMessage).toBeInTheDocument();
-        expect(copiedMessage.textContent).toContain("Daily Uncover #");
-        expect(copiedMessage.textContent).toContain("Score:");
+        expect(copiedMessage!.textContent).toContain("Daily Uncover #");
+        expect(copiedMessage!.textContent).toContain("Score:");
       });
     });
 
@@ -1273,7 +1325,7 @@ describe("Uncover Component", () => {
 
       // Try to flip a tile
       const bioTile = screen.getByText("Bio").closest(".tile");
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
 
       await waitFor(() => {
         expect(
@@ -1312,7 +1364,7 @@ describe("Uncover Component", () => {
 
       // Flip a tile after winning
       const bioTile = screen.getByText("Bio").closest(".tile");
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
 
       await waitFor(() => {
         expect(
@@ -1353,7 +1405,7 @@ describe("Uncover Component", () => {
 
       // Flip a tile after winning
       const bioTile = screen.getByText("Bio").closest(".tile");
-      fireEvent.click(bioTile);
+      fireEvent.click(bioTile!);
 
       await waitFor(() => {
         expect(
@@ -1501,7 +1553,7 @@ describe("Uncover Component", () => {
 
       // Click photo tile
       const photoTile = screen.getByText("Photo").closest(".tile");
-      fireEvent.click(photoTile);
+      fireEvent.click(photoTile!);
 
       await waitFor(() => {
         const photoRevealTiles = document.querySelectorAll(".photo-reveal");
@@ -1590,8 +1642,8 @@ describe("Uncover Component", () => {
       console.error = jest.fn();
 
       // Override the default mock to simulate a network error
-      global.fetch.mockClear();
-      global.fetch.mockRejectedValue(new Error("Network error"));
+      (global.fetch as jest.Mock).mockClear();
+      (global.fetch as jest.Mock).mockRejectedValue(new Error("Network error"));
 
       render(<Uncover />);
 
@@ -1618,7 +1670,7 @@ describe("Uncover Component", () => {
       await waitFor(() => {
         expect(localStorageMock.setItem).toHaveBeenCalledWith(
           "playerIndex_baseball",
-          1
+          "1"
         );
       });
     });
@@ -1635,7 +1687,7 @@ describe("Uncover Component", () => {
         // Should cycle back to 0
         expect(localStorageMock.setItem).toHaveBeenCalledWith(
           "playerIndex_baseball",
-          0
+          "0"
         );
       });
     });

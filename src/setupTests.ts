@@ -7,7 +7,7 @@ import "@testing-library/jest-dom";
 // Suppress act() warnings - we're properly handling async with waitFor
 const originalError = console.error;
 beforeAll(() => {
-  console.error = (...args) => {
+  console.error = (...args: any[]) => {
     if (
       typeof args[0] === "string" &&
       args[0].includes("An update to") &&
