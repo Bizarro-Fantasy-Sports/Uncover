@@ -5,7 +5,6 @@ import Uncover from "./Uncover";
 
 // Mock CSS imports
 jest.mock("./Uncover.css", () => ({}));
-jest.mock("./UserStatsModal.css", () => ({}));
 jest.mock("./TodayStatsModal.css", () => ({}));
 
 // Mock fetch
@@ -1818,60 +1817,6 @@ describe("Uncover Component", () => {
         expect(resultsModal).toHaveTextContent("100"); // totalPlays
         expect(resultsModal).toHaveTextContent("55"); // averageScore
         expect(resultsModal).toHaveTextContent("81%"); // percentageCorrect
-      });
-    });
-  });
-
-  describe("Stats Button and Modal", () => {
-    test("renders Stats button in the sports section", async () => {
-      render(<Uncover />);
-
-      await waitFor(() => {
-        expect(screen.getByRole("button", { name: /^stats$/i })).toBeInTheDocument();
-      });
-    });
-
-    test("Stats button is positioned in the sports section", async () => {
-      render(<Uncover />);
-
-      await waitFor(() => {
-        const statsButton = screen.getByRole("button", { name: /^stats$/i });
-        const sportsSection = statsButton.closest(".sports-section");
-        expect(sportsSection).toBeInTheDocument();
-      });
-    });
-
-    test("clicking Stats button opens the stats modal", async () => {
-      render(<Uncover />);
-
-      await waitFor(() => {
-        expect(screen.getByRole("button", { name: /^stats$/i })).toBeInTheDocument();
-      });
-
-      const statsButton = screen.getByRole("button", { name: /^stats$/i });
-      fireEvent.click(statsButton);
-
-      await waitFor(() => {
-        expect(screen.getByText("User Statistics")).toBeInTheDocument();
-      });
-    });
-
-    test("stats modal displays when opened", async () => {
-      render(<Uncover />);
-
-      await waitFor(() => {
-        expect(screen.getByRole("button", { name: /^stats$/i })).toBeInTheDocument();
-      });
-
-      const statsButton = screen.getByRole("button", { name: /^stats$/i });
-      fireEvent.click(statsButton);
-
-      await waitFor(() => {
-        expect(screen.getByText("User Statistics")).toBeInTheDocument();
-        expect(screen.getByText(/FirstTestProdUser123/)).toBeInTheDocument();
-        expect(screen.getByText("Basketball")).toBeInTheDocument();
-        expect(screen.getByText("Baseball")).toBeInTheDocument();
-        expect(screen.getByText("Football")).toBeInTheDocument();
       });
     });
   });

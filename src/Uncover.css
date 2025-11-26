@@ -3,34 +3,6 @@
   font-family: Arial, sans-serif;
 }
 
-.sports-section {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.stats-button {
-  position: absolute;
-  top: 50px;
-  right: 2rem;
-  background-color: #00b4d8;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    transform 0.2s ease;
-  font-family: "Poppins", sans-serif;
-}
-
-.stats-button:hover {
-  background-color: #0096c7;
-  transform: scale(1.05);
-}
-
 .puzzle-info {
   display: flex;
   justify-content: center;
@@ -602,17 +574,6 @@
 
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
-  .stats-button {
-    position: static;
-    display: block;
-    margin: 10px auto 0 auto;
-    width: auto;
-  }
-
-  .sports-section {
-    margin-bottom: 10px;
-  }
-
   .puzzle-info {
     flex-wrap: wrap;
     font-size: 0.9rem;

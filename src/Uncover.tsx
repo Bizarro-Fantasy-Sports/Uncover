@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./Uncover.css";
-import UserStatsModal from "./UserStatsModal";
 import TodayStatsModal from "./TodayStatsModal";
 
 const topics = [
@@ -249,7 +248,6 @@ const initialState: GameState = {
 
 const Uncover: React.FC = () => {
   const [activeSport, setActiveSport] = useState<SportType>("baseball");
-  const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [isTodayStatsModalOpen, setIsTodayStatsModalOpen] = useState(false);
 
   const [gameState, setGameState] = useState<Record<SportType, GameState>>({
@@ -551,24 +549,16 @@ const Uncover: React.FC = () => {
 
   return (
     <div className="uncover-game">
-      <div className="sports-section">
-        <div className="sports-navbar">
-          {(["baseball", "basketball", "football"] as SportType[]).map((sport) => (
-            <div
-              key={sport}
-              className={`nav-tab ${activeSport === sport ? "active" : ""}`}
-              onClick={() => setActiveSport(sport)}
-            >
-              {sport.toUpperCase()}
-            </div>
-          ))}
-        </div>
-        <button
-          className="stats-button"
-          onClick={() => setIsStatsModalOpen(true)}
-        >
-          Stats
-        </button>
+      <div className="sports-navbar">
+        {(["baseball", "basketball", "football"] as SportType[]).map((sport) => (
+          <div
+            key={sport}
+            className={`nav-tab ${activeSport === sport ? "active" : ""}`}
+            onClick={() => setActiveSport(sport)}
+          >
+            {sport.toUpperCase()}
+          </div>
+        ))}
       </div>
 
       {s.message && (
@@ -729,11 +719,6 @@ const Uncover: React.FC = () => {
           </div>
         </div>
       )}
-
-      <UserStatsModal
-        isOpen={isStatsModalOpen}
-        onClose={() => setIsStatsModalOpen(false)}
-      />
 
       <TodayStatsModal
         isOpen={isTodayStatsModalOpen}
