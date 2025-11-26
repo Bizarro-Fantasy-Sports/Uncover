@@ -1706,35 +1706,49 @@ describe("Uncover Component", () => {
   });
 
   describe("User Stats Button and Modal", () => {
-    test("renders User Stats button when user is logged in", async () => {
+    test("renders Stats button", async () => {
       render(<Uncover />);
 
-      // Wait for User Stats button to appear
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      expect(userStatsButton).toBeInTheDocument();
-      expect(userStatsButton).toHaveClass("user-stats-button");
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      expect(statsButton).toBeInTheDocument();
+      expect(statsButton).toHaveClass("stats-button");
     });
 
-    test("User Stats button is in the top bar", async () => {
+    test("Stats button is in the sports section", async () => {
       render(<Uncover />);
 
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      const topBar = userStatsButton.closest(".top-bar");
-      expect(topBar).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      const sportsSection = statsButton.closest(".sports-section");
+      expect(sportsSection).toBeInTheDocument();
     });
 
     test("does not show User Stats modal by default", async () => {
       render(<Uncover />);
 
-      await waitFor(() => screen.getByText("User Stats"));
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
       expect(screen.queryByText("User Statistics")).not.toBeInTheDocument();
     });
 
     test("opens User Stats modal when button is clicked", async () => {
       render(<Uncover />);
 
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      fireEvent.click(userStatsButton);
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
 
       await waitFor(() => {
         expect(screen.getByText("User Statistics")).toBeInTheDocument();
@@ -1744,8 +1758,12 @@ describe("Uncover Component", () => {
     test("User Stats modal displays in overlay", async () => {
       render(<Uncover />);
 
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      fireEvent.click(userStatsButton);
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
 
       await waitFor(() => {
         const modal = screen.getByText("User Statistics").closest(".user-stats-modal");
@@ -1756,8 +1774,12 @@ describe("Uncover Component", () => {
     test("closes User Stats modal when close button is clicked", async () => {
       render(<Uncover />);
 
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      fireEvent.click(userStatsButton);
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
 
       await waitFor(() => {
         expect(screen.getByText("User Statistics")).toBeInTheDocument();
@@ -1778,8 +1800,12 @@ describe("Uncover Component", () => {
     test("closes User Stats modal when clicking outside modal content", async () => {
       render(<Uncover />);
 
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      fireEvent.click(userStatsButton);
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
 
       await waitFor(() => {
         expect(screen.getByText("User Statistics")).toBeInTheDocument();
@@ -1800,8 +1826,12 @@ describe("Uncover Component", () => {
     test("User Stats modal contains UserStats component", async () => {
       render(<Uncover />);
 
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      fireEvent.click(userStatsButton);
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
 
       await waitFor(() => {
         expect(screen.getByText("User Statistics")).toBeInTheDocument();
@@ -1813,9 +1843,13 @@ describe("Uncover Component", () => {
     test("game remains functional after User Stats modal", async () => {
       render(<Uncover />);
 
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
       // Open User Stats modal
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      fireEvent.click(userStatsButton);
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
 
       await waitFor(() => {
         expect(screen.getByText("User Statistics")).toBeInTheDocument();
@@ -1831,22 +1865,30 @@ describe("Uncover Component", () => {
         expect(screen.queryByText("User Statistics")).not.toBeInTheDocument();
       });
 
-      // User Stats button should still be there
-      expect(screen.getByText("User Stats")).toBeInTheDocument();
+      // Stats button should still be there
+      expect(screen.getByText("Stats")).toBeInTheDocument();
     });
 
-    test("User Stats button has proper styling classes", async () => {
+    test("Stats button has proper styling classes", async () => {
       render(<Uncover />);
 
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      expect(userStatsButton).toHaveClass("user-stats-button");
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      expect(statsButton).toHaveClass("stats-button");
     });
 
     test("modal content does not close when clicking inside it", async () => {
       render(<Uncover />);
 
-      const userStatsButton = await waitFor(() => screen.getByText("User Stats"));
-      fireEvent.click(userStatsButton);
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
 
       await waitFor(() => {
         expect(screen.getByText("User Statistics")).toBeInTheDocument();

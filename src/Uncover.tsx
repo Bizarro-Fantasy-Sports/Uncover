@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Uncover.css";
-import UserStatsModal from "./UserStatsModal";
+import UserStats from "./UserStats";
 
 const topics = [
   "Bio",
@@ -550,10 +550,16 @@ const Uncover: React.FC = () => {
         </div>
       )}
 
-      <UserStatsModal
-        isOpen={isStatsModalOpen}
-        onClose={() => setIsStatsModalOpen(false)}
-      />
+      {isStatsModalOpen && (
+        <div className="user-stats-modal" onClick={() => setIsStatsModalOpen(false)}>
+          <div className="user-stats-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-user-stats" onClick={() => setIsStatsModalOpen(false)}>
+              ×
+            </button>
+            <UserStats />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
