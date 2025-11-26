@@ -1735,38 +1735,28 @@ describe("Uncover Component", () => {
       });
 
       await waitFor(() => {
-        // Should show "Complete today's game" message since game not won yet
-        expect(
-          screen.getByText("Complete today's game to see your results here.")
-        ).toBeInTheDocument();
+        // Should show mock round stats
+        expect(screen.getByText("Today's Baseball Stats")).toBeInTheDocument();
+        expect(screen.getByText("David Eckstein")).toBeInTheDocument();
       });
     });
 
-    test("shows round stats after winning", async () => {
+    test("shows round stats with correct sport data", async () => {
       render(<Uncover />);
 
       await waitFor(() => {
-        expect(
-          screen.getByPlaceholderText(/enter player name/i)
-        ).toBeInTheDocument();
+        const todayStatsButton = screen.getByText("Today's Stats");
+        fireEvent.click(todayStatsButton);
       });
 
-      // Win the game first
-      const input = screen.getByPlaceholderText(/enter player name/i);
-      const submitButton = screen.getByRole("button", { name: /submit/i });
-      fireEvent.change(input, { target: { value: "Babe Ruth" } });
-      fireEvent.click(submitButton);
-
       await waitFor(() => {
-        expect(screen.getByText(/you guessed it right/i)).toBeInTheDocument();
-      });
-
-      // Now click Today's Stats
-      const todayStatsButton = screen.getByText("Today's Stats");
-      fireEvent.click(todayStatsButton);
-
-      await waitFor(() => {
+        // Should show baseball stats by default
         expect(screen.getByText("Today's Baseball Stats")).toBeInTheDocument();
+
+        const modal = screen.getByText("Today's Baseball Stats").closest(".today-stats-modal-content");
+        expect(modal).toHaveTextContent("100"); // totalPlays
+        expect(modal).toHaveTextContent("55"); // averageScore
+        expect(modal).toHaveTextContent("81%"); // percentageCorrect
       });
     });
   });

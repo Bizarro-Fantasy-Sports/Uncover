@@ -723,7 +723,7 @@ const Uncover: React.FC = () => {
       <TodayStatsModal
         isOpen={isTodayStatsModalOpen}
         onClose={() => setIsTodayStatsModalOpen(false)}
-        roundStats={s.finalRank ? mockRoundStats[activeSport] : null}
+        roundStats={mockRoundStats[activeSport]}
       />
     </div>
   );
