@@ -1810,4 +1810,318 @@ describe("Uncover Component", () => {
       });
     });
   });
+
+  describe("Mystery Player Hiding", () => {
+    test("hides mystery player name before puzzle is solved", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("Today's Stats")).toBeInTheDocument();
+      });
+
+      // Open Today's Stats modal
+      const todayStatsButton = screen.getByText("Today's Stats");
+      fireEvent.click(todayStatsButton);
+
+      await waitFor(() => {
+        // Should show "???" instead of player name
+        expect(screen.getByText("???")).toBeInTheDocument();
+        expect(screen.getByText(/solve the puzzle to reveal/i)).toBeInTheDocument();
+        // Should NOT show the actual player name
+        expect(screen.queryByText("Babe Ruth")).not.toBeInTheDocument();
+      });
+    });
+
+    test("reveals mystery player name after puzzle is solved", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByPlaceholderText(/enter player name/i)
+        ).toBeInTheDocument();
+      });
+
+      // Solve the puzzle
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      const submitButton = screen.getByRole("button", { name: /submit/i });
+      fireEvent.change(input, { target: { value: "Babe Ruth" } });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+      });
+
+      // Close results modal
+      const closeButton = screen.getByRole("button", { name: /✕/i });
+      fireEvent.click(closeButton);
+
+      // Open Today's Stats modal
+      const todayStatsButton = screen.getByText("Today's Stats");
+      fireEvent.click(todayStatsButton);
+
+      await waitFor(() => {
+        // Should show actual player name now
+        expect(screen.getByText("Babe Ruth")).toBeInTheDocument();
+        // Should NOT show the mystery placeholder
+        expect(screen.queryByText("???")).not.toBeInTheDocument();
+        expect(screen.queryByText(/solve the puzzle to reveal/i)).not.toBeInTheDocument();
+      });
+    });
+
+    test("hides mystery player when switching to unsolved sport", async () => {
+      const mockBasketballData: PlayerData[] = [
+        {
+          Name: "Michael Jordan",
+          Bio: "GOAT",
+          "Player Information": "Guard",
+          "Draft Information": "1984 Draft",
+          "Years Active": "1984-2003",
+          "Teams Played On": "Bulls, Wizards",
+          "Jersey Numbers": "23",
+          "Career Stats": "30.1 PPG",
+          "Personal Achievements": "6 Championships",
+          Photo: ["/mj.jpg"],
+        },
+      ];
+
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({ json: async () => mockBaseballData })
+        .mockResolvedValueOnce({ json: async () => mockBasketballData });
+
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByPlaceholderText(/enter player name/i)
+        ).toBeInTheDocument();
+      });
+
+      // Solve baseball puzzle
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      const submitButton = screen.getByRole("button", { name: /submit/i });
+      fireEvent.change(input, { target: { value: "Babe Ruth" } });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+      });
+
+      // Close results modal
+      const closeButton = screen.getByRole("button", { name: /✕/i });
+      fireEvent.click(closeButton);
+
+      // Switch to basketball (unsolved)
+      fireEvent.click(screen.getByText("BASKETBALL"));
+
+      await waitFor(() => {
+        expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
+      });
+
+      // Open Today's Stats modal for basketball
+      const todayStatsButton = screen.getByText("Today's Stats");
+      fireEvent.click(todayStatsButton);
+
+      await waitFor(() => {
+        // Should show "???" for basketball (unsolved)
+        expect(screen.getByText("???")).toBeInTheDocument();
+        expect(screen.getByText(/solve the puzzle to reveal/i)).toBeInTheDocument();
+        // Should NOT show Michael Jordan's name
+        expect(screen.queryByText("Michael Jordan")).not.toBeInTheDocument();
+      });
+    });
+
+    test("maintains revealed player name when switching back to solved sport", async () => {
+      const mockBasketballData: PlayerData[] = [
+        {
+          Name: "LeBron James",
+          Bio: "King",
+          "Player Information": "Forward",
+          "Draft Information": "2003 Draft",
+          "Years Active": "2003-Present",
+          "Teams Played On": "Cavaliers, Heat, Lakers",
+          "Jersey Numbers": "23, 6",
+          "Career Stats": "27.2 PPG",
+          "Personal Achievements": "4 Championships",
+          Photo: ["/lbj.jpg"],
+        },
+      ];
+
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({ json: async () => mockBaseballData })
+        .mockResolvedValueOnce({ json: async () => mockBasketballData });
+
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByPlaceholderText(/enter player name/i)
+        ).toBeInTheDocument();
+      });
+
+      // Solve baseball puzzle
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      const submitButton = screen.getByRole("button", { name: /submit/i });
+      fireEvent.change(input, { target: { value: "Babe Ruth" } });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+      });
+
+      // Close results modal
+      let closeButton = screen.getByRole("button", { name: /✕/i });
+      fireEvent.click(closeButton);
+
+      // Switch to basketball
+      fireEvent.click(screen.getByText("BASKETBALL"));
+
+      await waitFor(() => {
+        expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
+      });
+
+      // Switch back to baseball
+      fireEvent.click(screen.getByText("BASEBALL"));
+
+      await waitFor(() => {
+        expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
+      });
+
+      // Open Today's Stats modal for baseball (solved)
+      const todayStatsButton = screen.getByText("Today's Stats");
+      fireEvent.click(todayStatsButton);
+
+      await waitFor(() => {
+        // Should still show Babe Ruth's name (solved puzzle)
+        expect(screen.getByText("Babe Ruth")).toBeInTheDocument();
+        // Should NOT show mystery placeholder
+        expect(screen.queryByText("???")).not.toBeInTheDocument();
+        expect(screen.queryByText(/solve the puzzle to reveal/i)).not.toBeInTheDocument();
+      });
+    });
+
+    test("each sport independently tracks mystery player reveal status", async () => {
+      const mockBasketballData: PlayerData[] = [
+        {
+          Name: "Kobe Bryant",
+          Bio: "Mamba",
+          "Player Information": "Guard",
+          "Draft Information": "1996 Draft",
+          "Years Active": "1996-2016",
+          "Teams Played On": "Lakers",
+          "Jersey Numbers": "8, 24",
+          "Career Stats": "25 PPG",
+          "Personal Achievements": "5 Championships",
+          Photo: ["/kobe.jpg"],
+        },
+      ];
+
+      const mockFootballData: PlayerData[] = [
+        {
+          Name: "Tom Brady",
+          Bio: "QB GOAT",
+          "Player Information": "Quarterback",
+          "Draft Information": "2000 Draft",
+          "Years Active": "2000-2022",
+          "Teams Played On": "Patriots, Buccaneers",
+          "Jersey Numbers": "12",
+          "Career Stats": "89,214 yards",
+          "Personal Achievements": "7 Super Bowls",
+          Photo: ["/tb.jpg"],
+        },
+      ];
+
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({ json: async () => mockBaseballData })
+        .mockResolvedValueOnce({ json: async () => mockBasketballData })
+        .mockResolvedValueOnce({ json: async () => mockFootballData });
+
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByPlaceholderText(/enter player name/i)
+        ).toBeInTheDocument();
+      });
+
+      // Solve baseball puzzle
+      let input = screen.getByPlaceholderText(/enter player name/i);
+      let submitButton = screen.getByRole("button", { name: /submit/i });
+      fireEvent.change(input, { target: { value: "Babe Ruth" } });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+      });
+
+      // Close results modal
+      let closeButton = screen.getByRole("button", { name: /✕/i });
+      fireEvent.click(closeButton);
+
+      // Switch to basketball and solve
+      fireEvent.click(screen.getByText("BASKETBALL"));
+
+      await waitFor(() => {
+        expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
+      });
+
+      // Wait for basketball data to load
+      await waitFor(() => {
+        const bioTile = screen.getByText("Bio").closest(".tile");
+        expect(bioTile).toBeInTheDocument();
+      });
+
+      // Query for fresh elements after sport switch
+      input = screen.getByPlaceholderText(/enter player name/i);
+      submitButton = screen.getByRole("button", { name: /submit/i });
+
+      fireEvent.change(input, { target: { value: "Kobe Bryant" } });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+      });
+
+      // Close results modal
+      closeButton = screen.getByRole("button", { name: /✕/i });
+      fireEvent.click(closeButton);
+
+      // Switch to football (unsolved)
+      fireEvent.click(screen.getByText("FOOTBALL"));
+
+      await waitFor(() => {
+        expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
+      });
+
+      // Open Today's Stats for football
+      let todayStatsButton = screen.getByText("Today's Stats");
+      fireEvent.click(todayStatsButton);
+
+      await waitFor(() => {
+        // Football should show ???
+        expect(screen.getByText("???")).toBeInTheDocument();
+        expect(screen.queryByText("Tom Brady")).not.toBeInTheDocument();
+      });
+
+      // Close modal
+      closeButton = screen.getByRole("button", { name: /×/i });
+      fireEvent.click(closeButton);
+
+      // Switch back to baseball
+      fireEvent.click(screen.getByText("BASEBALL"));
+
+      await waitFor(() => {
+        expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
+      });
+
+      // Open Today's Stats for baseball
+      todayStatsButton = screen.getByText("Today's Stats");
+      fireEvent.click(todayStatsButton);
+
+      await waitFor(() => {
+        // Baseball should still show Babe Ruth
+        expect(screen.getByText("Babe Ruth")).toBeInTheDocument();
+        expect(screen.queryByText("???")).not.toBeInTheDocument();
+      });
+    });
+  });
 });

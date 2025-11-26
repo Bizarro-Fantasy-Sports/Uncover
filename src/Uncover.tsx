@@ -723,7 +723,7 @@ const Uncover: React.FC = () => {
         onClose={() => setIsTodayStatsModalOpen(false)}
         roundStats={{
           ...mockRoundStatsTemplate[activeSport],
-          name: s.playerData?.Name || "Unknown Player",
+          name: s.finalRank ? (s.playerData?.Name || "Unknown Player") : "???",
         }}
       />
     </div>

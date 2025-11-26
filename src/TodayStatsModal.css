@@ -130,6 +130,21 @@
   margin: 0;
 }
 
+.mystery-placeholder {
+  font-size: 2rem;
+  letter-spacing: 0.5rem;
+  color: #00b4d8;
+}
+
+.mystery-hint {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #b0b0b0;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
 @media (max-width: 768px) {
   .today-stats-modal-content {
     max-height: 90vh;

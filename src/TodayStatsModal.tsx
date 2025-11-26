@@ -81,7 +81,12 @@ const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="today-stats-modal-header">
-          <h2>Today's {roundStats.sport.charAt(0).toUpperCase() + roundStats.sport.slice(1)} Stats</h2>
+          <h2>
+            Today's{" "}
+            {roundStats.sport.charAt(0).toUpperCase() +
+              roundStats.sport.slice(1)}{" "}
+            Stats
+          </h2>
           <button className="close-button" onClick={onClose}>
             ×
           </button>
@@ -94,7 +99,7 @@ const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
               <div className="stat-value">{roundStats.totalPlays}</div>
             </div>
             <div className="stat-item">
-              <div className="stat-label">Average Score</div>
+              <div className="stat-label">Avg Score</div>
               <div className="stat-value">{roundStats.averageScore}</div>
             </div>
             <div className="stat-item">
@@ -135,7 +140,19 @@ const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
 
           <div className="mystery-player">
             <h3>Today's Mystery Player</h3>
-            <p className="player-name">{roundStats.name}</p>
+            <p className="player-name">
+              {roundStats.name === "???" ? (
+                <>
+                  <span className="mystery-placeholder">{roundStats.name}</span>
+                  <span className="mystery-hint">
+                    {" "}
+                    (Solve the puzzle to reveal)
+                  </span>
+                </>
+              ) : (
+                roundStats.name
+              )}
+            </p>
           </div>
         </div>
       </div>
