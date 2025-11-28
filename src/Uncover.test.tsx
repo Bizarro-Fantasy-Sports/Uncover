@@ -2064,10 +2064,13 @@ describe("Uncover Component", () => {
         expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
       });
 
-      // Wait for basketball data to load
+      // Wait for basketball data to actually load by checking for basketball-specific content
       await waitFor(() => {
-        const bioTile = screen.getByText("Bio").closest(".tile");
-        expect(bioTile).toBeInTheDocument();
+        // Wait for the basketball player's bio to appear in the tile
+        const tiles = screen.getAllByText("Bio");
+        const bioTile = tiles[0].closest(".tile");
+        const tileBack = bioTile?.querySelector(".tile-back");
+        expect(tileBack).toHaveTextContent("Mamba");
       });
 
       // Query for fresh elements after sport switch
