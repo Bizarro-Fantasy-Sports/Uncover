@@ -1,0 +1,279 @@
+.user-stats-container {
+  flex: 1;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  color: #fff;
+}
+
+.stats-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.user-info {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.user-info p {
+  margin: 0.25rem 0;
+}
+
+/* Sport Selector */
+.sport-selector {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.sport-button {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sport-button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.sport-button.active {
+  background: rgba(255, 214, 10, 0.2);
+  border-color: #ffd60a;
+  box-shadow: 0 4px 12px rgba(255, 214, 10, 0.4);
+}
+
+/* Stats Sections */
+.stats-section {
+  margin: 2.5rem 0;
+}
+
+.stats-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+  padding-bottom: 0.5rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.stat-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 180, 216, 0.3);
+}
+
+.stat-card.highlight {
+  background: rgba(255, 214, 10, 0.15);
+  border-color: #ffd60a;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffd60a;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Tile Patterns */
+.tile-patterns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.pattern-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.pattern-card:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.pattern-card h3 {
+  font-size: 1.3rem;
+  color: #ffd60a;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.pattern-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pattern-item:last-child {
+  border-bottom: none;
+}
+
+.pattern-label {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pattern-value {
+  font-weight: bold;
+  color: #ffd60a;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Tile Stats Table */
+.tile-stats-table {
+  overflow-x: auto;
+  margin-top: 1.5rem;
+}
+
+.tile-stats-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tile-stats-table thead {
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
+}
+
+.tile-stats-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.tile-stats-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tile-stats-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.tile-stats-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tile-stats-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tile-name {
+  font-weight: 600;
+  color: #ffd60a;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-stats-container {
+    padding: 0 1rem;
+  }
+
+  .stats-title {
+    font-size: 2rem;
+  }
+
+  .stats-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .sport-button {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .tile-stats-table {
+    font-size: 0.85rem;
+  }
+
+  .tile-stats-table th,
+  .tile-stats-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tile-patterns {
+    grid-template-columns: 1fr;
+  }
+
+  .sport-selector {
+    flex-direction: column;
+  }
+
+  .sport-button {
+    width: 100%;
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Uncover.css";
+import UserStats from "./UserStats";
 
 const topics = [
   "Bio",
@@ -102,6 +103,7 @@ const initialState: GameState = {
 
 const Uncover: React.FC = () => {
   const [activeSport, setActiveSport] = useState<SportType>("baseball");
+  const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
 
   const [gameState, setGameState] = useState<Record<SportType, GameState>>({
     baseball: { ...initialState },
@@ -292,7 +294,7 @@ const Uncover: React.FC = () => {
 
       // Only update score/counters if game is not won
       if (!s.finalRank) {
-        let newScore = s.score - 6;
+        const newScore = s.score - 6;
 
         let newHint = s.hint;
         if (newScore < 70 && !s.hint) {
@@ -326,7 +328,7 @@ const Uncover: React.FC = () => {
 
     // Only update score/counters if game is not won
     if (!s.finalRank) {
-      let newScore = s.score - 3;
+      const newScore = s.score - 3;
 
       let newHint = s.hint;
       if (newScore < 70 && !s.hint) {
@@ -402,16 +404,24 @@ const Uncover: React.FC = () => {
 
   return (
     <div className="uncover-game">
-      <div className="sports-navbar">
-        {(["baseball", "basketball", "football"] as SportType[]).map((sport) => (
-          <div
-            key={sport}
-            className={`nav-tab ${activeSport === sport ? "active" : ""}`}
-            onClick={() => setActiveSport(sport)}
-          >
-            {sport.toUpperCase()}
-          </div>
-        ))}
+      <div className="sports-section">
+        <div className="sports-navbar">
+          {(["baseball", "basketball", "football"] as SportType[]).map((sport) => (
+            <div
+              key={sport}
+              className={`nav-tab ${activeSport === sport ? "active" : ""}`}
+              onClick={() => setActiveSport(sport)}
+            >
+              {sport.toUpperCase()}
+            </div>
+          ))}
+        </div>
+        <button
+          className="stats-button"
+          onClick={() => setIsStatsModalOpen(true)}
+        >
+          Stats
+        </button>
       </div>
 
       {s.message && (
@@ -536,6 +546,17 @@ const Uncover: React.FC = () => {
                 <p>has been copied</p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {isStatsModalOpen && (
+        <div className="user-stats-modal" onClick={() => setIsStatsModalOpen(false)}>
+          <div className="user-stats-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-user-stats" onClick={() => setIsStatsModalOpen(false)}>
+              ×
+            </button>
+            <UserStats />
           </div>
         </div>
       )}

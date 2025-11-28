@@ -3,8 +3,20 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Uncover from "./Uncover";
 
-// Mock CSS import
+// Mock CSS imports
 jest.mock("./Uncover.css", () => ({}));
+jest.mock("./UserStats.css", () => ({}));
+jest.mock("./UserStats", () => {
+  return function MockUserStats() {
+    return (
+      <div>
+        <h1>User Statistics</h1>
+        <p>User ID: FirstTestProdUser123</p>
+        <p>Member Since: November 18, 2025</p>
+      </div>
+    );
+  };
+});
 
 // Mock fetch
 global.fetch = jest.fn() as jest.Mock;
@@ -1690,6 +1702,207 @@ describe("Uncover Component", () => {
           "0"
         );
       });
+    });
+  });
+
+  describe("User Stats Button and Modal", () => {
+    test("renders Stats button", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      expect(statsButton).toBeInTheDocument();
+      expect(statsButton).toHaveClass("stats-button");
+    });
+
+    test("Stats button is in the sports section", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      const sportsSection = statsButton.closest(".sports-section");
+      expect(sportsSection).toBeInTheDocument();
+    });
+
+    test("does not show User Stats modal by default", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      expect(screen.queryByText("User Statistics")).not.toBeInTheDocument();
+    });
+
+    test("opens User Stats modal when button is clicked", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("User Statistics")).toBeInTheDocument();
+      });
+    });
+
+    test("User Stats modal displays in overlay", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
+
+      await waitFor(() => {
+        const modal = screen.getByText("User Statistics").closest(".user-stats-modal");
+        expect(modal).toBeInTheDocument();
+      });
+    });
+
+    test("closes User Stats modal when close button is clicked", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("User Statistics")).toBeInTheDocument();
+      });
+
+      const closeButton = document.querySelector(".close-user-stats");
+      expect(closeButton).toBeInTheDocument();
+
+      if (closeButton) {
+        fireEvent.click(closeButton);
+      }
+
+      await waitFor(() => {
+        expect(screen.queryByText("User Statistics")).not.toBeInTheDocument();
+      });
+    });
+
+    test("closes User Stats modal when clicking outside modal content", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("User Statistics")).toBeInTheDocument();
+      });
+
+      const modalOverlay = document.querySelector(".user-stats-modal");
+      expect(modalOverlay).toBeInTheDocument();
+
+      if (modalOverlay) {
+        fireEvent.click(modalOverlay);
+      }
+
+      await waitFor(() => {
+        expect(screen.queryByText("User Statistics")).not.toBeInTheDocument();
+      });
+    });
+
+    test("User Stats modal contains UserStats component", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("User Statistics")).toBeInTheDocument();
+        expect(screen.getByText(/User ID:/)).toBeInTheDocument();
+        expect(screen.getByText(/Member Since:/)).toBeInTheDocument();
+      });
+    });
+
+    test("game remains functional after User Stats modal", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      // Open User Stats modal
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("User Statistics")).toBeInTheDocument();
+      });
+
+      // Close modal
+      const closeButton = document.querySelector(".close-user-stats");
+      if (closeButton) {
+        fireEvent.click(closeButton);
+      }
+
+      await waitFor(() => {
+        expect(screen.queryByText("User Statistics")).not.toBeInTheDocument();
+      });
+
+      // Stats button should still be there
+      expect(screen.getByText("Stats")).toBeInTheDocument();
+    });
+
+    test("Stats button has proper styling classes", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      expect(statsButton).toHaveClass("stats-button");
+    });
+
+    test("modal content does not close when clicking inside it", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText("BASEBALL")).toBeInTheDocument();
+      });
+
+      const statsButton = screen.getByText("Stats");
+      fireEvent.click(statsButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("User Statistics")).toBeInTheDocument();
+      });
+
+      const modalContent = document.querySelector(".user-stats-modal-content");
+      expect(modalContent).toBeInTheDocument();
+
+      if (modalContent) {
+        fireEvent.click(modalContent);
+      }
+
+      // Modal should still be open
+      expect(screen.getByText("User Statistics")).toBeInTheDocument();
     });
   });
 });
