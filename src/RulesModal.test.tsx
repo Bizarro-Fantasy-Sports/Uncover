@@ -309,7 +309,8 @@ describe("RulesModal", () => {
 
       expect(screen.getByText("Pass YDS")).toBeInTheDocument();
       expect(screen.getByText("Pass TDS")).toBeInTheDocument();
-      expect(screen.getByText("INT")).toBeInTheDocument();
+      // INT appears in both Quarterback and Defensive Back sections
+      expect(screen.getAllByText("INT").length).toBeGreaterThanOrEqual(1);
     });
 
     test("displays running back stats", () => {

@@ -21,6 +21,9 @@ const tileTooltips: Record<string, string> = {
     "Gives the jersey numbers the athlete has worn, in chronological order. Duplicate numbers even if worn on different teams will be removed",
   "Career Stats":
     "High-level career-long stats for the athlete. Varies by sport",
+  "Personal Achievements":
+    "Lists the following awards (see below) per sport",
+  Photo: "Reveals headshot of player",
 };
 
 // Acronym definitions
@@ -194,8 +197,9 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
               {renderTileWithTooltip("Years Active")} •{" "}
               {renderTileWithTooltip("Teams Played On")} •{" "}
               {renderTileWithTooltip("Jersey Numbers")} •{" "}
-              {renderTileWithTooltip("Career Stats")} • Personal Achievements •
-              Photo
+              {renderTileWithTooltip("Career Stats")} •{" "}
+              {renderTileWithTooltip("Personal Achievements")} •{" "}
+              {renderTileWithTooltip("Photo")}
             </div>
           </div>
 
@@ -278,7 +282,7 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
                 <ul>
                   <li>{renderAcronym("GS", undefined, "football-db-gs")}</li>
                   <li>{renderAcronym("Solo Tackles", undefined, "football-db-tackles")}</li>
-                  <li>Interceptions</li>
+                  <li>{renderAcronym("INT", undefined, "football-db-int")}</li>
                   <li>{renderAcronym("AV", undefined, "football-db-av")}</li>
                 </ul>
               </div>
