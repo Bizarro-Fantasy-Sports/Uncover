@@ -1699,8 +1699,8 @@ describe("Uncover Component", () => {
       render(<Uncover />);
 
       await waitFor(() => {
-        expect(screen.getByText("baseball111")).toBeInTheDocument(); // roundId
-        expect(screen.getByText("2025-11-19")).toBeInTheDocument(); // playDate
+        expect(screen.getByText("Puzzle #111")).toBeInTheDocument(); // puzzle number
+        expect(screen.getByText("111925")).toBeInTheDocument(); // playDate in MMDDYY format
         expect(screen.getByText("Today's Stats")).toBeInTheDocument();
         expect(screen.getByText("Rules")).toBeInTheDocument();
       });
@@ -1713,7 +1713,7 @@ describe("Uncover Component", () => {
         expect(screen.getByText("BASEBALL")).toBeInTheDocument();
       });
 
-      const puzzleNumber = screen.getByText("baseball111");
+      const puzzleNumber = screen.getByText("Puzzle #111");
       expect(puzzleNumber).toHaveClass("puzzle-number");
     });
 

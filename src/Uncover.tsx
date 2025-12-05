@@ -372,6 +372,20 @@ const initialState: GameState = {
   gaveUp: false,
 };
 
+// Helper function to extract puzzle number from roundId
+const getPuzzleNumber = (roundId: string): string => {
+  const match = roundId.match(/\d+$/);
+  return match ? match[0] : "1";
+};
+
+// Helper function to format date as MMDDYY
+const formatDateMMDDYY = (dateString: string): string => {
+  // Parse the date string directly to avoid timezone issues
+  const [year, month, day] = dateString.split('-');
+  const shortYear = year.slice(-2);
+  return `${month}${day}${shortYear}`;
+};
+
 const Uncover: React.FC = () => {
   const [activeSport, setActiveSport] = useState<SportType>("baseball");
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
@@ -708,9 +722,9 @@ const Uncover: React.FC = () => {
       </div>
 
       <div className="puzzle-info">
-        <span className="puzzle-number">{mockRoundData[activeSport].roundId}</span>
+        <span className="puzzle-number">Puzzle #{getPuzzleNumber(mockRoundData[activeSport].roundId)}</span>
         <span className="separator">•</span>
-        <span className="play-date">{mockRoundData[activeSport].playDate}</span>
+        <span className="play-date">{formatDateMMDDYY(mockRoundData[activeSport].playDate)}</span>
         <span className="separator">•</span>
         <button
           className="today-stats-link"
