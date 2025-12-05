@@ -706,6 +706,23 @@
   background-color: #c82333;
 }
 
+/* View Results Button */
+.view-results-button {
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.view-results-button:hover {
+  background-color: #005a8c;
+}
+
 /* Player Info Section in Results Modal */
 .player-info-section {
   display: flex;

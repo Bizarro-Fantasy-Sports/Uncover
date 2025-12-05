@@ -595,8 +595,8 @@ const Uncover: React.FC = () => {
       const updated = [...s.flippedTiles];
       updated[index] = true;
 
-      // Only update score/counters if game is not won
-      if (!s.finalRank) {
+      // Only update score/counters if game is not won or gave up
+      if (!s.finalRank && !s.gaveUp) {
         let newScore = s.score - 6;
 
         let newHint = s.hint;
@@ -615,7 +615,7 @@ const Uncover: React.FC = () => {
           returningFromPhoto: false,
         });
       } else {
-        // Game won - just update visual state
+        // Game won or gave up - just update visual state
         updateState({
           flippedTiles: updated,
           photoRevealed: true,
@@ -629,8 +629,8 @@ const Uncover: React.FC = () => {
     const updated = [...s.flippedTiles];
     updated[index] = true;
 
-    // Only update score/counters if game is not won
-    if (!s.finalRank) {
+    // Only update score/counters if game is not won or gave up
+    if (!s.finalRank && !s.gaveUp) {
       let newScore = s.score - 3;
 
       let newHint = s.hint;
@@ -647,7 +647,7 @@ const Uncover: React.FC = () => {
         hint: newHint,
       });
     } else {
-      // Game won - just update visual state
+      // Game won or gave up - just update visual state
       updateState({
         flippedTiles: updated,
       });
@@ -776,6 +776,14 @@ const Uncover: React.FC = () => {
         {s.score < 80 && !s.finalRank && !s.gaveUp && (
           <button onClick={handleGiveUp} className="give-up-button">
             Give Up
+          </button>
+        )}
+        {s.gaveUp && (
+          <button
+            onClick={() => updateState({ showResultsModal: true })}
+            className="view-results-button"
+          >
+            View Results
           </button>
         )}
       </div>
