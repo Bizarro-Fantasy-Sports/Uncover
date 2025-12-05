@@ -47,145 +47,270 @@ const sportFiles: Record<SportType, string> = {
   football: "/UncoverFootballData.json",
 };
 
-// Mock Round Stats data (will be fetched from backend later)
-// Note: name field will be populated dynamically from player data
-const mockRoundStatsTemplate: Record<SportType, any> = {
+// New data structure interfaces
+interface Player {
+  sport: string;
+  sportsReferencePath: string;
+  name: string;
+  bio: string;
+  playerInformation: string;
+  draftInformation: string;
+  yearsActive: string;
+  teamsPlayedOn: string;
+  jerseyNumbers: string;
+  careerStats: string;
+  personalAchievements: string;
+  photo: string;
+}
+
+interface TileTracker {
+  bio: number;
+  careerStats: number;
+  draftInformation: number;
+  jerseyNumbers: number;
+  personalAchievements: number;
+  photo: number;
+  playerInformation: number;
+  teamsPlayedOn: number;
+  yearsActive: number;
+}
+
+interface RoundStats {
+  playDate: string;
+  sport: string;
+  name: string;
+  totalPlays: number;
+  percentageCorrect: number;
+  averageScore: number;
+  averageCorrectScore: number;
+  highestScore: number;
+  mostCommonFirstTileFlipped: string;
+  mostCommonLastTileFlipped: string;
+  mostCommonTileFlipped: string;
+  leastCommonTileFlipped: string;
+  mostFlippedTracker: TileTracker;
+  firstFlippedTracker: TileTracker;
+  lastFlippedTracker: TileTracker;
+}
+
+interface RoundData {
+  playDate: string;
+  sport: string;
+  roundId: string;
+  created: string;
+  lastUpdated: string;
+  previouslyPlayedDates: string[];
+  player: Player;
+  stats: RoundStats;
+}
+
+// Mock Round Data (will be fetched from backend later)
+const mockRoundData: Record<SportType, RoundData> = {
   baseball: {
     playDate: "2025-11-19",
     sport: "baseball",
-    totalPlays: 100,
-    percentageCorrect: 81,
-    averageScore: 55,
-    averageCorrectScore: 88,
-    highestScore: 97,
-    mostCommonFirstTileFlipped: "playerInformation",
-    mostCommonLastTileFlipped: "photo",
-    mostCommonTileFlipped: "teamsPlayedOn",
-    leastCommonTileFlipped: "bio",
-    mostFlippedTracker: {
-      bio: 11,
-      careerStats: 11,
-      draftInformation: 11,
-      jerseyNumbers: 11,
-      personalAchievements: 11,
-      photo: 11,
-      playerInformation: 11,
-      teamsPlayedOn: 11,
-      yearsActive: 11,
+    roundId: "baseball111",
+    created: "2025-11-11T10:00:00Z",
+    lastUpdated: "2025-11-12T00:00:00Z",
+    previouslyPlayedDates: [],
+    player: {
+      sport: "baseball",
+      sportsReferencePath: "e/eckstda01",
+      name: "David Eckstein",
+      bio: "DOB: January 20, 1975 in Sanford, FL",
+      playerInformation: "5'6\", 170 lbs, Shortstop & Second Baseman, Bats: Right, Throws: Right",
+      draftInformation: "19th Rd from University of Florida",
+      yearsActive: "2001-2010",
+      teamsPlayedOn: "ANA, STL, TOR, ARI, SDP",
+      jerseyNumbers: "22, 11, 4, 3, 22",
+      careerStats: ".280 BA, 35 HR, 123 SB, 20.9 WAR",
+      personalAchievements: "2x All-Star, 2x World Series, 1x WS MVP",
+      photo: "",
     },
-    firstFlippedTracker: {
-      bio: 12,
-      careerStats: 12,
-      draftInformation: 12,
-      jerseyNumbers: 12,
-      personalAchievements: 12,
-      photo: 12,
-      playerInformation: 12,
-      teamsPlayedOn: 12,
-      yearsActive: 12,
-    },
-    lastFlippedTracker: {
-      bio: 13,
-      careerStats: 13,
-      draftInformation: 13,
-      jerseyNumbers: 13,
-      personalAchievements: 13,
-      photo: 13,
-      playerInformation: 13,
-      teamsPlayedOn: 13,
-      yearsActive: 13,
+    stats: {
+      playDate: "2025-11-19",
+      sport: "baseball",
+      name: "David Eckstein",
+      totalPlays: 100,
+      percentageCorrect: 81,
+      averageScore: 55,
+      averageCorrectScore: 88,
+      highestScore: 97,
+      mostCommonFirstTileFlipped: "playerInformation",
+      mostCommonLastTileFlipped: "photo",
+      mostCommonTileFlipped: "teamsPlayedOn",
+      leastCommonTileFlipped: "bio",
+      mostFlippedTracker: {
+        bio: 11,
+        careerStats: 11,
+        draftInformation: 11,
+        jerseyNumbers: 11,
+        personalAchievements: 11,
+        photo: 11,
+        playerInformation: 11,
+        teamsPlayedOn: 11,
+        yearsActive: 11,
+      },
+      firstFlippedTracker: {
+        bio: 12,
+        careerStats: 12,
+        draftInformation: 12,
+        jerseyNumbers: 12,
+        personalAchievements: 12,
+        photo: 12,
+        playerInformation: 12,
+        teamsPlayedOn: 12,
+        yearsActive: 12,
+      },
+      lastFlippedTracker: {
+        bio: 13,
+        careerStats: 13,
+        draftInformation: 13,
+        jerseyNumbers: 13,
+        personalAchievements: 13,
+        photo: 13,
+        playerInformation: 13,
+        teamsPlayedOn: 13,
+        yearsActive: 13,
+      },
     },
   },
   basketball: {
     playDate: "2025-11-19",
     sport: "basketball",
-    totalPlays: 100,
-    percentageCorrect: 88,
-    averageScore: 66,
-    averageCorrectScore: 90,
-    highestScore: 97,
-    mostCommonFirstTileFlipped: "playerInformation",
-    mostCommonLastTileFlipped: "photo",
-    mostCommonTileFlipped: "teamsPlayedOn",
-    leastCommonTileFlipped: "bio",
-    mostFlippedTracker: {
-      bio: 21,
-      careerStats: 21,
-      draftInformation: 21,
-      jerseyNumbers: 21,
-      personalAchievements: 21,
-      photo: 21,
-      playerInformation: 21,
-      teamsPlayedOn: 21,
-      yearsActive: 21,
+    roundId: "basketball222",
+    created: "2025-11-11T10:00:00Z",
+    lastUpdated: "2025-11-12T00:00:00Z",
+    previouslyPlayedDates: [],
+    player: {
+      sport: "basketball",
+      sportsReferencePath: "l/lewisra02",
+      name: "Rashard Lewis",
+      bio: "DOB: August 8, 1979 in Pineville, LA",
+      playerInformation: "6'10\", 215 lbs, Small Forward and Power Forward. Shoots Right",
+      draftInformation: "2nd Rd (32nd) from Alief Elsik HS",
+      yearsActive: "1998-2014",
+      teamsPlayedOn: "SEA, ORL, WAS, MIA",
+      jerseyNumbers: "7, 9",
+      careerStats: "14.9 PTS, 5.2 REB, 1.7 AST, 90.9 WS",
+      personalAchievements: "2x All-Star, 1x NBA Champ",
+      photo: "",
     },
-    firstFlippedTracker: {
-      bio: 22,
-      careerStats: 22,
-      draftInformation: 22,
-      jerseyNumbers: 22,
-      personalAchievements: 22,
-      photo: 22,
-      playerInformation: 22,
-      teamsPlayedOn: 22,
-      yearsActive: 22,
-    },
-    lastFlippedTracker: {
-      bio: 23,
-      careerStats: 23,
-      draftInformation: 23,
-      jerseyNumbers: 23,
-      personalAchievements: 23,
-      photo: 23,
-      playerInformation: 23,
-      teamsPlayedOn: 23,
-      yearsActive: 23,
+    stats: {
+      playDate: "2025-11-19",
+      sport: "basketball",
+      name: "Rashard Lewis",
+      totalPlays: 100,
+      percentageCorrect: 88,
+      averageScore: 66,
+      averageCorrectScore: 90,
+      highestScore: 97,
+      mostCommonFirstTileFlipped: "playerInformation",
+      mostCommonLastTileFlipped: "photo",
+      mostCommonTileFlipped: "teamsPlayedOn",
+      leastCommonTileFlipped: "bio",
+      mostFlippedTracker: {
+        bio: 21,
+        careerStats: 21,
+        draftInformation: 21,
+        jerseyNumbers: 21,
+        personalAchievements: 21,
+        photo: 21,
+        playerInformation: 21,
+        teamsPlayedOn: 21,
+        yearsActive: 21,
+      },
+      firstFlippedTracker: {
+        bio: 22,
+        careerStats: 22,
+        draftInformation: 22,
+        jerseyNumbers: 22,
+        personalAchievements: 22,
+        photo: 22,
+        playerInformation: 22,
+        teamsPlayedOn: 22,
+        yearsActive: 22,
+      },
+      lastFlippedTracker: {
+        bio: 23,
+        careerStats: 23,
+        draftInformation: 23,
+        jerseyNumbers: 23,
+        personalAchievements: 23,
+        photo: 23,
+        playerInformation: 23,
+        teamsPlayedOn: 23,
+        yearsActive: 23,
+      },
     },
   },
   football: {
     playDate: "2025-11-19",
     sport: "football",
-    totalPlays: 100,
-    percentageCorrect: 90,
-    averageScore: 77,
-    averageCorrectScore: 90,
-    highestScore: 98,
-    mostCommonFirstTileFlipped: "playerInformation",
-    mostCommonLastTileFlipped: "photo",
-    mostCommonTileFlipped: "teamsPlayedOn",
-    leastCommonTileFlipped: "bio",
-    mostFlippedTracker: {
-      bio: 31,
-      careerStats: 31,
-      draftInformation: 31,
-      jerseyNumbers: 31,
-      personalAchievements: 31,
-      photo: 31,
-      playerInformation: 31,
-      teamsPlayedOn: 31,
-      yearsActive: 31,
+    roundId: "football333",
+    created: "2025-11-11T10:00:00Z",
+    lastUpdated: "2025-11-12T00:00:00Z",
+    previouslyPlayedDates: [],
+    player: {
+      sport: "football",
+      sportsReferencePath: "M/McNaSt00",
+      name: "Steve McNair",
+      bio: "DOB: February 14, 1973 in Mount Olive, MS",
+      playerInformation: "6'2\", 230 lbs, QB. Throws Right",
+      draftInformation: "1st Rd (3rd) from Alcorn St",
+      yearsActive: "1995-2007",
+      teamsPlayedOn: "HOU, TEN, BAL",
+      jerseyNumbers: "9",
+      careerStats: "31304 Pass Yards, 174 Pass TD, 119 INT, 125 AV",
+      personalAchievements: "3x Pro Bowl, 1x MVP",
+      photo: "",
     },
-    firstFlippedTracker: {
-      bio: 32,
-      careerStats: 32,
-      draftInformation: 32,
-      jerseyNumbers: 32,
-      personalAchievements: 32,
-      photo: 32,
-      playerInformation: 32,
-      teamsPlayedOn: 32,
-      yearsActive: 32,
-    },
-    lastFlippedTracker: {
-      bio: 33,
-      careerStats: 33,
-      draftInformation: 33,
-      jerseyNumbers: 33,
-      personalAchievements: 33,
-      photo: 33,
-      playerInformation: 33,
-      teamsPlayedOn: 33,
-      yearsActive: 33,
+    stats: {
+      playDate: "2025-11-19",
+      sport: "football",
+      name: "Steve McNair",
+      totalPlays: 100,
+      percentageCorrect: 90,
+      averageScore: 77,
+      averageCorrectScore: 90,
+      highestScore: 98,
+      mostCommonFirstTileFlipped: "playerInformation",
+      mostCommonLastTileFlipped: "photo",
+      mostCommonTileFlipped: "teamsPlayedOn",
+      leastCommonTileFlipped: "bio",
+      mostFlippedTracker: {
+        bio: 31,
+        careerStats: 31,
+        draftInformation: 31,
+        jerseyNumbers: 31,
+        personalAchievements: 31,
+        photo: 31,
+        playerInformation: 31,
+        teamsPlayedOn: 31,
+        yearsActive: 31,
+      },
+      firstFlippedTracker: {
+        bio: 32,
+        careerStats: 32,
+        draftInformation: 32,
+        jerseyNumbers: 32,
+        personalAchievements: 32,
+        photo: 32,
+        playerInformation: 32,
+        teamsPlayedOn: 32,
+        yearsActive: 32,
+      },
+      lastFlippedTracker: {
+        bio: 33,
+        careerStats: 33,
+        draftInformation: 33,
+        jerseyNumbers: 33,
+        personalAchievements: 33,
+        photo: 33,
+        playerInformation: 33,
+        teamsPlayedOn: 33,
+        yearsActive: 33,
+      },
     },
   },
 };
@@ -223,6 +348,7 @@ interface GameState {
   showResultsModal: boolean;
   copiedText: string;
   lastSubmittedGuess: string;
+  gaveUp: boolean;
 }
 
 const initialState: GameState = {
@@ -243,6 +369,7 @@ const initialState: GameState = {
   showResultsModal: false,
   copiedText: "",
   lastSubmittedGuess: "",
+  gaveUp: false,
 };
 
 const Uncover: React.FC = () => {
@@ -360,7 +487,7 @@ const Uncover: React.FC = () => {
     const newScore = s.score - 2;
     let newHint = s.hint;
 
-    if (newScore < 70 && !s.hint) {
+    if (newScore < 80 && !s.hint) {
       newHint = playerData.Name.split(" ")
         .map((w) => w[0])
         .join(".");
@@ -411,6 +538,23 @@ const Uncover: React.FC = () => {
     });
   };
 
+  const handleGiveUp = () => {
+    updateState({
+      gaveUp: true,
+      finalRank: "",
+      showResultsModal: true,
+    });
+  };
+
+  const getSportsReferenceUrl = (sport: SportType, path: string): string => {
+    const baseUrls: Record<SportType, string> = {
+      baseball: "https://www.baseball-reference.com/players/",
+      basketball: "https://www.basketball-reference.com/players/",
+      football: "https://www.pro-football-reference.com/players/",
+    };
+    return baseUrls[sport] + path + ".html";
+  };
+
   const handleTileClick = (index: number) => {
     // If photo is already revealed, allow clicking to toggle back
     if (s.photoRevealed) {
@@ -442,7 +586,7 @@ const Uncover: React.FC = () => {
         let newScore = s.score - 6;
 
         let newHint = s.hint;
-        if (newScore < 70 && !s.hint) {
+        if (newScore < 80 && !s.hint) {
           newHint = s.playerData!.Name.split(" ")
             .map((w) => w[0])
             .join(".");
@@ -476,7 +620,7 @@ const Uncover: React.FC = () => {
       let newScore = s.score - 3;
 
       let newHint = s.hint;
-      if (newScore < 70 && !s.hint) {
+      if (newScore < 80 && !s.hint) {
         newHint = s.playerData!.Name.split(" ")
           .map((w) => w[0])
           .join(".");
@@ -564,7 +708,9 @@ const Uncover: React.FC = () => {
       </div>
 
       <div className="puzzle-info">
-        <span className="puzzle-number">Puzzle #__</span>
+        <span className="puzzle-number">{mockRoundData[activeSport].roundId}</span>
+        <span className="separator">•</span>
+        <span className="play-date">{mockRoundData[activeSport].playDate}</span>
         <span className="separator">•</span>
         <button
           className="today-stats-link"
@@ -613,6 +759,11 @@ const Uncover: React.FC = () => {
         <button onClick={handleNameSubmit} disabled={!s.playerName.trim()}>
           Submit
         </button>
+        {s.score < 80 && !s.finalRank && !s.gaveUp && (
+          <button onClick={handleGiveUp} className="give-up-button">
+            Give Up
+          </button>
+        )}
       </div>
 
       <div className="grid">
@@ -679,8 +830,30 @@ const Uncover: React.FC = () => {
             >
               ✕
             </button>
-            <h2 className="results-title">Correct! Your score is {s.score}!</h2>
-            <p className="average-score">The average score today is 85</p>
+            <h2 className="results-title">
+              {s.gaveUp ? "Try Again Tomorrow!" : `Correct! Your score is ${s.score}!`}
+            </h2>
+            {!s.gaveUp && <p className="average-score">The average score today is {mockRoundData[activeSport].stats.averageScore}</p>}
+
+            {s.playerData && (
+              <div className="player-info-section">
+                <a
+                  href={getSportsReferenceUrl(activeSport, mockRoundData[activeSport].player.sportsReferencePath)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="player-name-link"
+                >
+                  {s.playerData.Name}
+                </a>
+                {mockRoundData[activeSport].player.photo && (
+                  <img
+                    src={mockRoundData[activeSport].player.photo}
+                    alt={s.playerData.Name}
+                    className="player-photo"
+                  />
+                )}
+              </div>
+            )}
 
             <div className="results-grid">
               {topics.map((topic, index) => (
@@ -709,15 +882,15 @@ const Uncover: React.FC = () => {
               <div className="round-stats-grid">
                 <div className="round-stat-item">
                   <div className="round-stat-label">Games Played</div>
-                  <div className="round-stat-value">{mockRoundStatsTemplate[activeSport].totalPlays}</div>
+                  <div className="round-stat-value">{mockRoundData[activeSport].stats.totalPlays}</div>
                 </div>
                 <div className="round-stat-item">
                   <div className="round-stat-label">Average Score</div>
-                  <div className="round-stat-value">{mockRoundStatsTemplate[activeSport].averageScore}</div>
+                  <div className="round-stat-value">{mockRoundData[activeSport].stats.averageScore}</div>
                 </div>
                 <div className="round-stat-item">
                   <div className="round-stat-label">Win Rate</div>
-                  <div className="round-stat-value">{mockRoundStatsTemplate[activeSport].percentageCorrect}%</div>
+                  <div className="round-stat-value">{mockRoundData[activeSport].stats.percentageCorrect}%</div>
                 </div>
               </div>
             </div>
@@ -734,8 +907,8 @@ const Uncover: React.FC = () => {
         isOpen={isTodayStatsModalOpen}
         onClose={() => setIsTodayStatsModalOpen(false)}
         roundStats={{
-          ...mockRoundStatsTemplate[activeSport],
-          name: s.finalRank ? (s.playerData?.Name || "Unknown Player") : "???",
+          ...mockRoundData[activeSport].stats,
+          name: s.finalRank || s.gaveUp ? (s.playerData?.Name || "Unknown Player") : "???",
         }}
       />
     </div>

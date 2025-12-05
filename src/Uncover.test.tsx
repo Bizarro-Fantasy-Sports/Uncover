@@ -985,7 +985,7 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/the average score today is 85/i)).toBeInTheDocument();
+        expect(screen.getByText(/the average score today is 55/i)).toBeInTheDocument();
       });
     });
 
@@ -1699,7 +1699,8 @@ describe("Uncover Component", () => {
       render(<Uncover />);
 
       await waitFor(() => {
-        expect(screen.getByText("Puzzle #__")).toBeInTheDocument();
+        expect(screen.getByText("baseball111")).toBeInTheDocument(); // roundId
+        expect(screen.getByText("2025-11-19")).toBeInTheDocument(); // playDate
         expect(screen.getByText("Today's Stats")).toBeInTheDocument();
         expect(screen.getByText("Rules")).toBeInTheDocument();
       });
@@ -1712,7 +1713,7 @@ describe("Uncover Component", () => {
         expect(screen.getByText("BASEBALL")).toBeInTheDocument();
       });
 
-      const puzzleNumber = screen.getByText("Puzzle #__");
+      const puzzleNumber = screen.getByText("baseball111");
       expect(puzzleNumber).toHaveClass("puzzle-number");
     });
 
