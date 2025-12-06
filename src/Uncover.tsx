@@ -443,7 +443,8 @@ const Uncover: React.FC = () => {
 
         let newHint = s.hint;
         if (newScore < 70 && !s.hint) {
-          newHint = s.playerData!.Name.split(" ")
+          newHint = s
+            .playerData!.Name.split(" ")
             .map((w) => w[0])
             .join(".");
         }
@@ -477,7 +478,8 @@ const Uncover: React.FC = () => {
 
       let newHint = s.hint;
       if (newScore < 70 && !s.hint) {
-        newHint = s.playerData!.Name.split(" ")
+        newHint = s
+          .playerData!.Name.split(" ")
           .map((w) => w[0])
           .join(".");
       }
@@ -547,19 +549,47 @@ const Uncover: React.FC = () => {
       });
   };
 
+  // Sports Reference URLs
+  const sportsReferenceUrls: Record<SportType, string> = {
+    basketball: "https://www.basketball-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite&__hstc=213859787.d5011e8d60fd9a5193cb043be2a32532.1764028511872.1764187685470.1764486206944.5&__hssc=213859787.1.1764486206944&__hsfp=2724220660",
+    baseball: "https://www.baseball-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite",
+    football: "https://www.pro-football-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite"
+  };
+
+  const sportIcons: Record<SportType, string> = {
+    baseball: "⚾",
+    basketball: "🏀",
+    football: "🏈"
+  };
+
   return (
     <div className="uncover-game">
+      <div className="sports-reference-attribution">
+        <a
+          href={sportsReferenceUrls[activeSport]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="sports-reference-link"
+          title={`Data from ${activeSport.charAt(0).toUpperCase() + activeSport.slice(1)} Reference`}
+        >
+          <span className="sport-icon">{sportIcons[activeSport]}</span>
+          <span className="attribution-text">Sports Reference</span>
+        </a>
+      </div>
+
       <div className="sports-section">
         <div className="sports-navbar">
-          {(["baseball", "basketball", "football"] as SportType[]).map((sport) => (
-            <div
-              key={sport}
-              className={`nav-tab ${activeSport === sport ? "active" : ""}`}
-              onClick={() => setActiveSport(sport)}
-            >
-              {sport.toUpperCase()}
-            </div>
-          ))}
+          {(["baseball", "basketball", "football"] as SportType[]).map(
+            (sport) => (
+              <div
+                key={sport}
+                className={`nav-tab ${activeSport === sport ? "active" : ""}`}
+                onClick={() => setActiveSport(sport)}
+              >
+                {sport.toUpperCase()}
+              </div>
+            )
+          )}
         </div>
       </div>
 
@@ -592,9 +622,13 @@ const Uncover: React.FC = () => {
             <p className={`guess-message ${s.messageType}`}>{s.message}</p>
           )}
           {s.hint && !s.finalRank && (
-            <p className="guess-message hint">Hint: Player Initials — {s.hint}</p>
+            <p className="guess-message hint">
+              Hint: Player Initials — {s.hint}
+            </p>
           )}
-          {s.finalRank && <p className="final-rank">Your Rank: {s.finalRank}</p>}
+          {s.finalRank && (
+            <p className="final-rank">Your Rank: {s.finalRank}</p>
+          )}
         </div>
       </div>
 
@@ -709,21 +743,32 @@ const Uncover: React.FC = () => {
               <div className="round-stats-grid">
                 <div className="round-stat-item">
                   <div className="round-stat-label">Games Played</div>
-                  <div className="round-stat-value">{mockRoundStatsTemplate[activeSport].totalPlays}</div>
+                  <div className="round-stat-value">
+                    {mockRoundStatsTemplate[activeSport].totalPlays}
+                  </div>
                 </div>
                 <div className="round-stat-item">
                   <div className="round-stat-label">Average Score</div>
-                  <div className="round-stat-value">{mockRoundStatsTemplate[activeSport].averageScore}</div>
+                  <div className="round-stat-value">
+                    {mockRoundStatsTemplate[activeSport].averageScore}
+                  </div>
                 </div>
                 <div className="round-stat-item">
                   <div className="round-stat-label">Win Rate</div>
-                  <div className="round-stat-value">{mockRoundStatsTemplate[activeSport].percentageCorrect}%</div>
+                  <div className="round-stat-value">
+                    {mockRoundStatsTemplate[activeSport].percentageCorrect}%
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      <div className="sports-reference-credit">
+        Please Note: All sports information and images are from Sports Reference
+        LLC.
+      </div>
 
       <RulesModal
         isOpen={isRulesModalOpen}
@@ -735,7 +780,7 @@ const Uncover: React.FC = () => {
         onClose={() => setIsTodayStatsModalOpen(false)}
         roundStats={{
           ...mockRoundStatsTemplate[activeSport],
-          name: s.finalRank ? (s.playerData?.Name || "Unknown Player") : "???",
+          name: s.finalRank ? s.playerData?.Name || "Unknown Player" : "???",
         }}
       />
     </div>
