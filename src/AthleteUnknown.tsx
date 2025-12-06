@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./AthleteUnknown.css";
 import RulesModal from "./RulesModal";
 import TodayStatsModal from "./TodayStatsModal";
+import UserStats from "./UserStats";
 
 const topics = [
   "Bio",
@@ -249,6 +250,7 @@ const AthleteUnknown: React.FC = () => {
   const [activeSport, setActiveSport] = useState<SportType>("baseball");
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
   const [isTodayStatsModalOpen, setIsTodayStatsModalOpen] = useState(false);
+  const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
 
   const [gameState, setGameState] = useState<Record<SportType, GameState>>({
     baseball: { ...initialState },
@@ -567,6 +569,12 @@ const AthleteUnknown: React.FC = () => {
             </div>
           ))}
         </div>
+        <button
+          className="stats-button"
+          onClick={() => setIsStatsModalOpen(true)}
+        >
+          Stats
+        </button>
       </div>
 
       <div className="puzzle-info">
@@ -744,6 +752,17 @@ const AthleteUnknown: React.FC = () => {
           name: s.finalRank ? (s.playerData?.Name || "Unknown Player") : "???",
         }}
       />
+
+      {isStatsModalOpen && (
+        <div className="user-stats-modal" onClick={() => setIsStatsModalOpen(false)}>
+          <div className="user-stats-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-user-stats" onClick={() => setIsStatsModalOpen(false)}>
+              ×
+            </button>
+            <UserStats />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
