@@ -32,6 +32,7 @@ interface SportStats {
 
 interface UserStatsData {
   userId: string;
+  userName: string;
   userCreated: string;
   sports: SportStats[];
 }
@@ -39,6 +40,7 @@ interface UserStatsData {
 // Sample data - this would eventually come from backend/localStorage
 const sampleUserStats: UserStatsData = {
   userId: "FirstTestProdUser123",
+  userName: "FirstTestProdUser123",
   sports: [
     {
       averageCorrectScore: 70,
@@ -206,7 +208,7 @@ const UserStats: React.FC = () => {
       <h1 className="stats-title">User Statistics</h1>
 
       <div className="user-info">
-        <p>User ID: {userStats.userId}</p>
+        <p>User: {userStats.userName}</p>
         <p>Member Since: {formatDate(userStats.userCreated)}</p>
       </div>
 
