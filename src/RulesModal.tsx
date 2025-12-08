@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./RulesModal.css";
+import { REFERENCE_URLS, SCORING } from "./config";
 
 interface RulesModalProps {
   isOpen: boolean;
@@ -33,21 +34,21 @@ const acronymDefinitions: Record<string, { full: string; link?: string }> = {
   SB: { full: "Stolen Bases" },
   WAR: {
     full: "Wins Above Replacement",
-    link: "https://www.baseball-reference.com/about/war_explained.shtml",
+    link: REFERENCE_URLS.BASEBALL_WAR,
   },
   PTS: { full: "Points per Game" },
   REB: { full: "Rebounds per Game" },
   AST: { full: "Assists per game" },
   BPM: {
     full: "Box Plus Minus",
-    link: "https://www.basketball-reference.com/about/bpm2.html",
+    link: REFERENCE_URLS.BASKETBALL_BPM,
   },
   "Pass YDS": { full: "Passing Yards" },
   "Pass TDS": { full: "Passing TDs" },
   INT: { full: "Interceptions" },
   AV: {
     full: "Approximate Value",
-    link: "https://www.pro-football-reference.com/about/approximate_value.htm",
+    link: REFERENCE_URLS.FOOTBALL_AV,
   },
   RUSH: { full: "Rushing Attempts" },
   "Rushing YDS": { full: "Rushing Yards" },
@@ -163,13 +164,13 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
             <h3>Scoring</h3>
             <ul>
               <li>
-                <strong>Start:</strong> 100 points
+                <strong>Start:</strong> {SCORING.INITIAL_SCORE} points
               </li>
               <li>
-                <strong>Tile flip:</strong> −3 pts (Photo: −6 pts)
+                <strong>Tile flip:</strong> −{SCORING.REGULAR_TILE_PENALTY} pts (Photo: −{SCORING.PHOTO_TILE_PENALTY} pts)
               </li>
               <li>
-                <strong>Wrong guess:</strong> −2 pts
+                <strong>Wrong guess:</strong> −{SCORING.INCORRECT_GUESS_PENALTY} pts
               </li>
             </ul>
           </div>
@@ -178,7 +179,7 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
             <h3>Hints & Help</h3>
             <ul>
               <li>Close spelling = hint / auto-correct after multiple close attempts</li>
-              <li>Stuck & &lt;80 pts = initials revealed</li>
+              <li>Stuck & &lt;{SCORING.HINT_THRESHOLD} pts = initials revealed</li>
               <li>
                 Difficulty increases Mon → Sat; Sundays are themed
               </li>
