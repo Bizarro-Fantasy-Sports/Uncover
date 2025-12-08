@@ -2,18 +2,24 @@ import React, { useEffect, useState } from "react";
 import "./Uncover.css";
 import RulesModal from "./RulesModal";
 import TodayStatsModal from "./TodayStatsModal";
+import {
+  type SportType,
+  TILE_TOPICS,
+  TOTAL_TILES,
+  DEFAULT_SPORT,
+  SPORT_LIST,
+  SPORTS,
+  LEGACY_SPORT_FILES,
+  SCORING,
+  RANKS,
+  GUESS_ACCURACY,
+  TIMING,
+  PHOTO_GRID,
+  STORAGE_KEYS,
+  DEFAULTS,
+} from "./config";
 
-const topics = [
-  "Bio",
-  "Player Information",
-  "Draft Information",
-  "Years Active",
-  "Teams Played On",
-  "Jersey Numbers",
-  "Career Stats",
-  "Personal Achievements",
-  "Photo",
-];
+const topics = TILE_TOPICS;
 
 // Helper Function for Name Guessing
 const lev = (a: string, b: string): number => {
@@ -39,20 +45,12 @@ const lev = (a: string, b: string): number => {
 
 const normalize = (str = ""): string => str.toLowerCase().replace(/\s/g, "");
 
-type SportType = "baseball" | "basketball" | "football";
-
-const sportFiles: Record<SportType, string> = {
-  baseball: "/UncoverBaseballData.json",
-  basketball: "/UncoverBasketballData.json",
-  football: "/UncoverFootballData.json",
-};
-
 // Mock Round Stats data (will be fetched from backend later)
 // Note: name field will be populated dynamically from player data
-const mockRoundStatsTemplate: Record<SportType, any> = {
-  baseball: {
+const mockRoundStatsTemplate = {
+  [SPORTS.BASEBALL]: {
     playDate: "2025-11-19",
-    sport: "baseball",
+    sport: SPORTS.BASEBALL,
     totalPlays: 100,
     percentageCorrect: 81,
     averageScore: 55,
@@ -96,9 +94,9 @@ const mockRoundStatsTemplate: Record<SportType, any> = {
       yearsActive: 13,
     },
   },
-  basketball: {
+  [SPORTS.BASKETBALL]: {
     playDate: "2025-11-19",
-    sport: "basketball",
+    sport: SPORTS.BASKETBALL,
     totalPlays: 100,
     percentageCorrect: 88,
     averageScore: 66,
@@ -142,9 +140,9 @@ const mockRoundStatsTemplate: Record<SportType, any> = {
       yearsActive: 23,
     },
   },
-  football: {
+  [SPORTS.FOOTBALL]: {
     playDate: "2025-11-19",
-    sport: "football",
+    sport: SPORTS.FOOTBALL,
     totalPlays: 100,
     percentageCorrect: 90,
     averageScore: 77,
@@ -233,11 +231,11 @@ const initialState: GameState = {
   message: "",
   messageType: "",
   previousCloseGuess: "",
-  flippedTiles: Array(9).fill(false),
+  flippedTiles: Array(TOTAL_TILES).fill(false),
   tilesFlippedCount: 0,
   photoRevealed: false,
   returningFromPhoto: false,
-  score: 100,
+  score: SCORING.INITIAL_SCORE,
   hint: "",
   finalRank: "",
   incorrectGuesses: 0,
@@ -312,8 +310,7 @@ const clearGuestSession = (sport: SportType): void => {
 };
 
 const clearAllGuestSessions = (): void => {
-  const sports: SportType[] = ["baseball", "basketball", "football"];
-  sports.forEach(sport => clearGuestSession(sport));
+  SPORT_LIST.forEach(sport => clearGuestSession(sport));
 };
 
 const Uncover: React.FC = () => {
@@ -321,13 +318,13 @@ const Uncover: React.FC = () => {
   const getInitialSport = (): SportType => {
     try {
       const saved = localStorage.getItem("activeSport");
-      if (saved && (saved === "baseball" || saved === "basketball" || saved === "football")) {
+      if (saved && (saved === SPORTS.BASEBALL || saved === SPORTS.BASKETBALL || saved === SPORTS.FOOTBALL)) {
         return saved as SportType;
       }
     } catch (error) {
       console.error("Failed to load active sport:", error);
     }
-    return "baseball";
+    return DEFAULT_SPORT;
   };
 
   const [activeSport, setActiveSport] = useState<SportType>(getInitialSport);
@@ -335,10 +332,10 @@ const Uncover: React.FC = () => {
   const [isTodayStatsModalOpen, setIsTodayStatsModalOpen] = useState(false);
 
   const [gameState, setGameState] = useState<Record<SportType, GameState>>({
-    baseball: { ...initialState },
-    basketball: { ...initialState },
-    football: { ...initialState },
-  });
+    [SPORTS.BASEBALL]: { ...initialState },
+    [SPORTS.BASKETBALL]: { ...initialState },
+    [SPORTS.FOOTBALL]: { ...initialState },
+  } as Record<SportType, GameState>);
 
   // Save active sport to localStorage when it changes
   useEffect(() => {
@@ -359,11 +356,11 @@ const Uncover: React.FC = () => {
     }
 
     // Load once
-    fetch(sportFiles[activeSport])
+    fetch(LEGACY_SPORT_FILES[activeSport])
       .then((res) => res.json())
       .then((data: PlayerData[]) => {
-        const key = `playerIndex_${activeSport}`;
-        const storedIndex = parseInt(localStorage.getItem(key) || "0");
+        const key = `${STORAGE_KEYS.PLAYER_INDEX_PREFIX}${activeSport}`;
+        const storedIndex = parseInt(localStorage.getItem(key) || String(DEFAULTS.PLAYER_INDEX));
 
         // Check if there's a saved session to determine which player to load
         const savedSessionRaw = localStorage.getItem(getGuestSessionKey(activeSport));
@@ -462,14 +459,14 @@ const Uncover: React.FC = () => {
   };
 
   const evaluateRank = (points: number): string => {
-    if (points >= 95) {
-      return "Amazing";
+    if (points >= RANKS.AMAZING.threshold) {
+      return RANKS.AMAZING.label;
     }
-    if (points >= 90) {
-      return "Elite";
+    if (points >= RANKS.ELITE.threshold) {
+      return RANKS.ELITE.label;
     }
-    if (points >= 80) {
-      return "Solid";
+    if (points >= RANKS.SOLID.threshold) {
+      return RANKS.SOLID.label;
     }
     return "";
   };
@@ -513,16 +510,16 @@ const Uncover: React.FC = () => {
       return;
     }
 
-    const newScore = s.score - 2;
+    const newScore = s.score - SCORING.INCORRECT_GUESS_PENALTY;
     let newHint = s.hint;
 
-    if (newScore < 70 && !s.hint) {
+    if (newScore < SCORING.HINT_THRESHOLD && !s.hint) {
       newHint = playerData.Name.split(" ")
         .map((w) => w[0])
         .join(".");
     }
 
-    if (distance <= 2) {
+    if (distance <= GUESS_ACCURACY.VERY_CLOSE_DISTANCE) {
       if (s.previousCloseGuess && s.previousCloseGuess !== a) {
         updateState({
           message: `Correct, you were close! Player's name: ${playerData.Name}`,
@@ -545,7 +542,7 @@ const Uncover: React.FC = () => {
       return;
     }
 
-    if (distance <= 4) {
+    if (distance <= GUESS_ACCURACY.CLOSE_DISTANCE) {
       updateState({
         message: `Correct, you were close! Player's name: ${playerData.Name}`,
         messageType: "close",
@@ -574,7 +571,7 @@ const Uncover: React.FC = () => {
       // Clear the returningFromPhoto flag after the flip animation completes
       setTimeout(() => {
         updateState({ returningFromPhoto: false });
-      }, 650);
+      }, TIMING.PHOTO_FLIP_ANIMATION_DURATION);
       return;
     }
 
@@ -595,10 +592,10 @@ const Uncover: React.FC = () => {
 
       // Only update score/counters if game is not won
       if (!s.finalRank) {
-        const newScore = s.score - 6;
+        const newScore = s.score - SCORING.PHOTO_TILE_PENALTY;
 
         let newHint = s.hint;
-        if (newScore < 70 && !s.hint) {
+        if (newScore < SCORING.HINT_THRESHOLD && !s.hint) {
           newHint = s.playerData!.Name.split(" ")
             .map((w) => w[0])
             .join(".");
@@ -629,10 +626,10 @@ const Uncover: React.FC = () => {
 
     // Only update score/counters if game is not won
     if (!s.finalRank) {
-      const newScore = s.score - 3;
+      const newScore = s.score - SCORING.REGULAR_TILE_PENALTY;
 
       let newHint = s.hint;
-      if (newScore < 70 && !s.hint) {
+      if (newScore < SCORING.HINT_THRESHOLD && !s.hint) {
         newHint = s.playerData!.Name.split(" ")
           .map((w) => w[0])
           .join(".");
@@ -656,10 +653,10 @@ const Uncover: React.FC = () => {
 
   // Calculate background position for photo segments (3x3 grid)
   const getPhotoSegmentStyle = (index: number): React.CSSProperties => {
-    const col = index % 3;
-    const row = Math.floor(index / 3);
-    const xPos = col * 150; // tile width
-    const yPos = row * 150; // tile height
+    const col = index % PHOTO_GRID.COLS;
+    const row = Math.floor(index / PHOTO_GRID.COLS);
+    const xPos = col * PHOTO_GRID.TILE_WIDTH;
+    const yPos = row * PHOTO_GRID.TILE_HEIGHT;
 
     return {
       backgroundImage: `url(${photoUrl})`,
@@ -669,17 +666,17 @@ const Uncover: React.FC = () => {
 
   const handleShare = () => {
     // Get daily number from playerData or default to 1
-    const dailyNumber = s.playerData!.dailyNumber || 1;
+    const dailyNumber = s.playerData!.dailyNumber || DEFAULTS.DAILY_NUMBER;
 
     // Build the share text
     let shareText = `Daily Uncover #${dailyNumber}\n`;
 
     // Create a 3x3 grid using emojis
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < TOTAL_TILES; i++) {
       // Yellow emoji for flipped, blue emoji for unflipped
       shareText += s.flippedTiles[i] ? "🟨" : "🟦";
       // Add newline after every 3 tiles (end of row)
-      if ((i + 1) % 3 === 0) {
+      if ((i + 1) % PHOTO_GRID.COLS === 0) {
         shareText += "\n";
       }
     }
@@ -696,7 +693,7 @@ const Uncover: React.FC = () => {
         // Clear the message after 3 seconds
         setTimeout(() => {
           updateState({ copiedText: "" });
-        }, 3000);
+        }, TIMING.SHARE_COPIED_MESSAGE_DURATION);
       })
       .catch((err) => {
         console.error("Failed to copy:", err);
@@ -707,7 +704,7 @@ const Uncover: React.FC = () => {
     <div className="uncover-game">
       <div className="sports-section">
         <div className="sports-navbar">
-          {(["baseball", "basketball", "football"] as SportType[]).map((sport) => (
+          {SPORT_LIST.map((sport) => (
             <div
               key={sport}
               className={`nav-tab ${activeSport === sport ? "active" : ""}`}
