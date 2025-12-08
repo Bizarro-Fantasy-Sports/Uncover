@@ -121,6 +121,14 @@ const Uncover: React.FC = () => {
     football: { ...initialState },
   });
 
+  // Helper function to update game state for active sport
+  const updateState = (patch: Partial<GameState>) => {
+    setGameState((prev) => ({
+      ...prev,
+      [activeSport]: { ...prev[activeSport], ...patch },
+    }));
+  };
+
   // Load player data and round stats from API
   useEffect(() => {
     const state = gameState[activeSport];
@@ -248,13 +256,6 @@ const Uncover: React.FC = () => {
       </div>
     );
   }
-
-  const updateState = (patch: Partial<GameState>) => {
-    setGameState((prev) => ({
-      ...prev,
-      [activeSport]: { ...prev[activeSport], ...patch },
-    }));
-  };
 
   const evaluateRank = (points: number): string => {
     if (points >= 95) {
@@ -461,7 +462,7 @@ const Uncover: React.FC = () => {
     }
   };
 
-  const photoUrl = s.playerData.Photo[0];
+  const photoUrl = s.playerData.Photo?.[0] || '';
 
   // Calculate background position for photo segments (3x3 grid)
   const getPhotoSegmentStyle = (index: number): React.CSSProperties => {
