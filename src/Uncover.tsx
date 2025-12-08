@@ -381,7 +381,14 @@ const Uncover: React.FC = () => {
       basketball: "https://www.basketball-reference.com/players/",
       football: "https://www.pro-football-reference.com/players/",
     };
-    return baseUrls[sport] + path + ".shtml";
+
+    const extensions: Record<SportType, string> = {
+      baseball: ".shtml",
+      basketball: ".html",
+      football: ".htm",
+    };
+
+    return baseUrls[sport] + path + extensions[sport];
   };
 
   const handleTileClick = (index: number) => {
