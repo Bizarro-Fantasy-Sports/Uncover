@@ -48,32 +48,176 @@ interface PlayerData {
   Photo: string[];
 }
 
+interface Player {
+  sport: string;
+  sportsReferencePath: string;
+  name: string;
+  bio: string;
+  playerInformation: string;
+  draftInformation: string;
+  yearsActive: string;
+  teamsPlayedOn: string;
+  jerseyNumbers: string;
+  careerStats: string;
+  personalAchievements: string;
+  photo: string;
+}
+
+interface TileTracker {
+  bio: number;
+  careerStats: number;
+  draftInformation: number;
+  jerseyNumbers: number;
+  personalAchievements: number;
+  photo: number;
+  playerInformation: number;
+  teamsPlayedOn: number;
+  yearsActive: number;
+}
+
+interface RoundStats {
+  playDate: string;
+  sport: string;
+  name: string;
+  totalPlays: number;
+  percentageCorrect: number;
+  averageScore: number;
+  averageCorrectScore: number;
+  highestScore: number;
+  mostCommonFirstTileFlipped: string;
+  mostCommonLastTileFlipped: string;
+  mostCommonTileFlipped: string;
+  leastCommonTileFlipped: string;
+  mostFlippedTracker: TileTracker;
+  firstFlippedTracker: TileTracker;
+  lastFlippedTracker: TileTracker;
+}
+
+interface RoundData {
+  playDate: string;
+  sport: string;
+  roundId: string;
+  created: string;
+  lastUpdated: string;
+  previouslyPlayedDates: string[];
+  player: Player;
+  stats: RoundStats;
+}
+
+// Helper function to create mock round data from player data
+const createMockRoundData = (
+  playerName: string,
+  playerBio: string,
+  playerInfo: string,
+  draftInfo: string,
+  yearsActive: string,
+  teams: string,
+  jerseys: string,
+  stats: string,
+  achievements: string,
+  photo: string,
+  sport: string,
+  roundNumber: number
+): RoundData => ({
+  playDate: "2025-11-19",
+  sport,
+  roundId: `${sport}${String(roundNumber).padStart(3, "0")}`,
+  created: "2025-11-11T10:00:00Z",
+  lastUpdated: "2025-11-12T00:00:00Z",
+  previouslyPlayedDates: [],
+  player: {
+    sport,
+    sportsReferencePath: "test/path",
+    name: playerName,
+    bio: playerBio,
+    playerInformation: playerInfo,
+    draftInformation: draftInfo,
+    yearsActive,
+    teamsPlayedOn: teams,
+    jerseyNumbers: jerseys,
+    careerStats: stats,
+    personalAchievements: achievements,
+    photo,
+  },
+  stats: {
+    playDate: "2025-11-19",
+    sport,
+    name: playerName,
+    totalPlays: 100,
+    percentageCorrect: 75,
+    averageScore: 55,
+    averageCorrectScore: 85,
+    highestScore: 100,
+    mostCommonFirstTileFlipped: "playerInformation",
+    mostCommonLastTileFlipped: "photo",
+    mostCommonTileFlipped: "careerStats",
+    leastCommonTileFlipped: "bio",
+    mostFlippedTracker: {
+      bio: 10,
+      careerStats: 50,
+      draftInformation: 30,
+      jerseyNumbers: 20,
+      personalAchievements: 40,
+      photo: 60,
+      playerInformation: 45,
+      teamsPlayedOn: 35,
+      yearsActive: 25,
+    },
+    firstFlippedTracker: {
+      bio: 5,
+      careerStats: 15,
+      draftInformation: 10,
+      jerseyNumbers: 8,
+      personalAchievements: 12,
+      photo: 3,
+      playerInformation: 25,
+      teamsPlayedOn: 12,
+      yearsActive: 10,
+    },
+    lastFlippedTracker: {
+      bio: 8,
+      careerStats: 10,
+      draftInformation: 7,
+      jerseyNumbers: 9,
+      personalAchievements: 11,
+      photo: 42,
+      playerInformation: 4,
+      teamsPlayedOn: 5,
+      yearsActive: 4,
+    },
+  },
+});
+
 // Sample test data
-const mockBaseballData: PlayerData[] = [
-  {
-    Name: "Babe Ruth",
-    Bio: "Greatest baseball player",
-    "Player Information": "Outfielder/Pitcher",
-    "Draft Information": "Signed 1914",
-    "Years Active": "1914-1935",
-    "Teams Played On": "Red Sox, Yankees, Braves",
-    "Jersey Numbers": "3",
-    "Career Stats": "714 HR, .342 AVG",
-    "Personal Achievements": "7 World Series, 2 MVP",
-    Photo: ["/images/babe-ruth.jpg"],
-  },
-  {
-    Name: "Jackie Robinson",
-    Bio: "Broke color barrier",
-    "Player Information": "Second Baseman",
-    "Draft Information": "Signed 1945",
-    "Years Active": "1947-1956",
-    "Teams Played On": "Brooklyn Dodgers",
-    "Jersey Numbers": "42",
-    "Career Stats": ".311 AVG, 137 HR",
-    "Personal Achievements": "ROY 1947, MVP 1949",
-    Photo: ["/images/jackie-robinson.jpg"],
-  },
+const mockBaseballData: RoundData[] = [
+  createMockRoundData(
+    "Babe Ruth",
+    "Greatest baseball player",
+    "Outfielder/Pitcher",
+    "Signed 1914",
+    "1914-1935",
+    "Red Sox, Yankees, Braves",
+    "3",
+    "714 HR, .342 AVG",
+    "7 World Series, 2 MVP",
+    "/images/babe-ruth.jpg",
+    "baseball",
+    1
+  ),
+  createMockRoundData(
+    "Jackie Robinson",
+    "Broke color barrier",
+    "Second Baseman",
+    "Signed 1945",
+    "1947-1956",
+    "Brooklyn Dodgers",
+    "42",
+    ".311 AVG, 137 HR",
+    "ROY 1947, MVP 1949",
+    "/images/jackie-robinson.jpg",
+    "baseball",
+    2
+  ),
 ];
 
 describe("Uncover Component", () => {
@@ -181,19 +325,21 @@ describe("Uncover Component", () => {
     });
 
     test("loads basketball data when basketball tab is clicked", async () => {
-      const mockBasketballData: PlayerData[] = [
-        {
-          Name: "Michael Jordan",
-          Bio: "GOAT",
-          "Player Information": "",
-          "Draft Information": "",
-          "Years Active": "",
-          "Teams Played On": "",
-          "Jersey Numbers": "",
-          "Career Stats": "",
-          "Personal Achievements": "",
-          Photo: ["/mj.jpg"],
-        },
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "Michael Jordan",
+          "GOAT",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "/mj.jpg",
+          "basketball",
+          1
+        ),
       ];
       (global.fetch as jest.Mock)
         .mockResolvedValueOnce({
@@ -804,19 +950,21 @@ describe("Uncover Component", () => {
 
   describe("Sport Switching", () => {
     test("switching sports loads new player data", async () => {
-      const mockFootballData: PlayerData[] = [
-        {
-          Name: "Tom Brady",
-          Bio: "QB GOAT",
-          "Player Information": "",
-          "Draft Information": "",
-          "Years Active": "",
-          "Teams Played On": "",
-          "Jersey Numbers": "",
-          "Career Stats": "",
-          "Personal Achievements": "",
-          Photo: ["/tb.jpg"],
-        },
+      const mockFootballData: RoundData[] = [
+        createMockRoundData(
+          "Tom Brady",
+          "QB GOAT",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "/tb.jpg",
+          "football",
+          1
+        ),
       ];
 
       (global.fetch as jest.Mock)
@@ -837,19 +985,21 @@ describe("Uncover Component", () => {
     });
 
     test("each sport maintains separate game state", async () => {
-      const mockBasketballData: PlayerData[] = [
-        {
-          Name: "LeBron James",
-          Bio: "King",
-          "Player Information": "",
-          "Draft Information": "",
-          "Years Active": "",
-          "Teams Played On": "",
-          "Jersey Numbers": "",
-          "Career Stats": "",
-          "Personal Achievements": "",
-          Photo: ["/lbj.jpg"],
-        },
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "LeBron James",
+          "King",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "/lbj.jpg",
+          "basketball",
+          1
+        ),
       ];
 
       (global.fetch as jest.Mock)
@@ -939,7 +1089,14 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
     });
 
@@ -965,6 +1122,13 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
         expect(screen.getByText(/correct! your score is 96!/i)).toBeInTheDocument();
       });
     });
@@ -985,7 +1149,14 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/the average score today is 85/i)).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/the average score today is 55/i)).toBeInTheDocument();
       });
     });
 
@@ -1003,6 +1174,13 @@ describe("Uncover Component", () => {
 
       fireEvent.change(input, { target: { value: "Babe Ruth" } });
       fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
 
       await waitFor(() => {
         const resultsTiles = document.querySelectorAll(".results-tile");
@@ -1032,6 +1210,13 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
         const resultsTiles = document.querySelectorAll(".results-tile.flipped");
         expect(resultsTiles.length).toBeGreaterThan(0);
         expect(resultsTiles[0]).toHaveTextContent("↻");
@@ -1054,6 +1239,13 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      let viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
         expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
       });
 
@@ -1065,9 +1257,9 @@ describe("Uncover Component", () => {
         expect(screen.queryByText(/correct! your score is/i)).not.toBeInTheDocument();
       });
 
-      // Reopen modal by submitting correct answer again
-      fireEvent.change(input, { target: { value: "Babe Ruth" } });
-      fireEvent.click(submitButton);
+      // Reopen modal by clicking View Results button
+      viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
 
       await waitFor(() => {
         expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
@@ -1088,6 +1280,13 @@ describe("Uncover Component", () => {
 
       fireEvent.change(input, { target: { value: "Babe Ruth" } });
       fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
 
       await waitFor(() => {
         expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
@@ -1121,6 +1320,13 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
         expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
       });
 
@@ -1148,6 +1354,13 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
         expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
       });
 
@@ -1156,7 +1369,7 @@ describe("Uncover Component", () => {
 
       await waitFor(() => {
         const copiedText = (navigator.clipboard.writeText as jest.Mock).mock.calls[0][0];
-        expect(copiedText).toContain("Daily Uncover #");
+        expect(copiedText).toContain("Daily Athlete Unknown Baseball #");
         expect(copiedText).toContain("Score: 100");
         // Should contain emoji squares
         expect(copiedText).toMatch(/[🟨🟦]/);
@@ -1183,6 +1396,13 @@ describe("Uncover Component", () => {
 
       fireEvent.change(input, { target: { value: "Babe Ruth" } });
       fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
 
       await waitFor(() => {
         expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
@@ -1215,6 +1435,13 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
         expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
       });
 
@@ -1242,6 +1469,13 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
         expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
       });
 
@@ -1251,7 +1485,7 @@ describe("Uncover Component", () => {
       await waitFor(() => {
         const copiedMessage = document.querySelector(".copied-message");
         expect(copiedMessage).toBeInTheDocument();
-        expect(copiedMessage!.textContent).toContain("Daily Uncover #");
+        expect(copiedMessage!.textContent).toContain("Daily Athlete Unknown Baseball #");
         expect(copiedMessage!.textContent).toContain("Score:");
       });
     });
@@ -1272,6 +1506,13 @@ describe("Uncover Component", () => {
 
       fireEvent.change(input, { target: { value: "Babe Ruth" } });
       fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
+      });
+
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
 
       await waitFor(() => {
         expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
@@ -1313,15 +1554,7 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
-      });
-
-      // Close modal
-      const closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
-
-      await waitFor(() => {
-        expect(screen.queryByText(/correct! your score is/i)).not.toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
 
       // Try to flip a tile
@@ -1352,16 +1585,12 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
 
       // Verify score is 100
       const scoreBox = document.querySelector(".score-box");
       expect(scoreBox).toHaveTextContent("100");
-
-      // Close modal
-      const closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Flip a tile after winning
       const bioTile = screen.getByText("Bio").closest(".tile");
@@ -1394,15 +1623,11 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
 
       // Verify counter is 0
       expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
-
-      // Close modal
-      const closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Flip a tile after winning
       const bioTile = screen.getByText("Bio").closest(".tile");
@@ -1435,12 +1660,8 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
-
-      // Close modal
-      const closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Input and button should not be disabled
       expect(input).not.toBeDisabled();
@@ -1464,33 +1685,31 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
 
-      // Close modal
-      const closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
-
-      await waitFor(() => {
-        expect(screen.queryByText(/correct! your score is/i)).not.toBeInTheDocument();
-      });
+      // View Results button should be visible
+      expect(screen.getByRole("button", { name: /view results/i })).toBeInTheDocument();
 
       // Try wrong answer
       fireEvent.change(input, { target: { value: "Wrong Name" } });
       fireEvent.click(submitButton);
 
-      // Modal should not reopen
-      await waitFor(() => {
-        expect(screen.queryByText(/correct! your score is/i)).not.toBeInTheDocument();
-      }, { timeout: 1000 });
+      // No change in UI (still shows "You guessed it right!")
+      expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
 
-      // Try correct answer
+      // Try correct answer again
       fireEvent.change(input, { target: { value: "Babe Ruth" } });
       fireEvent.click(submitButton);
 
-      // Modal should reopen
+      // Click View Results to open modal
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      // Modal should be open now
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        const modal = screen.getByRole("button", { name: /✕/i }).closest(".results-modal-content");
+        expect(modal).toBeInTheDocument();
       });
     });
 
@@ -1511,12 +1730,8 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
-
-      // Close modal
-      const closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Try wrong answer
       fireEvent.change(input, { target: { value: "Wrong Name" } });
@@ -1545,12 +1760,8 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
-
-      // Close modal
-      const closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Click photo tile
       const photoTile = screen.getByText("Photo").closest(".tile");
@@ -1699,7 +1910,8 @@ describe("Uncover Component", () => {
       render(<Uncover />);
 
       await waitFor(() => {
-        expect(screen.getByText("Puzzle #__")).toBeInTheDocument();
+        expect(screen.getByText("Puzzle #001")).toBeInTheDocument(); // puzzle number
+        expect(screen.getByText("11-19-25")).toBeInTheDocument(); // playDate in MM-DD-YY format
         expect(screen.getByText("Today's Stats")).toBeInTheDocument();
         expect(screen.getByText("Rules")).toBeInTheDocument();
       });
@@ -1712,7 +1924,7 @@ describe("Uncover Component", () => {
         expect(screen.getByText("BASEBALL")).toBeInTheDocument();
       });
 
-      const puzzleNumber = screen.getByText("Puzzle #__");
+      const puzzleNumber = screen.getByText("Puzzle #001");
       expect(puzzleNumber).toHaveClass("puzzle-number");
     });
 
@@ -1998,7 +2210,7 @@ describe("Uncover Component", () => {
         const modal = screen.getByText("Today's Baseball Stats").closest(".today-stats-modal-content");
         expect(modal).toHaveTextContent("100"); // totalPlays
         expect(modal).toHaveTextContent("55"); // averageScore
-        expect(modal).toHaveTextContent("81%"); // percentageCorrect
+        expect(modal).toHaveTextContent("75%"); // percentageCorrect
       });
     });
   });
@@ -2020,7 +2232,14 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
+      });
+
+      // Click View Results to open modal
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
         expect(screen.getByText("Today's Round Stats")).toBeInTheDocument();
       });
     });
@@ -2041,6 +2260,14 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
+      });
+
+      // Click View Results to open modal
+      const viewResultsButton = screen.getByRole("button", { name: /view results/i });
+      fireEvent.click(viewResultsButton);
+
+      await waitFor(() => {
         const resultsModal = screen
           .getByText(/correct! your score is/i)
           .closest(".results-modal-content");
@@ -2048,7 +2275,7 @@ describe("Uncover Component", () => {
         // Check for mock round stats values (baseball)
         expect(resultsModal).toHaveTextContent("100"); // totalPlays
         expect(resultsModal).toHaveTextContent("55"); // averageScore
-        expect(resultsModal).toHaveTextContent("81%"); // percentageCorrect
+        expect(resultsModal).toHaveTextContent("75%"); // percentageCorrect
       });
     });
   });
@@ -2090,12 +2317,8 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
-
-      // Close results modal
-      const closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Open Today's Stats modal
       const todayStatsButton = screen.getByText("Today's Stats");
@@ -2111,19 +2334,21 @@ describe("Uncover Component", () => {
     });
 
     test("hides mystery player when switching to unsolved sport", async () => {
-      const mockBasketballData: PlayerData[] = [
-        {
-          Name: "Michael Jordan",
-          Bio: "GOAT",
-          "Player Information": "Guard",
-          "Draft Information": "1984 Draft",
-          "Years Active": "1984-2003",
-          "Teams Played On": "Bulls, Wizards",
-          "Jersey Numbers": "23",
-          "Career Stats": "30.1 PPG",
-          "Personal Achievements": "6 Championships",
-          Photo: ["/mj.jpg"],
-        },
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "Michael Jordan",
+          "GOAT",
+          "Guard",
+          "1984 Draft",
+          "1984-2003",
+          "Bulls, Wizards",
+          "23",
+          "30.1 PPG",
+          "6 Championships",
+          "/mj.jpg",
+          "basketball",
+          1
+        ),
       ];
 
       (global.fetch as jest.Mock)
@@ -2145,12 +2370,8 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
-
-      // Close results modal
-      const closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Switch to basketball (unsolved)
       fireEvent.click(screen.getByText("BASKETBALL"));
@@ -2173,19 +2394,21 @@ describe("Uncover Component", () => {
     });
 
     test("maintains revealed player name when switching back to solved sport", async () => {
-      const mockBasketballData: PlayerData[] = [
-        {
-          Name: "LeBron James",
-          Bio: "King",
-          "Player Information": "Forward",
-          "Draft Information": "2003 Draft",
-          "Years Active": "2003-Present",
-          "Teams Played On": "Cavaliers, Heat, Lakers",
-          "Jersey Numbers": "23, 6",
-          "Career Stats": "27.2 PPG",
-          "Personal Achievements": "4 Championships",
-          Photo: ["/lbj.jpg"],
-        },
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "LeBron James",
+          "King",
+          "Forward",
+          "2003 Draft",
+          "2003-Present",
+          "Cavaliers, Heat, Lakers",
+          "23, 6",
+          "27.2 PPG",
+          "4 Championships",
+          "/lbj.jpg",
+          "basketball",
+          1
+        ),
       ];
 
       (global.fetch as jest.Mock)
@@ -2207,12 +2430,8 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
-
-      // Close results modal
-      let closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Switch to basketball
       fireEvent.click(screen.getByText("BASKETBALL"));
@@ -2242,34 +2461,38 @@ describe("Uncover Component", () => {
     });
 
     test("each sport independently tracks mystery player reveal status", async () => {
-      const mockBasketballData: PlayerData[] = [
-        {
-          Name: "Kobe Bryant",
-          Bio: "Mamba",
-          "Player Information": "Guard",
-          "Draft Information": "1996 Draft",
-          "Years Active": "1996-2016",
-          "Teams Played On": "Lakers",
-          "Jersey Numbers": "8, 24",
-          "Career Stats": "25 PPG",
-          "Personal Achievements": "5 Championships",
-          Photo: ["/kobe.jpg"],
-        },
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "Kobe Bryant",
+          "Mamba",
+          "Guard",
+          "1996 Draft",
+          "1996-2016",
+          "Lakers",
+          "8, 24",
+          "25 PPG",
+          "5 Championships",
+          "/kobe.jpg",
+          "basketball",
+          1
+        ),
       ];
 
-      const mockFootballData: PlayerData[] = [
-        {
-          Name: "Tom Brady",
-          Bio: "QB GOAT",
-          "Player Information": "Quarterback",
-          "Draft Information": "2000 Draft",
-          "Years Active": "2000-2022",
-          "Teams Played On": "Patriots, Buccaneers",
-          "Jersey Numbers": "12",
-          "Career Stats": "89,214 yards",
-          "Personal Achievements": "7 Super Bowls",
-          Photo: ["/tb.jpg"],
-        },
+      const mockFootballData: RoundData[] = [
+        createMockRoundData(
+          "Tom Brady",
+          "QB GOAT",
+          "Quarterback",
+          "2000 Draft",
+          "2000-2022",
+          "Patriots, Buccaneers",
+          "12",
+          "89,214 yards",
+          "7 Super Bowls",
+          "/tb.jpg",
+          "football",
+          1
+        ),
       ];
 
       (global.fetch as jest.Mock)
@@ -2292,12 +2515,8 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
-
-      // Close results modal
-      let closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Switch to basketball and solve
       fireEvent.click(screen.getByText("BASKETBALL"));
@@ -2329,12 +2548,8 @@ describe("Uncover Component", () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/correct! your score is/i)).toBeInTheDocument();
+        expect(screen.getByText(/you guessed it right!/i)).toBeInTheDocument();
       });
-
-      // Close results modal
-      closeButton = screen.getByRole("button", { name: /✕/i });
-      fireEvent.click(closeButton);
 
       // Switch to football (unsolved)
       fireEvent.click(screen.getByText("FOOTBALL"));
@@ -2354,7 +2569,7 @@ describe("Uncover Component", () => {
       });
 
       // Close modal
-      closeButton = screen.getByRole("button", { name: /×/i });
+      let closeButton = screen.getByRole("button", { name: /×/i });
       fireEvent.click(closeButton);
 
       // Switch back to baseball
@@ -2412,19 +2627,21 @@ describe("Uncover Component", () => {
     });
 
     test("displays correct URL for basketball", async () => {
-      const mockBasketballData: PlayerData[] = [
-        {
-          Name: "Michael Jordan",
-          Bio: "Greatest basketball player",
-          "Player Information": "Guard",
-          "Draft Information": "1st Rd (3rd) from North Carolina",
-          "Years Active": "1984-2003",
-          "Teams Played On": "CHI, WAS",
-          "Jersey Numbers": "23, 45",
-          "Career Stats": "30.1 PPG, 6.2 RPG",
-          "Personal Achievements": "6x NBA Champ, 5x MVP",
-          Photo: ["/images/michael-jordan.jpg"],
-        },
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "Michael Jordan",
+          "Greatest basketball player",
+          "Guard",
+          "1st Rd (3rd) from North Carolina",
+          "1984-2003",
+          "CHI, WAS",
+          "23, 45",
+          "30.1 PPG, 6.2 RPG",
+          "6x NBA Champ, 5x MVP",
+          "/images/michael-jordan.jpg",
+          "basketball",
+          1
+        ),
       ];
 
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2452,19 +2669,21 @@ describe("Uncover Component", () => {
     });
 
     test("displays correct URL for football", async () => {
-      const mockFootballData: PlayerData[] = [
-        {
-          Name: "Tom Brady",
-          Bio: "Greatest quarterback",
-          "Player Information": "Quarterback",
-          "Draft Information": "6th Rd (199th) from Michigan",
-          "Years Active": "2000-2022",
-          "Teams Played On": "NE, TB",
-          "Jersey Numbers": "12",
-          "Career Stats": "89,214 Pass Yards, 649 TD",
-          "Personal Achievements": "7x SB Champ, 5x MVP",
-          Photo: ["/images/tom-brady.jpg"],
-        },
+      const mockFootballData: RoundData[] = [
+        createMockRoundData(
+          "Tom Brady",
+          "Greatest quarterback",
+          "Quarterback",
+          "6th Rd (199th) from Michigan",
+          "2000-2022",
+          "NE, TB",
+          "12",
+          "89,214 Pass Yards, 649 TD",
+          "7x SB Champ, 5x MVP",
+          "/images/tom-brady.jpg",
+          "football",
+          1
+        ),
       ];
 
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -2506,34 +2725,38 @@ describe("Uncover Component", () => {
     });
 
     test("displays correct sport icon for each sport", async () => {
-      const mockBasketballData: PlayerData[] = [
-        {
-          Name: "Michael Jordan",
-          Bio: "Greatest basketball player",
-          "Player Information": "Guard",
-          "Draft Information": "1st Rd (3rd) from North Carolina",
-          "Years Active": "1984-2003",
-          "Teams Played On": "CHI, WAS",
-          "Jersey Numbers": "23, 45",
-          "Career Stats": "30.1 PPG, 6.2 RPG",
-          "Personal Achievements": "6x NBA Champ, 5x MVP",
-          Photo: ["/images/michael-jordan.jpg"],
-        },
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "Michael Jordan",
+          "Greatest basketball player",
+          "Guard",
+          "1st Rd (3rd) from North Carolina",
+          "1984-2003",
+          "CHI, WAS",
+          "23, 45",
+          "30.1 PPG, 6.2 RPG",
+          "6x NBA Champ, 5x MVP",
+          "/images/michael-jordan.jpg",
+          "basketball",
+          1
+        ),
       ];
 
-      const mockFootballData: PlayerData[] = [
-        {
-          Name: "Tom Brady",
-          Bio: "Greatest quarterback",
-          "Player Information": "Quarterback",
-          "Draft Information": "6th Rd (199th) from Michigan",
-          "Years Active": "2000-2022",
-          "Teams Played On": "NE, TB",
-          "Jersey Numbers": "12",
-          "Career Stats": "89,214 Pass Yards, 649 TD",
-          "Personal Achievements": "7x SB Champ, 5x MVP",
-          Photo: ["/images/tom-brady.jpg"],
-        },
+      const mockFootballData: RoundData[] = [
+        createMockRoundData(
+          "Tom Brady",
+          "Greatest quarterback",
+          "Quarterback",
+          "6th Rd (199th) from Michigan",
+          "2000-2022",
+          "NE, TB",
+          "12",
+          "89,214 Pass Yards, 649 TD",
+          "7x SB Champ, 5x MVP",
+          "/images/tom-brady.jpg",
+          "football",
+          1
+        ),
       ];
 
       render(<Uncover />);
