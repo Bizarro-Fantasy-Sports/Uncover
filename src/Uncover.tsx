@@ -83,6 +83,7 @@ interface GameState {
   error: string | null;
   firstTileFlipped: string | null;
   lastTileFlipped: string | null;
+  gaveUp: boolean;
 }
 
 const initialState: GameState = {
@@ -108,6 +109,7 @@ const initialState: GameState = {
   error: null,
   firstTileFlipped: null,
   lastTileFlipped: null,
+  gaveUp: false,
 };
 
 const Uncover: React.FC = () => {
@@ -312,7 +314,7 @@ const Uncover: React.FC = () => {
     const newScore = s.score - 2;
     let newHint = s.hint;
 
-    if (newScore < 70 && !s.hint) {
+    if (newScore < 80 && !s.hint) {
       newHint = playerData.Name.split(" ")
         .map((w) => w[0])
         .join(".");
@@ -368,6 +370,30 @@ const Uncover: React.FC = () => {
     return topics[index].replace(/\s+/g, '').replace(/^(.)/, (m) => m.toLowerCase());
   };
 
+  const handleGiveUp = () => {
+    updateState({
+      gaveUp: true,
+      finalRank: "",
+      showResultsModal: true,
+    });
+  };
+
+  const getSportsReferenceUrl = (sport: SportType, path: string): string => {
+    const baseUrls: Record<SportType, string> = {
+      baseball: "https://www.baseball-reference.com/players/",
+      basketball: "https://www.basketball-reference.com/players/",
+      football: "https://www.pro-football-reference.com/players/",
+    };
+
+    const extensions: Record<SportType, string> = {
+      baseball: ".shtml",
+      basketball: ".html",
+      football: ".htm",
+    };
+
+    return baseUrls[sport] + path + extensions[sport];
+  };
+
   const handleTileClick = (index: number) => {
     // If photo is already revealed, allow clicking to toggle back
     if (s.photoRevealed) {
@@ -399,13 +425,14 @@ const Uncover: React.FC = () => {
       const updated = [...s.flippedTiles];
       updated[index] = true;
 
-      // Only update score/counters if game is not won
-      if (!s.finalRank) {
+      // Only update score/counters if game is not won or gave up
+      if (!s.finalRank && !s.gaveUp) {
         let newScore = s.score - 6;
 
         let newHint = s.hint;
-        if (newScore < 70 && !s.hint) {
-          newHint = s.playerData!.Name.split(" ")
+        if (newScore < 80 && !s.hint) {
+          newHint = s
+            .playerData!.Name.split(" ")
             .map((w) => w[0])
             .join(".");
         }
@@ -421,7 +448,7 @@ const Uncover: React.FC = () => {
           lastTileFlipped: tileName,
         });
       } else {
-        // Game won - just update visual state
+        // Game won or gave up - just update visual state
         updateState({
           flippedTiles: updated,
           photoRevealed: true,
@@ -435,13 +462,14 @@ const Uncover: React.FC = () => {
     const updated = [...s.flippedTiles];
     updated[index] = true;
 
-    // Only update score/counters if game is not won
-    if (!s.finalRank) {
+    // Only update score/counters if game is not won or gave up
+    if (!s.finalRank && !s.gaveUp) {
       let newScore = s.score - 3;
 
       let newHint = s.hint;
-      if (newScore < 70 && !s.hint) {
-        newHint = s.playerData!.Name.split(" ")
+      if (newScore < 80 && !s.hint) {
+        newHint = s
+          .playerData!.Name.split(" ")
           .map((w) => w[0])
           .join(".");
       }
@@ -455,7 +483,7 @@ const Uncover: React.FC = () => {
         lastTileFlipped: tileName,
       });
     } else {
-      // Game won - just update visual state
+      // Game won or gave up - just update visual state
       updateState({
         flippedTiles: updated,
       });
@@ -517,15 +545,17 @@ const Uncover: React.FC = () => {
     <div className="uncover-game">
       <div className="sports-section">
         <div className="sports-navbar">
-          {(["baseball", "basketball", "football"] as SportType[]).map((sport) => (
-            <div
-              key={sport}
-              className={`nav-tab ${activeSport === sport ? "active" : ""}`}
-              onClick={() => setActiveSport(sport)}
-            >
-              {sport.toUpperCase()}
-            </div>
-          ))}
+          {(["baseball", "basketball", "football"] as SportType[]).map(
+            (sport) => (
+              <div
+                key={sport}
+                className={`nav-tab ${activeSport === sport ? "active" : ""}`}
+                onClick={() => setActiveSport(sport)}
+              >
+                {sport.toUpperCase()}
+              </div>
+            )
+          )}
         </div>
       </div>
 
@@ -558,9 +588,13 @@ const Uncover: React.FC = () => {
             <p className={`guess-message ${s.messageType}`}>{s.message}</p>
           )}
           {s.hint && !s.finalRank && (
-            <p className="guess-message hint">Hint: Player Initials — {s.hint}</p>
+            <p className="guess-message hint">
+              Hint: Player Initials — {s.hint}
+            </p>
           )}
-          {s.finalRank && <p className="final-rank">Your Rank: {s.finalRank}</p>}
+          {s.finalRank && (
+            <p className="final-rank">Your Rank: {s.finalRank}</p>
+          )}
         </div>
       </div>
 
@@ -579,6 +613,19 @@ const Uncover: React.FC = () => {
         <button onClick={handleNameSubmit} disabled={!s.playerName.trim()}>
           Submit
         </button>
+        {s.score < 80 && !s.finalRank && !s.gaveUp && (
+          <button onClick={handleGiveUp} className="give-up-button">
+            Give Up
+          </button>
+        )}
+        {(s.gaveUp || s.finalRank) && (
+          <button
+            onClick={() => updateState({ showResultsModal: true })}
+            className="view-results-button"
+          >
+            View Results
+          </button>
+        )}
       </div>
 
       <div className="grid">
@@ -645,8 +692,16 @@ const Uncover: React.FC = () => {
             >
               ✕
             </button>
-            <h2 className="results-title">Correct! Your score is {s.score}!</h2>
-            <p className="average-score">The average score today is 85</p>
+            <h2 className="results-title">
+              {s.gaveUp
+                ? "Try Again Tomorrow!"
+                : `Correct! Your score is ${s.score}!`}
+            </h2>
+            {!s.gaveUp && s.roundStats && (
+              <p className="average-score">
+                The average score today is {s.roundStats.averageScore}
+              </p>
+            )}
 
             <div className="results-grid">
               {topics.map((topic, index) => (
@@ -670,23 +725,31 @@ const Uncover: React.FC = () => {
               </div>
             )}
 
-            <div className="round-stats-section">
-              <h3>Today's Round Stats</h3>
-              <div className="round-stats-grid">
-                <div className="round-stat-item">
-                  <div className="round-stat-label">Games Played</div>
-                  <div className="round-stat-value">{s.roundStats.totalPlays}</div>
-                </div>
-                <div className="round-stat-item">
-                  <div className="round-stat-label">Average Score</div>
-                  <div className="round-stat-value">{s.roundStats.averageScore}</div>
-                </div>
-                <div className="round-stat-item">
-                  <div className="round-stat-label">Win Rate</div>
-                  <div className="round-stat-value">{s.roundStats.percentageCorrect}%</div>
+            {s.roundStats && (
+              <div className="round-stats-section">
+                <h3>Today's Round Stats</h3>
+                <div className="round-stats-grid">
+                  <div className="round-stat-item">
+                    <div className="round-stat-label">Games Played</div>
+                    <div className="round-stat-value">
+                      {s.roundStats.totalPlays}
+                    </div>
+                  </div>
+                  <div className="round-stat-item">
+                    <div className="round-stat-label">Average Score</div>
+                    <div className="round-stat-value">
+                      {s.roundStats.averageScore}
+                    </div>
+                  </div>
+                  <div className="round-stat-item">
+                    <div className="round-stat-label">Win Rate</div>
+                    <div className="round-stat-value">
+                      {s.roundStats.percentageCorrect}%
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}
@@ -696,14 +759,19 @@ const Uncover: React.FC = () => {
         onClose={() => setIsRulesModalOpen(false)}
       />
 
-      <TodayStatsModal
-        isOpen={isTodayStatsModalOpen}
-        onClose={() => setIsTodayStatsModalOpen(false)}
-        roundStats={{
-          ...s.roundStats,
-          name: s.finalRank ? (s.playerData.Name || "Unknown Player") : "???",
-        }}
-      />
+      {s.roundStats && (
+        <TodayStatsModal
+          isOpen={isTodayStatsModalOpen}
+          onClose={() => setIsTodayStatsModalOpen(false)}
+          roundStats={{
+            ...s.roundStats,
+            name:
+              s.finalRank || s.gaveUp
+                ? s.playerData?.Name || "Unknown Player"
+                : "???",
+          }}
+        />
+      )}
     </div>
   );
 };
