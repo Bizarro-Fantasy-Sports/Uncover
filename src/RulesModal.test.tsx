@@ -77,7 +77,7 @@ describe("RulesModal", () => {
       render(<RulesModal isOpen={true} onClose={mockOnClose} />);
 
       expect(screen.getByText(/Close spelling = hint/i)).toBeInTheDocument();
-      expect(screen.getByText(/Stuck & <80 pts = initials revealed/i)).toBeInTheDocument();
+      expect(screen.getByText(/Stuck & <70 pts = initials revealed/i)).toBeInTheDocument();
       expect(screen.getByText(/Difficulty increases Mon → Sat/i)).toBeInTheDocument();
     });
 

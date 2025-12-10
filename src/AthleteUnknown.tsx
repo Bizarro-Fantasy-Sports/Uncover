@@ -3,18 +3,24 @@ import "./AthleteUnknown.css";
 import RulesModal from "./RulesModal";
 import TodayStatsModal from "./TodayStatsModal";
 import UserStats from "./UserStats";
+import {
+  type SportType,
+  TILE_TOPICS,
+  TOTAL_TILES,
+  DEFAULT_SPORT,
+  SPORT_LIST,
+  SPORTS,
+  LEGACY_SPORT_FILES,
+  SCORING,
+  RANKS,
+  GUESS_ACCURACY,
+  TIMING,
+  PHOTO_GRID,
+  STORAGE_KEYS,
+  DEFAULTS,
+} from "./config";
 
-const topics = [
-  "Bio",
-  "Player Information",
-  "Draft Information",
-  "Years Active",
-  "Teams Played On",
-  "Jersey Numbers",
-  "Career Stats",
-  "Personal Achievements",
-  "Photo",
-];
+const topics = TILE_TOPICS;
 
 // Helper Function for Name Guessing
 const lev = (a: string, b: string): number => {
@@ -39,14 +45,6 @@ const lev = (a: string, b: string): number => {
 };
 
 const normalize = (str = ""): string => str.toLowerCase().replace(/\s/g, "");
-
-type SportType = "baseball" | "basketball" | "football";
-
-const sportFiles: Record<SportType, string> = {
-  baseball: "/AthleteUnknownBaseballData.json",
-  basketball: "/AthleteUnknownBasketballData.json",
-  football: "/AthleteUnknownFootballData.json",
-};
 
 // New data structure interfaces
 interface Player {
@@ -139,6 +137,7 @@ interface GameState {
   showResultsModal: boolean;
   copiedText: string;
   lastSubmittedGuess: string;
+  currentPlayerIndex?: number;
   gaveUp: boolean;
 }
 
@@ -150,11 +149,11 @@ const initialState: GameState = {
   message: "",
   messageType: "",
   previousCloseGuess: "",
-  flippedTiles: Array(9).fill(false),
+  flippedTiles: Array(TOTAL_TILES).fill(false),
   tilesFlippedCount: 0,
   photoRevealed: false,
   returningFromPhoto: false,
-  score: 100,
+  score: SCORING.INITIAL_SCORE,
   hint: "",
   finalRank: "",
   incorrectGuesses: 0,
@@ -177,17 +176,108 @@ const formatDateMMDDYY = (dateString: string): string => {
   return `${month}-${day}-${shortYear}`;
 };
 
+// Guest session persistence utilities
+const getGuestSessionKey = (sport: SportType): string => {
+  return `guestSession_${sport}`;
+};
+
+const saveGuestSession = (sport: SportType, state: GameState, playerIndex?: number): void => {
+  try {
+    // Only save persistent game state (exclude transient UI state)
+    const persistentState = {
+      playerName: state.playerName,
+      message: state.message,
+      messageType: state.messageType,
+      previousCloseGuess: state.previousCloseGuess,
+      flippedTiles: state.flippedTiles,
+      tilesFlippedCount: state.tilesFlippedCount,
+      score: state.score,
+      hint: state.hint,
+      finalRank: state.finalRank,
+      incorrectGuesses: state.incorrectGuesses,
+      lastSubmittedGuess: state.lastSubmittedGuess,
+      // Store player data identifier to verify it's the same puzzle
+      playerName_saved: state.playerData?.Name || "",
+      // Store player index so we can restore the same player
+      playerIndex_saved: playerIndex,
+    };
+    localStorage.setItem(getGuestSessionKey(sport), JSON.stringify(persistentState));
+  } catch (error) {
+    console.error("Failed to save guest session:", error);
+  }
+};
+
+const loadGuestSession = (sport: SportType, currentPlayerName: string): Partial<GameState> | null => {
+  try {
+    const saved = localStorage.getItem(getGuestSessionKey(sport));
+    if (!saved) {
+      return null;
+    }
+
+    const parsed = JSON.parse(saved);
+
+    // Only restore if it's the same player/puzzle
+    if (parsed.playerName_saved !== currentPlayerName) {
+      // Different puzzle, clear old session
+      clearGuestSession(sport);
+      return null;
+    }
+
+    // Return only the game state fields (not the saved player name or index)
+    // eslint-disable-next-line no-unused-vars
+    const { playerName_saved, playerIndex_saved, ...gameStateFields } = parsed;
+    return gameStateFields;
+  } catch (error) {
+    console.error("Failed to load guest session:", error);
+    return null;
+  }
+};
+
+const clearGuestSession = (sport: SportType): void => {
+  try {
+    localStorage.removeItem(getGuestSessionKey(sport));
+  } catch (error) {
+    console.error("Failed to clear guest session:", error);
+  }
+};
+
+const clearAllGuestSessions = (): void => {
+  SPORT_LIST.forEach(sport => clearGuestSession(sport));
+};
+
 const AthleteUnknown: React.FC = () => {
-  const [activeSport, setActiveSport] = useState<SportType>("baseball");
+  // Restore previously active sport from localStorage, default to baseball
+  const getInitialSport = (): SportType => {
+    try {
+      const saved = localStorage.getItem("activeSport");
+      if (saved && (saved === SPORTS.BASEBALL || saved === SPORTS.BASKETBALL || saved === SPORTS.FOOTBALL)) {
+        return saved as SportType;
+      }
+    } catch (error) {
+      console.error("Failed to load active sport:", error);
+    }
+    return DEFAULT_SPORT;
+  };
+
+  const [activeSport, setActiveSport] = useState<SportType>(getInitialSport);
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
   const [isTodayStatsModalOpen, setIsTodayStatsModalOpen] = useState(false);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
 
   const [gameState, setGameState] = useState<Record<SportType, GameState>>({
-    baseball: { ...initialState },
-    basketball: { ...initialState },
-    football: { ...initialState },
-  });
+    [SPORTS.BASEBALL]: { ...initialState },
+    [SPORTS.BASKETBALL]: { ...initialState },
+    [SPORTS.FOOTBALL]: { ...initialState },
+  } as Record<SportType, GameState>);
+
+  // Save active sport to localStorage when it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem("activeSport", activeSport);
+    } catch (error) {
+      console.error("Failed to save active sport:", error);
+    }
+  }, [activeSport]);
 
   // Load players JSON sequentially
   useEffect(() => {
@@ -199,14 +289,30 @@ const AthleteUnknown: React.FC = () => {
     }
 
     // Load once
-    fetch(sportFiles[activeSport])
+    fetch(LEGACY_SPORT_FILES[activeSport])
       .then((res) => res.json())
       .then((data: RoundData[]) => {
-        const key = `playerIndex_${activeSport}`;
-        const storedIndex = parseInt(localStorage.getItem(key) || "0");
+        const key = `${STORAGE_KEYS.PLAYER_INDEX_PREFIX}${activeSport}`;
+        const storedIndex = parseInt(localStorage.getItem(key) || String(DEFAULTS.PLAYER_INDEX));
 
-        const index = storedIndex % data.length;
-        const roundData = data[index];
+        // Check if there's a saved session to determine which player to load
+        const savedSessionRaw = localStorage.getItem(getGuestSessionKey(activeSport));
+        let playerIndex: number = storedIndex % data.length;
+        let savedSession: Partial<GameState> | null = null;
+
+        if (savedSessionRaw) {
+          try {
+            const parsed = JSON.parse(savedSessionRaw);
+            // If session has a saved player index, use it to load the correct player
+            if (parsed.playerIndex_saved !== undefined) {
+              playerIndex = parsed.playerIndex_saved % data.length;
+            }
+          } catch (error) {
+            console.error("Failed to parse saved session:", error);
+          }
+        }
+
+        const roundData = data[playerIndex];
 
         // Transform Player object to PlayerData format
         const playerData: PlayerData = {
@@ -222,11 +328,17 @@ const AthleteUnknown: React.FC = () => {
           Photo: [roundData.player.photo],
         };
 
-        localStorage.setItem(key, ((index + 1) % data.length).toString());
+        // Try to load the saved session for this player
+        savedSession = loadGuestSession(activeSport, playerData.Name);
 
-        setGameState((prev) => ({
-          ...prev,
-          [activeSport]: {
+        // Only increment player index if there's no saved session
+        // This keeps the same puzzle when navigating within the app
+        if (!savedSession) {
+          localStorage.setItem(key, ((playerIndex + 1) % data.length).toString());
+        }
+
+        setGameState((prev) => {
+          const newSportState = {
             ...prev[activeSport],
             playersList: data.map((round) => ({
               Name: round.player.name,
@@ -242,8 +354,23 @@ const AthleteUnknown: React.FC = () => {
             })),
             playerData,
             roundData,
-          },
-        }));
+            // Restore saved session if available
+            ...(savedSession || {}),
+            // Store current player index for session saving
+            currentPlayerIndex: playerIndex,
+          };
+
+          // Save the session immediately after loading (even if no user actions yet)
+          // This ensures the same player loads when navigating back
+          if (!savedSession) {
+            saveGuestSession(activeSport, newSportState, playerIndex);
+          }
+
+          return {
+            ...prev,
+            [activeSport]: newSportState,
+          };
+        });
       })
       .catch((error) => {
         console.error("Error loading player data:", error);
@@ -252,27 +379,53 @@ const AthleteUnknown: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSport]); // gameState intentionally excluded to prevent infinite re-renders
 
+  // Clear guest sessions when window is closed
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      clearAllGuestSessions();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   const s = gameState[activeSport];
   if (!s.playerData) {
     return <p>Loading player data...</p>;
   }
 
   const updateState = (patch: Partial<GameState>) => {
-    setGameState((prev) => ({
-      ...prev,
-      [activeSport]: { ...prev[activeSport], ...patch },
-    }));
+    setGameState((prev) => {
+      const currentSportState = prev[activeSport];
+      const newState = { ...currentSportState, ...patch };
+
+      // Ensure currentPlayerIndex is preserved if not in the patch
+      if (newState.currentPlayerIndex === undefined && currentSportState.currentPlayerIndex !== undefined) {
+        newState.currentPlayerIndex = currentSportState.currentPlayerIndex;
+      }
+
+      // Save guest session after state update (with player index)
+      saveGuestSession(activeSport, newState, newState.currentPlayerIndex);
+
+      return {
+        ...prev,
+        [activeSport]: newState,
+      };
+    });
   };
 
   const evaluateRank = (points: number): string => {
-    if (points >= 95) {
-      return "Amazing";
+    if (points >= RANKS.AMAZING.threshold) {
+      return RANKS.AMAZING.label;
     }
-    if (points >= 90) {
-      return "Elite";
+    if (points >= RANKS.ELITE.threshold) {
+      return RANKS.ELITE.label;
     }
-    if (points >= 80) {
-      return "Solid";
+    if (points >= RANKS.SOLID.threshold) {
+      return RANKS.SOLID.label;
     }
     return "";
   };
@@ -315,16 +468,16 @@ const AthleteUnknown: React.FC = () => {
       return;
     }
 
-    const newScore = s.score - 2;
+    const newScore = s.score - SCORING.INCORRECT_GUESS_PENALTY;
     let newHint = s.hint;
 
-    if (newScore < 80 && !s.hint) {
+    if (newScore < SCORING.HINT_THRESHOLD && !s.hint) {
       newHint = playerData.Name.split(" ")
         .map((w) => w[0])
         .join(".");
     }
 
-    if (distance <= 3) {
+    if (distance <= GUESS_ACCURACY.VERY_CLOSE_DISTANCE) {
       if (s.previousCloseGuess && s.previousCloseGuess !== a) {
         const rank = evaluateRank(newScore);
         updateState({
@@ -391,7 +544,7 @@ const AthleteUnknown: React.FC = () => {
       // Clear the returningFromPhoto flag after the flip animation completes
       setTimeout(() => {
         updateState({ returningFromPhoto: false });
-      }, 650);
+      }, TIMING.PHOTO_FLIP_ANIMATION_DURATION);
       return;
     }
 
@@ -412,12 +565,11 @@ const AthleteUnknown: React.FC = () => {
 
       // Only update score/counters if game is not won or gave up
       if (!s.finalRank && !s.gaveUp) {
-        let newScore = s.score - 6;
+        const newScore = s.score - SCORING.PHOTO_TILE_PENALTY;
 
         let newHint = s.hint;
-        if (newScore < 80 && !s.hint) {
-          newHint = s
-            .playerData!.Name.split(" ")
+        if (newScore < SCORING.HINT_THRESHOLD && !s.hint) {
+          newHint = s.playerData!.Name.split(" ")
             .map((w) => w[0])
             .join(".");
         }
@@ -447,12 +599,11 @@ const AthleteUnknown: React.FC = () => {
 
     // Only update score/counters if game is not won or gave up
     if (!s.finalRank && !s.gaveUp) {
-      let newScore = s.score - 3;
+      const newScore = s.score - SCORING.REGULAR_TILE_PENALTY;
 
       let newHint = s.hint;
-      if (newScore < 80 && !s.hint) {
-        newHint = s
-          .playerData!.Name.split(" ")
+      if (newScore < SCORING.HINT_THRESHOLD && !s.hint) {
+        newHint = s.playerData!.Name.split(" ")
           .map((w) => w[0])
           .join(".");
       }
@@ -475,10 +626,10 @@ const AthleteUnknown: React.FC = () => {
 
   // Calculate background position for photo segments (3x3 grid)
   const getPhotoSegmentStyle = (index: number): React.CSSProperties => {
-    const col = index % 3;
-    const row = Math.floor(index / 3);
-    const xPos = col * 150; // tile width
-    const yPos = row * 150; // tile height
+    const col = index % PHOTO_GRID.COLS;
+    const row = Math.floor(index / PHOTO_GRID.COLS);
+    const xPos = col * PHOTO_GRID.TILE_WIDTH;
+    const yPos = row * PHOTO_GRID.TILE_HEIGHT;
 
     return {
       backgroundImage: `url(${photoUrl})`,
@@ -490,7 +641,7 @@ const AthleteUnknown: React.FC = () => {
     // Get puzzle number from roundData
     const puzzleNumber = s.roundData
       ? getPuzzleNumber(s.roundData.roundId)
-      : "1";
+      : String(DEFAULTS.DAILY_NUMBER);
     const sportName =
       activeSport.charAt(0).toUpperCase() + activeSport.slice(1);
 
@@ -498,11 +649,11 @@ const AthleteUnknown: React.FC = () => {
     let shareText = `Daily Athlete Unknown ${sportName} #${puzzleNumber}\n`;
 
     // Create a 3x3 grid using emojis
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < TOTAL_TILES; i++) {
       // Yellow emoji for flipped, blue emoji for unflipped
       shareText += s.flippedTiles[i] ? "🟨" : "🟦";
       // Add newline after every 3 tiles (end of row)
-      if ((i + 1) % 3 === 0) {
+      if ((i + 1) % PHOTO_GRID.COLS === 0) {
         shareText += "\n";
       }
     }
@@ -519,7 +670,7 @@ const AthleteUnknown: React.FC = () => {
         // Clear the message after 3 seconds
         setTimeout(() => {
           updateState({ copiedText: "" });
-        }, 3000);
+        }, TIMING.SHARE_COPIED_MESSAGE_DURATION);
       })
       .catch((err) => {
         console.error("Failed to copy:", err);
@@ -530,17 +681,15 @@ const AthleteUnknown: React.FC = () => {
     <div className="athlete-unknown-game">
       <div className="sports-section">
         <div className="sports-navbar">
-          {(["baseball", "basketball", "football"] as SportType[]).map(
-            (sport) => (
-              <div
-                key={sport}
-                className={`nav-tab ${activeSport === sport ? "active" : ""}`}
-                onClick={() => setActiveSport(sport)}
-              >
-                {sport.toUpperCase()}
-              </div>
-            )
-          )}
+          {SPORT_LIST.map((sport) => (
+            <div
+              key={sport}
+              className={`nav-tab ${activeSport === sport ? "active" : ""}`}
+              onClick={() => setActiveSport(sport)}
+            >
+              {sport.toUpperCase()}
+            </div>
+          ))}
         </div>
         <button
           className="stats-button"
@@ -808,4 +957,11 @@ const AthleteUnknown: React.FC = () => {
 };
 
 export default AthleteUnknown;
-export { lev };
+export {
+  lev,
+  saveGuestSession,
+  loadGuestSession,
+  clearGuestSession,
+  clearAllGuestSessions,
+  getGuestSessionKey,
+};

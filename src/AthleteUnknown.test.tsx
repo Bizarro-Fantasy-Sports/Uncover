@@ -13,6 +13,7 @@ global.fetch = jest.fn() as jest.Mock;
 interface LocalStorageMock {
   getItem: jest.Mock;
   setItem: jest.Mock;
+  removeItem: jest.Mock;
   clear: jest.Mock;
 }
 
@@ -23,6 +24,9 @@ const localStorageMock = (() => {
     getItem: jest.fn((key: string) => store[key] || null),
     setItem: jest.fn((key: string, value: string) => {
       store[key] = value.toString();
+    }),
+    removeItem: jest.fn((key: string) => {
+      delete store[key];
     }),
     clear: jest.fn(() => {
       Object.keys(store).forEach((key) => delete store[key]);
@@ -225,6 +229,7 @@ describe("AthleteUnknown Component", () => {
     // Clear call history but preserve mock implementations
     localStorageMock.getItem.mockClear();
     localStorageMock.setItem.mockClear();
+    localStorageMock.removeItem.mockClear();
     localStorageMock.clear.mockClear();
 
     // Reset localStorage store
@@ -317,10 +322,12 @@ describe("AthleteUnknown Component", () => {
         expect(localStorageMock.getItem).toHaveBeenCalledWith(
           "playerIndex_baseball"
         );
-        expect(localStorageMock.setItem).toHaveBeenCalledWith(
-          "playerIndex_baseball",
-          "1"
+
+        // Check that playerIndex was set
+        const playerIndexCalls = localStorageMock.setItem.mock.calls.filter(
+          (call) => call[0] === "playerIndex_baseball"
         );
+        expect(playerIndexCalls).toContainEqual(["playerIndex_baseball", "1"]);
       });
     });
 
@@ -366,16 +373,21 @@ describe("AthleteUnknown Component", () => {
 
     test("cycles through player index correctly", async () => {
       // Set index to last player (1)
-      localStorageMock.getItem.mockReturnValueOnce("1");
+      localStorageMock.getItem.mockImplementation((key: string) => {
+        if (key === "playerIndex_baseball") {
+          return "1";
+        }
+        return null;
+      });
 
       render(<AthleteUnknown />);
 
       await waitFor(() => {
         // Should wrap around to 0
-        expect(localStorageMock.setItem).toHaveBeenCalledWith(
-          "playerIndex_baseball",
-          "0"
+        const playerIndexCalls = localStorageMock.setItem.mock.calls.filter(
+          (call) => call[0] === "playerIndex_baseball"
         );
+        expect(playerIndexCalls).toContainEqual(["playerIndex_baseball", "0"]);
       });
     });
   });
@@ -1880,27 +1892,31 @@ describe("AthleteUnknown Component", () => {
       render(<AthleteUnknown />);
 
       await waitFor(() => {
-        expect(localStorageMock.setItem).toHaveBeenCalledWith(
-          "playerIndex_baseball",
-          "1"
+        // Check that playerIndex was set
+        const playerIndexCalls = localStorageMock.setItem.mock.calls.filter(
+          (call) => call[0] === "playerIndex_baseball"
         );
+        expect(playerIndexCalls).toContainEqual(["playerIndex_baseball", "1"]);
       });
     });
 
     test("handles cycling to next player correctly", async () => {
       // Set to last index
-      localStorageMock.getItem.mockReturnValueOnce(
-        (mockBaseballData.length - 1).toString()
-      );
+      localStorageMock.getItem.mockImplementation((key: string) => {
+        if (key === "playerIndex_baseball") {
+          return (mockBaseballData.length - 1).toString();
+        }
+        return null;
+      });
 
       render(<AthleteUnknown />);
 
       await waitFor(() => {
         // Should cycle back to 0
-        expect(localStorageMock.setItem).toHaveBeenCalledWith(
-          "playerIndex_baseball",
-          "0"
+        const playerIndexCalls = localStorageMock.setItem.mock.calls.filter(
+          (call) => call[0] === "playerIndex_baseball"
         );
+        expect(playerIndexCalls).toContainEqual(["playerIndex_baseball", "0"]);
       });
     });
   });
@@ -2588,6 +2604,387 @@ describe("AthleteUnknown Component", () => {
         expect(screen.getByText("Babe Ruth")).toBeInTheDocument();
         expect(screen.queryByText("???")).not.toBeInTheDocument();
       });
+    });
+  });
+
+  describe("Guest Session Persistence", () => {
+    test("saves game state to localStorage when tiles are flipped", async () => {
+      render(<AthleteUnknown />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/bio/i)).toBeInTheDocument();
+      });
+
+      // Flip a tile
+      const bioTile = screen.getByText(/^bio$/i);
+      fireEvent.click(bioTile);
+
+      await waitFor(() => {
+        // Verify localStorage was called with guest session key
+        expect(localStorageMock.setItem).toHaveBeenCalledWith(
+          "guestSession_baseball",
+          expect.any(String)
+        );
+      });
+
+      // Verify the saved data includes game state
+      const savedCalls = localStorageMock.setItem.mock.calls.filter(
+        (call) => call[0] === "guestSession_baseball"
+      );
+      expect(savedCalls.length).toBeGreaterThan(0);
+
+      const savedData = JSON.parse(savedCalls[savedCalls.length - 1][1]);
+      expect(savedData).toMatchObject({
+        flippedTiles: expect.arrayContaining([true]),
+        tilesFlippedCount: 1,
+        score: 97, // 100 - 3 for flipping a tile
+        playerName_saved: "Babe Ruth",
+      });
+    });
+
+    test("saves game state to localStorage when guesses are made", async () => {
+      render(<AthleteUnknown />);
+
+      await waitFor(() => {
+        expect(screen.getByPlaceholderText(/enter player name/i)).toBeInTheDocument();
+      });
+
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      const submitButton = screen.getByText(/^submit$/i);
+
+      // Make a wrong guess
+      fireEvent.change(input, { target: { value: "Wrong Name" } });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        // Verify localStorage was called
+        expect(localStorageMock.setItem).toHaveBeenCalledWith(
+          "guestSession_baseball",
+          expect.any(String)
+        );
+      });
+
+      // Verify the saved data includes the guess
+      const savedCalls = localStorageMock.setItem.mock.calls.filter(
+        (call) => call[0] === "guestSession_baseball"
+      );
+      const savedData = JSON.parse(savedCalls[savedCalls.length - 1][1]);
+      expect(savedData).toMatchObject({
+        playerName: "Wrong Name",
+        message: 'Wrong guess: "Wrong Name"',
+        messageType: "error",
+        incorrectGuesses: 1,
+        score: 98, // 100 - 2 for wrong guess
+        lastSubmittedGuess: "wrongname",
+      });
+    });
+
+    test("restores game state from localStorage when component mounts", async () => {
+      // Pre-populate localStorage with saved session
+      const savedSession = {
+        playerName: "Test Name",
+        message: "You're close! Off by a few letters.",
+        messageType: "almost",
+        previousCloseGuess: "testname",
+        flippedTiles: [true, true, false, false, false, false, false, false, false],
+        tilesFlippedCount: 2,
+        score: 94,
+        hint: "",
+        finalRank: "",
+        incorrectGuesses: 0,
+        lastSubmittedGuess: "testname",
+        playerName_saved: "Babe Ruth",
+      };
+
+      localStorageMock.getItem.mockImplementation((key: string) => {
+        if (key === "guestSession_baseball") {
+          return JSON.stringify(savedSession);
+        }
+        if (key === "playerIndex_baseball") {
+          return "0";
+        }
+        return null;
+      });
+
+      render(<AthleteUnknown />);
+
+      await waitFor(() => {
+        // Verify state was restored
+        expect(screen.getByDisplayValue("Test Name")).toBeInTheDocument();
+        expect(screen.getByText(/you're close! off by a few letters/i)).toBeInTheDocument();
+        expect(screen.getByText(/score/i).nextSibling?.textContent).toBe("94");
+        expect(screen.getByText(/tiles flipped: 2/i)).toBeInTheDocument();
+      });
+    });
+
+    test("does not restore session if player has changed", async () => {
+      // Pre-populate localStorage with saved session for different player
+      const savedSession = {
+        playerName: "Old Name",
+        flippedTiles: [true, true, false, false, false, false, false, false, false],
+        tilesFlippedCount: 2,
+        score: 94,
+        playerName_saved: "Different Player", // Different from Babe Ruth
+      };
+
+      localStorageMock.getItem.mockImplementation((key: string) => {
+        if (key === "guestSession_baseball") {
+          return JSON.stringify(savedSession);
+        }
+        if (key === "playerIndex_baseball") {
+          return "0";
+        }
+        return null;
+      });
+
+      render(<AthleteUnknown />);
+
+      await waitFor(() => {
+        // Verify state was NOT restored (fresh state)
+        expect(screen.queryByDisplayValue("Old Name")).not.toBeInTheDocument();
+        expect(screen.getByText(/score/i).nextSibling?.textContent).toBe("100");
+        expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
+      });
+    });
+
+    test("maintains separate sessions for different sports", async () => {
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "Michael Jordan",
+          "Greatest basketball player",
+          "Shooting Guard",
+          "1st Rd (3rd) 1984",
+          "1984-2003",
+          "CHI, WAS",
+          "23, 45",
+          "30.1 PPG, 6.2 RPG",
+          "6x NBA Champ, 5x MVP",
+          "/images/jordan.jpg",
+          "basketball",
+          1
+        ),
+      ];
+
+      // Setup fetch to return different data based on sport
+      (global.fetch as jest.Mock).mockImplementation((url: string) => {
+        if (url.includes("Basketball")) {
+          return Promise.resolve({ json: async () => mockBasketballData });
+        }
+        return Promise.resolve({ json: async () => mockBaseballData });
+      });
+
+      render(<AthleteUnknown />);
+
+      // Wait for baseball to load
+      await waitFor(() => {
+        expect(screen.getByText(/bio/i)).toBeInTheDocument();
+      });
+
+      // Flip a tile in baseball
+      const bioTile = screen.getByText(/^bio$/i);
+      fireEvent.click(bioTile);
+
+      await waitFor(() => {
+        expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
+      });
+
+      // Switch to basketball
+      fireEvent.click(screen.getByText("BASKETBALL"));
+
+      await waitFor(() => {
+        // Basketball should have fresh state
+        expect(screen.getByText(/tiles flipped: 0/i)).toBeInTheDocument();
+      });
+
+      // Flip a tile in basketball to save basketball session
+      const basketballBioTile = screen.getByText(/^bio$/i);
+      fireEvent.click(basketballBioTile);
+
+      await waitFor(() => {
+        expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
+      });
+
+      // Verify both sessions were saved separately
+      const baseballCalls = localStorageMock.setItem.mock.calls.filter(
+        (call) => call[0] === "guestSession_baseball"
+      );
+      const basketballCalls = localStorageMock.setItem.mock.calls.filter(
+        (call) => call[0] === "guestSession_basketball"
+      );
+
+      expect(baseballCalls.length).toBeGreaterThan(0);
+      expect(basketballCalls.length).toBeGreaterThan(0);
+    });
+
+    test("clears all sessions on window beforeunload", async () => {
+      render(<AthleteUnknown />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/bio/i)).toBeInTheDocument();
+      });
+
+      // Flip a tile to create session data
+      const bioTile = screen.getByText(/^bio$/i);
+      fireEvent.click(bioTile);
+
+      await waitFor(() => {
+        expect(localStorageMock.setItem).toHaveBeenCalledWith(
+          "guestSession_baseball",
+          expect.any(String)
+        );
+      });
+
+      // Clear the removeItem mock before triggering beforeunload
+      localStorageMock.removeItem.mockClear();
+
+      // Trigger beforeunload event
+      const event = new Event("beforeunload");
+      window.dispatchEvent(event);
+
+      // Verify all sports sessions were cleared
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith("guestSession_baseball");
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith("guestSession_basketball");
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith("guestSession_football");
+    });
+
+    test("preserves session across sport switches and remounts", async () => {
+      const mockBasketballData = [
+        {
+          Name: "Michael Jordan",
+          Bio: "Greatest basketball player",
+          "Player Information": "Shooting Guard",
+          "Draft Information": "1st Rd (3rd) 1984",
+          "Years Active": "1984-2003",
+          "Teams Played On": "CHI, WAS",
+          "Jersey Numbers": "23, 45",
+          "Career Stats": "30.1 PPG, 6.2 RPG",
+          "Personal Achievements": "6x NBA Champ, 5x MVP",
+          Photo: ["/images/jordan.jpg"],
+        },
+      ];
+
+      (global.fetch as jest.Mock).mockImplementation((url: string) => {
+        if (url.includes("Basketball")) {
+          return Promise.resolve({ json: async () => mockBasketballData });
+        }
+        return Promise.resolve({ json: async () => mockBaseballData });
+      });
+
+      const { unmount } = render(<AthleteUnknown />);
+
+      // Wait for baseball to load
+      await waitFor(() => {
+        expect(screen.getByText(/bio/i)).toBeInTheDocument();
+      });
+
+      // Flip tiles and make a guess
+      const bioTile = screen.getByText(/^bio$/i);
+      fireEvent.click(bioTile);
+
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      fireEvent.change(input, { target: { value: "Almost Right" } });
+
+      await waitFor(() => {
+        expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
+      });
+
+      // Get the saved session data
+      const savedCalls = localStorageMock.setItem.mock.calls.filter(
+        (call) => call[0] === "guestSession_baseball"
+      );
+      const savedData = savedCalls[savedCalls.length - 1][1];
+
+      // Unmount and remount component
+      unmount();
+
+      // Mock localStorage to return the saved session
+      localStorageMock.getItem.mockImplementation((key: string) => {
+        if (key === "guestSession_baseball") {
+          return savedData;
+        }
+        if (key === "playerIndex_baseball") {
+          return "0";
+        }
+        return null;
+      });
+
+      render(<AthleteUnknown />);
+
+      // Verify session was restored
+      await waitFor(() => {
+        expect(screen.getByDisplayValue("Almost Right")).toBeInTheDocument();
+        expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
+        expect(screen.getByText(/score/i).nextSibling?.textContent).toBe("97");
+      });
+    });
+
+    test("saves winning state and restores it", async () => {
+      render(<AthleteUnknown />);
+
+      await waitFor(() => {
+        expect(screen.getByPlaceholderText(/enter player name/i)).toBeInTheDocument();
+      });
+
+      const input = screen.getByPlaceholderText(/enter player name/i);
+      const submitButton = screen.getByText(/^submit$/i);
+
+      // Make correct guess
+      fireEvent.change(input, { target: { value: "Babe Ruth" } });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/you guessed it right/i)).toBeInTheDocument();
+      });
+
+      // Verify winning state was saved
+      const savedCalls = localStorageMock.setItem.mock.calls.filter(
+        (call) => call[0] === "guestSession_baseball"
+      );
+      const savedData = JSON.parse(savedCalls[savedCalls.length - 1][1]);
+      expect(savedData).toMatchObject({
+        finalRank: expect.any(String),
+        message: "You guessed it right!",
+        messageType: "success",
+      });
+    });
+
+    test("handles localStorage errors gracefully", async () => {
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+      // First render normally to let component mount
+      const { rerender } = render(<AthleteUnknown />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/bio/i)).toBeInTheDocument();
+      });
+
+      // Now mock localStorage.setItem to throw an error for subsequent calls
+      const originalSetItem = localStorageMock.setItem;
+      localStorageMock.setItem.mockImplementation((key: string, value: string) => {
+        if (key.startsWith("guestSession_")) {
+          throw new Error("QuotaExceededError");
+        }
+        // Allow other localStorage calls (like playerIndex) to work
+        return originalSetItem(key, value);
+      });
+
+      // Flip a tile (should not crash even though save fails)
+      const bioTile = screen.getByText(/^bio$/i);
+      fireEvent.click(bioTile);
+
+      await waitFor(() => {
+        // Component should still work
+        expect(screen.getByText(/tiles flipped: 1/i)).toBeInTheDocument();
+      });
+
+      // Verify error was logged
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Failed to save guest session:",
+        expect.any(Error)
+      );
+
+      consoleErrorSpy.mockRestore();
+      localStorageMock.setItem.mockRestore();
     });
   });
 });
