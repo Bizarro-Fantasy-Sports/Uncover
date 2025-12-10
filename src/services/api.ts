@@ -62,6 +62,24 @@ class ApiService {
   }
 
   /**
+   * Get round data (includes both player and stats)
+   * @param sport - The sport (baseball, basketball, football)
+   * @param date - The date in YYYY-MM-DD format (optional, defaults to today)
+   */
+  private async getRound(sport: string, date?: string): Promise<any> {
+    const dateParam = date || new Date().toISOString().split('T')[0];
+    const url = `${this.baseUrl}${API_CONFIG.endpoints.getRound(sport, dateParam)}`;
+
+    try {
+      const response = await this.fetchWithTimeout(url);
+      return this.handleResponse<any>(response);
+    } catch (error) {
+      console.error('Error fetching round data:', error);
+      throw this.formatError(error, 'Failed to load round data');
+    }
+  }
+
+  /**
    * Get player data by sport and date
    * @param sport - The sport (baseball, basketball, football)
    * @param date - The date in YYYY-MM-DD format (optional, defaults to today)
@@ -70,12 +88,26 @@ class ApiService {
     sport: string,
     date?: string
   ): Promise<PlayerData> {
-    const dateParam = date || new Date().toISOString().split('T')[0];
-    const url = `${this.baseUrl}${API_CONFIG.endpoints.getPlayerBySportAndDate(sport, dateParam)}`;
-
     try {
-      const response = await this.fetchWithTimeout(url);
-      return this.handleResponse<PlayerData>(response);
+      const round = await this.getRound(sport, date);
+
+      // Transform backend Round.Player to frontend PlayerData format
+      const playerData: PlayerData = {
+        Name: round.player.name,
+        Bio: round.player.bio,
+        "Player Information": round.player.playerInformation,
+        "Draft Information": round.player.draftInformation,
+        "Years Active": round.player.yearsActive,
+        "Teams Played On": round.player.teamsPlayedOn,
+        "Jersey Numbers": round.player.jerseyNumbers,
+        "Career Stats": round.player.careerStats,
+        "Personal Achievements": round.player.personalAchievements,
+        Photo: [round.player.photo],
+        playDate: round.playDate,
+        sport: round.sport,
+      };
+
+      return playerData;
     } catch (error) {
       console.error('Error fetching player data:', error);
       throw this.formatError(error, 'Failed to load player data');
@@ -88,12 +120,11 @@ class ApiService {
    * @param date - The date in YYYY-MM-DD format (optional, defaults to today)
    */
   async getRoundStats(sport: string, date?: string): Promise<RoundStats> {
-    const dateParam = date || new Date().toISOString().split('T')[0];
-    const url = `${this.baseUrl}${API_CONFIG.endpoints.getRoundStats(sport, dateParam)}`;
-
     try {
-      const response = await this.fetchWithTimeout(url);
-      return this.handleResponse<RoundStats>(response);
+      const round = await this.getRound(sport, date);
+
+      // Return the stats from the round
+      return round.stats as RoundStats;
     } catch (error) {
       console.error('Error fetching round stats:', error);
       throw this.formatError(error, 'Failed to load round statistics');
@@ -107,14 +138,30 @@ class ApiService {
   async submitGameResults(
     gameResult: GameResult
   ): Promise<GameResultResponse> {
-    const url = `${this.baseUrl}${API_CONFIG.endpoints.submitGameResults}`;
+    const dateParam = gameResult.playDate || new Date().toISOString().split('T')[0];
+    const url = `${this.baseUrl}${API_CONFIG.endpoints.submitGameResults(gameResult.sport, dateParam)}`;
+
+    // Transform frontend format to backend format
+    const backendPayload = {
+      score: gameResult.score,
+      isCorrect: gameResult.completed,
+      tilesFlipped: gameResult.flippedTilesPattern
+        .map((flipped, index) => flipped ? `tile${index + 1}` : null)
+        .filter(Boolean),
+    };
 
     try {
       const response = await this.fetchWithTimeout(url, {
         method: 'POST',
-        body: JSON.stringify(gameResult),
+        body: JSON.stringify(backendPayload),
       });
-      return this.handleResponse<GameResultResponse>(response);
+      const result = await this.handleResponse<any>(response);
+
+      return {
+        success: true,
+        message: 'Results submitted successfully',
+        roundStats: result,
+      };
     } catch (error) {
       console.error('Error submitting game results:', error);
       throw this.formatError(error, 'Failed to submit game results');

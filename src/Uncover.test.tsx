@@ -123,11 +123,29 @@ describe("Uncover Component", () => {
     // Reset localStorage store
     localStorageMock.clear();
 
-    // Setup default fetch mock - need to mock both player data and round stats calls
+    // Setup default fetch mock - mock the new /v1/round endpoint
     (global.fetch as jest.Mock).mockClear();
-    (global.fetch as jest.Mock)
-      .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballPlayerData })
-      .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballRoundStats });
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        roundId: "baseball001",
+        sport: "baseball",
+        playDate: "2025-01-01",
+        player: {
+          name: mockBaseballPlayerData.Name,
+          bio: mockBaseballPlayerData.Bio,
+          playerInformation: mockBaseballPlayerData["Player Information"],
+          draftInformation: mockBaseballPlayerData["Draft Information"],
+          yearsActive: mockBaseballPlayerData["Years Active"],
+          teamsPlayedOn: mockBaseballPlayerData["Teams Played On"],
+          jerseyNumbers: mockBaseballPlayerData["Jersey Numbers"],
+          careerStats: mockBaseballPlayerData["Career Stats"],
+          personalAchievements: mockBaseballPlayerData["Personal Achievements"],
+          photo: mockBaseballPlayerData.Photo[0],
+        },
+        stats: mockBaseballRoundStats,
+      }),
+    });
   });
 
   describe("Component Rendering", () => {
@@ -198,12 +216,12 @@ describe("Uncover Component", () => {
       render(<Uncover />);
 
       await waitFor(() => {
-        // Should make API calls for both player data and round stats
+        // Should make API call to /v1/round endpoint
         expect(global.fetch).toHaveBeenCalled();
         const calls = (global.fetch as jest.Mock).mock.calls;
-        expect(calls.length).toBeGreaterThanOrEqual(2);
-        expect(calls[0][0]).toContain('/api/players/baseball/');
-        expect(calls[1][0]).toContain('/api/round-stats/baseball/');
+        expect(calls.length).toBeGreaterThanOrEqual(1);
+        expect(calls[0][0]).toContain('/v1/round');
+        expect(calls[0][0]).toContain('sport=baseball');
       });
     });
 
@@ -254,11 +272,50 @@ describe("Uncover Component", () => {
         },
       };
 
+      // Mock baseball round first, then basketball round
       (global.fetch as jest.Mock)
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballPlayerData })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballRoundStats })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBasketballPlayerData })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBasketballRoundStats });
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "baseball001",
+            sport: "baseball",
+            playDate: "2025-01-01",
+            player: {
+              name: mockBaseballPlayerData.Name,
+              bio: mockBaseballPlayerData.Bio,
+              playerInformation: mockBaseballPlayerData["Player Information"],
+              draftInformation: mockBaseballPlayerData["Draft Information"],
+              yearsActive: mockBaseballPlayerData["Years Active"],
+              teamsPlayedOn: mockBaseballPlayerData["Teams Played On"],
+              jerseyNumbers: mockBaseballPlayerData["Jersey Numbers"],
+              careerStats: mockBaseballPlayerData["Career Stats"],
+              personalAchievements: mockBaseballPlayerData["Personal Achievements"],
+              photo: mockBaseballPlayerData.Photo[0],
+            },
+            stats: mockBaseballRoundStats,
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "basketball001",
+            sport: "basketball",
+            playDate: "2025-01-01",
+            player: {
+              name: mockBasketballPlayerData.Name,
+              bio: mockBasketballPlayerData.Bio,
+              playerInformation: mockBasketballPlayerData["Player Information"],
+              draftInformation: mockBasketballPlayerData["Draft Information"],
+              yearsActive: mockBasketballPlayerData["Years Active"],
+              teamsPlayedOn: mockBasketballPlayerData["Teams Played On"],
+              jerseyNumbers: mockBasketballPlayerData["Jersey Numbers"],
+              careerStats: mockBasketballPlayerData["Career Stats"],
+              personalAchievements: mockBasketballPlayerData["Personal Achievements"],
+              photo: mockBasketballPlayerData.Photo[0],
+            },
+            stats: mockBasketballRoundStats,
+          }),
+        });
 
       render(<Uncover />);
 
@@ -269,13 +326,12 @@ describe("Uncover Component", () => {
       fireEvent.click(screen.getByText("BASKETBALL"));
 
       await waitFor(() => {
-        // Verify fetch was called with basketball API endpoints
+        // Verify fetch was called with basketball /v1/round endpoint
         const calls = (global.fetch as jest.Mock).mock.calls;
         const basketballCalls = calls.filter(call =>
-          call[0].includes('/api/players/basketball/') ||
-          call[0].includes('/api/round-stats/basketball/')
+          call[0].includes('/v1/round') && call[0].includes('sport=basketball')
         );
-        expect(basketballCalls.length).toBeGreaterThanOrEqual(2);
+        expect(basketballCalls.length).toBeGreaterThanOrEqual(1);
       });
     });
   });
@@ -850,24 +906,87 @@ describe("Uncover Component", () => {
 
   describe("Sport Switching", () => {
     test("switching sports loads new player data", async () => {
-      const mockFootballData: PlayerData[] = [
-        {
-          Name: "Tom Brady",
-          Bio: "QB GOAT",
-          "Player Information": "",
-          "Draft Information": "",
-          "Years Active": "",
-          "Teams Played On": "",
-          "Jersey Numbers": "",
-          "Career Stats": "",
-          "Personal Achievements": "",
-          Photo: ["/tb.jpg"],
-        },
-      ];
+      const mockFootballPlayerData: PlayerData = {
+        Name: "Tom Brady",
+        Bio: "QB GOAT",
+        "Player Information": "Quarterback",
+        "Draft Information": "2000 Draft",
+        "Years Active": "2000-2022",
+        "Teams Played On": "Patriots, Buccaneers",
+        "Jersey Numbers": "12",
+        "Career Stats": "89,214 yards",
+        "Personal Achievements": "7 Super Bowls",
+        Photo: ["/tb.jpg"],
+      };
 
+      const mockFootballRoundStats: RoundStats = {
+        playDate: "2025-01-01",
+        sport: "football",
+        name: "Tom Brady",
+        totalPlays: 50,
+        percentageCorrect: 65,
+        averageScore: 75,
+        averageCorrectScore: 80,
+        highestScore: 95,
+        mostCommonFirstTileFlipped: "Bio",
+        mostCommonLastTileFlipped: "Photo",
+        tileFlipCounts: {
+          bio: 20,
+          careerStats: 15,
+          draftInformation: 12,
+          jerseyNumbers: 8,
+          personalAchievements: 10,
+          photo: 35,
+          playerInformation: 14,
+          teamsPlayedOn: 18,
+          yearsActive: 16,
+        },
+      };
+
+      // Mock baseball round first, then football round
       (global.fetch as jest.Mock)
-        .mockResolvedValueOnce({ json: async () => mockBaseballData })
-        .mockResolvedValueOnce({ json: async () => mockFootballData });
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "baseball001",
+            sport: "baseball",
+            playDate: "2025-01-01",
+            player: {
+              name: mockBaseballPlayerData.Name,
+              bio: mockBaseballPlayerData.Bio,
+              playerInformation: mockBaseballPlayerData["Player Information"],
+              draftInformation: mockBaseballPlayerData["Draft Information"],
+              yearsActive: mockBaseballPlayerData["Years Active"],
+              teamsPlayedOn: mockBaseballPlayerData["Teams Played On"],
+              jerseyNumbers: mockBaseballPlayerData["Jersey Numbers"],
+              careerStats: mockBaseballPlayerData["Career Stats"],
+              personalAchievements: mockBaseballPlayerData["Personal Achievements"],
+              photo: mockBaseballPlayerData.Photo[0],
+            },
+            stats: mockBaseballRoundStats,
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "football001",
+            sport: "football",
+            playDate: "2025-01-01",
+            player: {
+              name: mockFootballPlayerData.Name,
+              bio: mockFootballPlayerData.Bio,
+              playerInformation: mockFootballPlayerData["Player Information"],
+              draftInformation: mockFootballPlayerData["Draft Information"],
+              yearsActive: mockFootballPlayerData["Years Active"],
+              teamsPlayedOn: mockFootballPlayerData["Teams Played On"],
+              jerseyNumbers: mockFootballPlayerData["Jersey Numbers"],
+              careerStats: mockFootballPlayerData["Career Stats"],
+              personalAchievements: mockFootballPlayerData["Personal Achievements"],
+              photo: mockFootballPlayerData.Photo[0],
+            },
+            stats: mockFootballRoundStats,
+          }),
+        });
 
       render(<Uncover />);
 
@@ -878,7 +997,12 @@ describe("Uncover Component", () => {
       fireEvent.click(screen.getByText("FOOTBALL"));
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("/UncoverFootballData.json");
+        // Verify fetch was called with football /v1/round endpoint
+        const calls = (global.fetch as jest.Mock).mock.calls;
+        const footballCalls = calls.filter(call =>
+          call[0].includes('/v1/round') && call[0].includes('sport=football')
+        );
+        expect(footballCalls.length).toBeGreaterThanOrEqual(1);
       });
     });
 
@@ -921,10 +1045,48 @@ describe("Uncover Component", () => {
       };
 
       (global.fetch as jest.Mock)
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballPlayerData })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballRoundStats })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBasketballPlayerData })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBasketballRoundStats });
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "baseball001",
+            sport: "baseball",
+            playDate: "2025-01-01",
+            player: {
+              name: mockBaseballPlayerData.Name,
+              bio: mockBaseballPlayerData.Bio,
+              playerInformation: mockBaseballPlayerData["Player Information"],
+              draftInformation: mockBaseballPlayerData["Draft Information"],
+              yearsActive: mockBaseballPlayerData["Years Active"],
+              teamsPlayedOn: mockBaseballPlayerData["Teams Played On"],
+              jerseyNumbers: mockBaseballPlayerData["Jersey Numbers"],
+              careerStats: mockBaseballPlayerData["Career Stats"],
+              personalAchievements: mockBaseballPlayerData["Personal Achievements"],
+              photo: mockBaseballPlayerData.Photo[0],
+            },
+            stats: mockBaseballRoundStats,
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "basketball001",
+            sport: "basketball",
+            playDate: "2025-01-01",
+            player: {
+              name: mockBasketballPlayerData.Name,
+              bio: mockBasketballPlayerData.Bio,
+              playerInformation: mockBasketballPlayerData["Player Information"],
+              draftInformation: mockBasketballPlayerData["Draft Information"],
+              yearsActive: mockBasketballPlayerData["Years Active"],
+              teamsPlayedOn: mockBasketballPlayerData["Teams Played On"],
+              jerseyNumbers: mockBasketballPlayerData["Jersey Numbers"],
+              careerStats: mockBasketballPlayerData["Career Stats"],
+              personalAchievements: mockBasketballPlayerData["Personal Achievements"],
+              photo: mockBasketballPlayerData.Photo[0],
+            },
+            stats: mockBasketballRoundStats,
+          }),
+        });
 
       render(<Uncover />);
 
@@ -1714,10 +1876,10 @@ describe("Uncover Component", () => {
 
       render(<Uncover />);
 
-      // Component should handle error without crashing and load mock data
+      // Component should show error UI with retry button
       await waitFor(() => {
-        // Should eventually load with mock data instead of showing error
-        expect(screen.getByPlaceholderText(/enter player name/i)).toBeInTheDocument();
+        expect(screen.getByText(/error/i)).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: /retry/i })).toBeInTheDocument();
       }, { timeout: 3000 });
     });
 
@@ -2197,10 +2359,48 @@ describe("Uncover Component", () => {
       };
 
       (global.fetch as jest.Mock)
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballPlayerData })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballRoundStats })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBasketballPlayerData })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBasketballRoundStats });
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "baseball001",
+            sport: "baseball",
+            playDate: "2025-01-01",
+            player: {
+              name: mockBaseballPlayerData.Name,
+              bio: mockBaseballPlayerData.Bio,
+              playerInformation: mockBaseballPlayerData["Player Information"],
+              draftInformation: mockBaseballPlayerData["Draft Information"],
+              yearsActive: mockBaseballPlayerData["Years Active"],
+              teamsPlayedOn: mockBaseballPlayerData["Teams Played On"],
+              jerseyNumbers: mockBaseballPlayerData["Jersey Numbers"],
+              careerStats: mockBaseballPlayerData["Career Stats"],
+              personalAchievements: mockBaseballPlayerData["Personal Achievements"],
+              photo: mockBaseballPlayerData.Photo[0],
+            },
+            stats: mockBaseballRoundStats,
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "basketball001",
+            sport: "basketball",
+            playDate: "2025-01-01",
+            player: {
+              name: mockBasketballPlayerData.Name,
+              bio: mockBasketballPlayerData.Bio,
+              playerInformation: mockBasketballPlayerData["Player Information"],
+              draftInformation: mockBasketballPlayerData["Draft Information"],
+              yearsActive: mockBasketballPlayerData["Years Active"],
+              teamsPlayedOn: mockBasketballPlayerData["Teams Played On"],
+              jerseyNumbers: mockBasketballPlayerData["Jersey Numbers"],
+              careerStats: mockBasketballPlayerData["Career Stats"],
+              personalAchievements: mockBasketballPlayerData["Personal Achievements"],
+              photo: mockBasketballPlayerData.Photo[0],
+            },
+            stats: mockBasketballRoundStats,
+          }),
+        });
 
       render(<Uncover />);
 
@@ -2283,10 +2483,48 @@ describe("Uncover Component", () => {
       };
 
       (global.fetch as jest.Mock)
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballPlayerData })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBaseballRoundStats })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBasketballPlayerData })
-        .mockResolvedValueOnce({ ok: true, json: async () => mockBasketballRoundStats });
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "baseball001",
+            sport: "baseball",
+            playDate: "2025-01-01",
+            player: {
+              name: mockBaseballPlayerData.Name,
+              bio: mockBaseballPlayerData.Bio,
+              playerInformation: mockBaseballPlayerData["Player Information"],
+              draftInformation: mockBaseballPlayerData["Draft Information"],
+              yearsActive: mockBaseballPlayerData["Years Active"],
+              teamsPlayedOn: mockBaseballPlayerData["Teams Played On"],
+              jerseyNumbers: mockBaseballPlayerData["Jersey Numbers"],
+              careerStats: mockBaseballPlayerData["Career Stats"],
+              personalAchievements: mockBaseballPlayerData["Personal Achievements"],
+              photo: mockBaseballPlayerData.Photo[0],
+            },
+            stats: mockBaseballRoundStats,
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            roundId: "basketball001",
+            sport: "basketball",
+            playDate: "2025-01-01",
+            player: {
+              name: mockBasketballPlayerData.Name,
+              bio: mockBasketballPlayerData.Bio,
+              playerInformation: mockBasketballPlayerData["Player Information"],
+              draftInformation: mockBasketballPlayerData["Draft Information"],
+              yearsActive: mockBasketballPlayerData["Years Active"],
+              teamsPlayedOn: mockBasketballPlayerData["Teams Played On"],
+              jerseyNumbers: mockBasketballPlayerData["Jersey Numbers"],
+              careerStats: mockBasketballPlayerData["Career Stats"],
+              personalAchievements: mockBasketballPlayerData["Personal Achievements"],
+              photo: mockBasketballPlayerData.Photo[0],
+            },
+            stats: mockBasketballRoundStats,
+          }),
+        });
 
       render(<Uncover />);
 
