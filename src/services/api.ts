@@ -7,6 +7,19 @@ import type {
   ApiError,
 } from "../types/api";
 
+// Tile names mapping (index 0-8 maps to backend tile names)
+const TILE_NAMES = [
+  "bio",
+  "playerInformation",
+  "draftInformation",
+  "yearsActive",
+  "teamsPlayedOn",
+  "jerseyNumbers",
+  "careerStats",
+  "personalAchievements",
+  "photo",
+];
+
 class ApiService {
   private baseUrl: string;
   private timeout: number;
@@ -160,7 +173,7 @@ class ApiService {
       score: gameResult.score,
       isCorrect: gameResult.completed,
       tilesFlipped: gameResult.flippedTilesPattern
-        .map((flipped, index) => flipped ? `tile${index + 1}` : null)
+        .map((flipped, index) => flipped ? TILE_NAMES[index] : null)
         .filter(Boolean),
     };
 
