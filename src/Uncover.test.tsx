@@ -2987,4 +2987,204 @@ describe("Uncover Component", () => {
       localStorageMock.setItem.mockRestore();
     });
   });
+
+  describe("Sports Reference Attribution", () => {
+    test("renders Sports Reference attribution link", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/loading player data/i)).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading player data/i)).not.toBeInTheDocument();
+      });
+
+      // Check that Sports Reference logo link is present
+      const sportsRefLogo = screen.getByAltText(/reference/i);
+      expect(sportsRefLogo).toBeInTheDocument();
+      expect(sportsRefLogo.closest("a")).toBeInTheDocument();
+    });
+
+    test("displays correct URL for baseball", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading player data/i)).not.toBeInTheDocument();
+      });
+
+      const sportsRefLogo = screen.getByAltText("Baseball Reference");
+      const sportsRefLink = sportsRefLogo.closest("a");
+      expect(sportsRefLink).toHaveAttribute(
+        "href",
+        "https://www.baseball-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite"
+      );
+    });
+
+    test("displays correct URL for basketball", async () => {
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "Michael Jordan",
+          "Greatest basketball player",
+          "Guard",
+          "1st Rd (3rd) from North Carolina",
+          "1984-2003",
+          "CHI, WAS",
+          "23, 45",
+          "30.1 PPG, 6.2 RPG",
+          "6x NBA Champ, 5x MVP",
+          "/images/michael-jordan.jpg",
+          "basketball",
+          1
+        ),
+      ];
+
+      (global.fetch as jest.Mock).mockResolvedValue({
+        json: async () => mockBasketballData,
+      });
+
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading player data/i)).not.toBeInTheDocument();
+      });
+
+      // Switch to basketball
+      fireEvent.click(screen.getByText("BASKETBALL"));
+
+      await waitFor(() => {
+        const sportsRefLogo = screen.getByAltText("Basketball Reference");
+        const sportsRefLink = sportsRefLogo.closest("a");
+        expect(sportsRefLink).toHaveAttribute(
+          "href",
+          "https://www.basketball-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite&__hstc=213859787.d5011e8d60fd9a5193cb043be2a32532.1764028511872.1764187685470.1764486206944.5&__hssc=213859787.1.1764486206944&__hsfp=2724220660"
+        );
+      });
+    });
+
+    test("displays correct URL for football", async () => {
+      const mockFootballData: RoundData[] = [
+        createMockRoundData(
+          "Tom Brady",
+          "Greatest quarterback",
+          "Quarterback",
+          "6th Rd (199th) from Michigan",
+          "2000-2022",
+          "NE, TB",
+          "12",
+          "89,214 Pass Yards, 649 TD",
+          "7x SB Champ, 5x MVP",
+          "/images/tom-brady.jpg",
+          "football",
+          1
+        ),
+      ];
+
+      (global.fetch as jest.Mock).mockResolvedValue({
+        json: async () => mockFootballData,
+      });
+
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading player data/i)).not.toBeInTheDocument();
+      });
+
+      // Switch to football
+      fireEvent.click(screen.getByText("FOOTBALL"));
+
+      await waitFor(() => {
+        const sportsRefLogo = screen.getByAltText("Football Reference");
+        const sportsRefLink = sportsRefLogo.closest("a");
+        expect(sportsRefLink).toHaveAttribute(
+          "href",
+          "https://www.pro-football-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite"
+        );
+      });
+    });
+
+    test("attribution link opens in new tab", async () => {
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading player data/i)).not.toBeInTheDocument();
+      });
+
+      const sportsRefLogo = screen.getByAltText("Baseball Reference");
+      const sportsRefLink = sportsRefLogo.closest("a");
+      expect(sportsRefLink).toHaveAttribute("target", "_blank");
+      expect(sportsRefLink).toHaveAttribute("rel", "noopener noreferrer");
+    });
+
+    test("displays correct sport logo for each sport", async () => {
+      const mockBasketballData: RoundData[] = [
+        createMockRoundData(
+          "Michael Jordan",
+          "Greatest basketball player",
+          "Guard",
+          "1st Rd (3rd) from North Carolina",
+          "1984-2003",
+          "CHI, WAS",
+          "23, 45",
+          "30.1 PPG, 6.2 RPG",
+          "6x NBA Champ, 5x MVP",
+          "/images/michael-jordan.jpg",
+          "basketball",
+          1
+        ),
+      ];
+
+      const mockFootballData: RoundData[] = [
+        createMockRoundData(
+          "Tom Brady",
+          "Greatest quarterback",
+          "Quarterback",
+          "6th Rd (199th) from Michigan",
+          "2000-2022",
+          "NE, TB",
+          "12",
+          "89,214 Pass Yards, 649 TD",
+          "7x SB Champ, 5x MVP",
+          "/images/tom-brady.jpg",
+          "football",
+          1
+        ),
+      ];
+
+      render(<Uncover />);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading player data/i)).not.toBeInTheDocument();
+      });
+
+      // Baseball should show baseball logo
+      const baseballLogo = screen.getByAltText("Baseball Reference");
+      expect(baseballLogo).toBeInTheDocument();
+      expect(baseballLogo).toHaveAttribute("src", "https://cdn.ssref.net/req/202512031/logos/br-logo.svg");
+
+      // Switch to basketball
+      (global.fetch as jest.Mock).mockResolvedValue({
+        json: async () => mockBasketballData,
+      });
+      fireEvent.click(screen.getByText("BASKETBALL"));
+
+      await waitFor(() => {
+        const basketballLogo = screen.getByAltText("Basketball Reference");
+        expect(basketballLogo).toBeInTheDocument();
+        expect(basketballLogo).toHaveAttribute("src", "https://cdn.ssref.net/req/202512031/logos/bbr-logo.svg");
+      });
+
+      // Switch to football
+      (global.fetch as jest.Mock).mockResolvedValue({
+        json: async () => mockFootballData,
+      });
+      fireEvent.click(screen.getByText("FOOTBALL"));
+
+      await waitFor(() => {
+        const footballLogo = screen.getByAltText("Football Reference");
+        expect(footballLogo).toBeInTheDocument();
+        expect(footballLogo).toHaveAttribute("src", "https://cdn.ssref.net/req/202512101/logos/pfr-logo.svg");
+      });
+    });
+  });
 });
