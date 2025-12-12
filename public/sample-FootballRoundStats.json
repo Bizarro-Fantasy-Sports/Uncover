@@ -1,0 +1,69 @@
+{
+  "playDate": "2025-11-19",
+  "sport": "football",
+  "roundId": "football333",
+  "created": "2025-11-11T10:00:00Z",
+  "lastUpdated": "2025-11-12T00:00:00Z",
+  "previouslyPlayedDates": [],
+  "player": {
+    "sport": "football",
+    "sportsReferencePath": "M/McNaSt00",
+    "name": "Steve McNair",
+    "bio": "DOB: February 14, 1973 in Mount Olive, MS",
+    "playerInformation": "6'2\", 230 lbs, QB. Throws Right",
+    "draftInformation": "1st Rd (3rd) from Alcorn St",
+    "yearsActive": "1995-2007",
+    "teamsPlayedOn": "HOU, TEN, BAL",
+    "jerseyNumbers": "9",
+    "careerStats": "31304 Pass Yards, 174 Pass TD, 119 INT, 125 AV",
+    "personalAchievements": "3x Pro Bowl, 1x MVP",
+    "photoUrl": ""
+  },
+  "stats": {
+    "playDate": "2025-11-19",
+    "sport": "football",
+    "name": "Steve McNair",
+    "totalPlays": 100,
+    "percentageCorrect": 90,
+    "averageScore": 77,
+    "averageCorrectScore": 90,
+    "highestScore": 98,
+    "mostCommonFirstTileFlipped": "playerInformation",
+    "mostCommonLastTileFlipped": "photo",
+    "mostCommonTileFlipped": "teamsPlayedOn",
+    "leastCommonTileFlipped": "bio",
+    "mostFlippedTracker": {
+      "bio": 31,
+      "careerStats": 31,
+      "draftInformation": 31,
+      "jerseyNumbers": 31,
+      "personalAchievements": 31,
+      "photoUrl": 31,
+      "playerInformation": 31,
+      "teamsPlayedOn": 31,
+      "yearsActive": 31
+    },
+    "firstFlippedTracker": {
+      "bio": 32,
+      "careerStats": 32,
+      "draftInformation": 32,
+      "jerseyNumbers": 32,
+      "personalAchievements": 32,
+      "photoUrl": 32,
+      "playerInformation": 32,
+      "teamsPlayedOn": 32,
+      "yearsActive": 32
+    },
+    "lastFlippedTracker": {
+      "bio": 33,
+      "careerStats": 33,
+      "draftInformation": 33,
+      "jerseyNumbers": 33,
+      "personalAchievements": 33,
+      "photoUrl": 33,
+      "playerInformation": 33,
+      "teamsPlayedOn": 33,
+      "yearsActive": 33
+    }
+  }
+}

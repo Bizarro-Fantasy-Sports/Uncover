@@ -82,7 +82,9 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
   const [hoveredTile, setHoveredTile] = useState<string | null>(null);
   const [hoveredAcronym, setHoveredAcronym] = useState<string | null>(null);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   const renderTileWithTooltip = (tileName: string) => {
     return (

@@ -45,7 +45,7 @@
 }
 
 .puzzle-number {
-  font-weight: 600;
+  font-weight: bold;
   color: #ffffff;
 }
 
@@ -465,8 +465,13 @@
 }
 
 .puzzle-number {
-  font-weight: 600;
-  color: #ffd60a;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.puzzle-date {
+  font-weight: bold;
+  color: #ffffff;
 }
 
 .separator {

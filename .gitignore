@@ -21,3 +21,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Local testing files (keep local only)
+test-round-data-today.json
+test-round-data-dynamodb.json
+setup-local-db.js
+setup-dynamodb-docker.sh
+LOCAL_TESTING_SETUP.md

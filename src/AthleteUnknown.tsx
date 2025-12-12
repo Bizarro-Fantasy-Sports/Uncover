@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./AthleteUnknown.css";
 import RulesModal from "./RulesModal";
 import TodayStatsModal from "./TodayStatsModal";
+import gameDataService from "./services/gameData";
+import type { RoundStats, GameResult } from "./types/api";
 import UserStats from "./UserStats";
 import {
   type SportType,
@@ -10,14 +12,11 @@ import {
   DEFAULT_SPORT,
   SPORT_LIST,
   SPORTS,
-  LEGACY_SPORT_FILES,
   SCORING,
   RANKS,
   GUESS_ACCURACY,
   TIMING,
   PHOTO_GRID,
-  STORAGE_KEYS,
-  DEFAULTS,
 } from "./config";
 
 const topics = TILE_TOPICS;
@@ -46,62 +45,7 @@ const lev = (a: string, b: string): number => {
 
 const normalize = (str = ""): string => str.toLowerCase().replace(/\s/g, "");
 
-// New data structure interfaces
-interface Player {
-  sport: string;
-  sportsReferencePath: string;
-  name: string;
-  bio: string;
-  playerInformation: string;
-  draftInformation: string;
-  yearsActive: string;
-  teamsPlayedOn: string;
-  jerseyNumbers: string;
-  careerStats: string;
-  personalAchievements: string;
-  photo: string;
-}
-
-interface TileTracker {
-  bio: number;
-  careerStats: number;
-  draftInformation: number;
-  jerseyNumbers: number;
-  personalAchievements: number;
-  photo: number;
-  playerInformation: number;
-  teamsPlayedOn: number;
-  yearsActive: number;
-}
-
-interface RoundStats {
-  playDate: string;
-  sport: string;
-  name: string;
-  totalPlays: number;
-  percentageCorrect: number;
-  averageScore: number;
-  averageCorrectScore: number;
-  highestScore: number;
-  mostCommonFirstTileFlipped: string;
-  mostCommonLastTileFlipped: string;
-  mostCommonTileFlipped: string;
-  leastCommonTileFlipped: string;
-  mostFlippedTracker: TileTracker;
-  firstFlippedTracker: TileTracker;
-  lastFlippedTracker: TileTracker;
-}
-
-interface RoundData {
-  playDate: string;
-  sport: string;
-  roundId: string;
-  created: string;
-  lastUpdated: string;
-  previouslyPlayedDates: string[];
-  player: Player;
-  stats: RoundStats;
-}
+// Round stats are now fetched from API/backend - no more hardcoded data
 
 interface PlayerData {
   Name: string;
@@ -121,7 +65,7 @@ interface PlayerData {
 interface GameState {
   playersList: PlayerData[] | null;
   playerData: PlayerData | null;
-  roundData: RoundData | null;
+  roundStats: RoundStats | null;
   playerName: string;
   message: string;
   messageType: string;
@@ -137,6 +81,10 @@ interface GameState {
   showResultsModal: boolean;
   copiedText: string;
   lastSubmittedGuess: string;
+  isLoading: boolean;
+  error: string | null;
+  firstTileFlipped: string | null;
+  lastTileFlipped: string | null;
   currentPlayerIndex?: number;
   gaveUp: boolean;
 }
@@ -144,7 +92,7 @@ interface GameState {
 const initialState: GameState = {
   playersList: null,
   playerData: null,
-  roundData: null,
+  roundStats: null,
   playerName: "",
   message: "",
   messageType: "",
@@ -160,20 +108,11 @@ const initialState: GameState = {
   showResultsModal: false,
   copiedText: "",
   lastSubmittedGuess: "",
+  isLoading: true,
+  error: null,
+  firstTileFlipped: null,
+  lastTileFlipped: null,
   gaveUp: false,
-};
-
-// Helper function to extract puzzle number from roundId
-const getPuzzleNumber = (roundId: string): string => {
-  const match = roundId.match(/\d+$/);
-  return match ? match[0] : "1";
-};
-
-// Helper function to format date as mm-dd-yy
-const formatDateMMDDYY = (dateString: string): string => {
-  const [year, month, day] = dateString.split("-");
-  const shortYear = year.slice(-2);
-  return `${month}-${day}-${shortYear}`;
 };
 
 // Guest session persistence utilities
@@ -279,124 +218,7 @@ const AthleteUnknown: React.FC = () => {
     }
   }, [activeSport]);
 
-  // Load players JSON sequentially
-  useEffect(() => {
-    const state = gameState[activeSport];
-
-    // Already loaded → do nothing
-    if (state.playersList && state.playerData && state.roundData) {
-      return;
-    }
-
-    // Load once
-    fetch(LEGACY_SPORT_FILES[activeSport])
-      .then((res) => res.json())
-      .then((data: RoundData[]) => {
-        const key = `${STORAGE_KEYS.PLAYER_INDEX_PREFIX}${activeSport}`;
-        const storedIndex = parseInt(localStorage.getItem(key) || String(DEFAULTS.PLAYER_INDEX));
-
-        // Check if there's a saved session to determine which player to load
-        const savedSessionRaw = localStorage.getItem(getGuestSessionKey(activeSport));
-        let playerIndex: number = storedIndex % data.length;
-        let savedSession: Partial<GameState> | null = null;
-
-        if (savedSessionRaw) {
-          try {
-            const parsed = JSON.parse(savedSessionRaw);
-            // If session has a saved player index, use it to load the correct player
-            if (parsed.playerIndex_saved !== undefined) {
-              playerIndex = parsed.playerIndex_saved % data.length;
-            }
-          } catch (error) {
-            console.error("Failed to parse saved session:", error);
-          }
-        }
-
-        const roundData = data[playerIndex];
-
-        // Transform Player object to PlayerData format
-        const playerData: PlayerData = {
-          Name: roundData.player.name,
-          Bio: roundData.player.bio,
-          "Player Information": roundData.player.playerInformation,
-          "Draft Information": roundData.player.draftInformation,
-          "Years Active": roundData.player.yearsActive,
-          "Teams Played On": roundData.player.teamsPlayedOn,
-          "Jersey Numbers": roundData.player.jerseyNumbers,
-          "Career Stats": roundData.player.careerStats,
-          "Personal Achievements": roundData.player.personalAchievements,
-          Photo: [roundData.player.photo],
-        };
-
-        // Try to load the saved session for this player
-        savedSession = loadGuestSession(activeSport, playerData.Name);
-
-        // Only increment player index if there's no saved session
-        // This keeps the same puzzle when navigating within the app
-        if (!savedSession) {
-          localStorage.setItem(key, ((playerIndex + 1) % data.length).toString());
-        }
-
-        setGameState((prev) => {
-          const newSportState = {
-            ...prev[activeSport],
-            playersList: data.map((round) => ({
-              Name: round.player.name,
-              Bio: round.player.bio,
-              "Player Information": round.player.playerInformation,
-              "Draft Information": round.player.draftInformation,
-              "Years Active": round.player.yearsActive,
-              "Teams Played On": round.player.teamsPlayedOn,
-              "Jersey Numbers": round.player.jerseyNumbers,
-              "Career Stats": round.player.careerStats,
-              "Personal Achievements": round.player.personalAchievements,
-              Photo: [round.player.photo],
-            })),
-            playerData,
-            roundData,
-            // Restore saved session if available
-            ...(savedSession || {}),
-            // Store current player index for session saving
-            currentPlayerIndex: playerIndex,
-          };
-
-          // Save the session immediately after loading (even if no user actions yet)
-          // This ensures the same player loads when navigating back
-          if (!savedSession) {
-            saveGuestSession(activeSport, newSportState, playerIndex);
-          }
-
-          return {
-            ...prev,
-            [activeSport]: newSportState,
-          };
-        });
-      })
-      .catch((error) => {
-        console.error("Error loading player data:", error);
-        // Keep showing loading state if fetch fails
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSport]); // gameState intentionally excluded to prevent infinite re-renders
-
-  // Clear guest sessions when window is closed
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      clearAllGuestSessions();
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
-
-  const s = gameState[activeSport];
-  if (!s.playerData) {
-    return <p>Loading player data...</p>;
-  }
-
+  // Helper function to update game state for active sport
   const updateState = (patch: Partial<GameState>) => {
     setGameState((prev) => {
       const currentSportState = prev[activeSport];
@@ -416,6 +238,134 @@ const AthleteUnknown: React.FC = () => {
       };
     });
   };
+
+  // Load player data and round stats from API
+  useEffect(() => {
+    const state = gameState[activeSport];
+
+    // Already loaded → do nothing
+    if (state.playerData && state.roundStats) {
+      return;
+    }
+
+    // Load player data and round stats from API
+    const loadData = async () => {
+      try {
+        updateState({ isLoading: true, error: null });
+
+        // Fetch both player data and round stats in parallel
+        const [playerData, roundStats] = await Promise.all([
+          gameDataService.getPlayerData(activeSport),
+          gameDataService.getRoundStats(activeSport),
+        ]);
+
+        updateState({
+          playerData,
+          roundStats,
+          isLoading: false,
+          error: null,
+        });
+      } catch (error) {
+        console.error("Error loading game data:", error);
+        updateState({
+          error: error instanceof Error ? error.message : "Failed to load game data",
+          isLoading: false,
+        });
+      }
+    };
+
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSport]); // gameState intentionally excluded to prevent infinite re-renders
+
+  // Submit game results when player wins
+  useEffect(() => {
+    const submitResults = async () => {
+      const state = gameState[activeSport];
+
+      // Only submit if game is won and we haven't submitted yet
+      if (!state.finalRank || !state.playerData || !state.roundStats) {
+        return;
+      }
+
+      // Check if already submitted (you might want to track this in localStorage)
+      const submissionKey = `submitted_${activeSport}_${state.playerData.playDate || state.roundStats.playDate}`;
+      if (localStorage.getItem(submissionKey)) {
+        return; // Already submitted
+      }
+
+      try {
+        const playDate = (state.playerData.playDate || state.roundStats.playDate || new Date().toISOString().split("T")[0]) as string;
+
+        const gameResult: GameResult = {
+          userId: "temp_user_123", // TODO: Replace with actual user ID from auth
+          sport: activeSport,
+          playDate,
+          playerName: state.playerData.Name,
+          score: state.score,
+          tilesFlipped: state.tilesFlippedCount,
+          incorrectGuesses: state.incorrectGuesses,
+          flippedTilesPattern: state.flippedTiles,
+          firstTileFlipped: state.firstTileFlipped || undefined,
+          lastTileFlipped: state.lastTileFlipped || undefined,
+          completed: true,
+          completedAt: new Date().toISOString(),
+          rank: state.finalRank,
+        };
+
+        console.log("[Game] Submitting game results:", gameResult);
+        const response = await gameDataService.submitGameResults(gameResult);
+
+        if (response?.success) {
+          console.log("[Game] Results submitted successfully");
+          localStorage.setItem(submissionKey, "true");
+
+          // Optionally update round stats if backend returns updated stats
+          if (response.roundStats) {
+            updateState({ roundStats: response.roundStats });
+          }
+        }
+      } catch (error) {
+        console.error("[Game] Failed to submit results:", error);
+        // Don't block the user experience if submission fails
+      }
+    };
+
+    submitResults();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState[activeSport].finalRank, activeSport]);
+
+  const s = gameState[activeSport];
+
+  // Show loading state
+  if (s.isLoading) {
+    return (
+      <div className="uncover-game">
+        <p>Loading player data and round statistics...</p>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (s.error) {
+    return (
+      <div className="uncover-game">
+        <div className="error-message">
+          <p>Error: {s.error}</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </div>
+    );
+  }
+
+  // Ensure data is loaded
+  if (!s.playerData || !s.roundStats) {
+    return (
+      <div className="uncover-game">
+        <p>Loading game data...</p>
+      </div>
+    );
+  }
 
   const evaluateRank = (points: number): string => {
     if (points >= RANKS.AMAZING.threshold) {
@@ -463,6 +413,7 @@ const AthleteUnknown: React.FC = () => {
         previousCloseGuess: "",
         finalRank: rank,
         hint: "",
+        showResultsModal: true,
         lastSubmittedGuess: a,
       });
       return;
@@ -513,28 +464,17 @@ const AthleteUnknown: React.FC = () => {
     });
   };
 
+  // Helper to convert topic index to camelCase name for tracking
+  const getTileName = (index: number): string => {
+    return topics[index].replace(/\s+/g, "").replace(/^(.)/, (m) => m.toLowerCase());
+  };
+
   const handleGiveUp = () => {
     updateState({
       gaveUp: true,
       finalRank: "",
       showResultsModal: true,
     });
-  };
-
-  const getSportsReferenceUrl = (sport: SportType, path: string): string => {
-    const baseUrls: Record<SportType, string> = {
-      baseball: "https://www.baseball-reference.com/players/",
-      basketball: "https://www.basketball-reference.com/players/",
-      football: "https://www.pro-football-reference.com/players/",
-    };
-
-    const extensions: Record<SportType, string> = {
-      baseball: ".shtml",
-      basketball: ".html",
-      football: ".htm",
-    };
-
-    return baseUrls[sport] + path + extensions[sport];
   };
 
   const handleTileClick = (index: number) => {
@@ -557,6 +497,11 @@ const AthleteUnknown: React.FC = () => {
     if (s.flippedTiles[index]) {
       return;
     }
+
+    // Track first and last tiles flipped
+    const tileName = getTileName(index);
+    const isFirstTile = s.tilesFlippedCount === 0;
+    const firstTile = isFirstTile ? tileName : s.firstTileFlipped;
 
     // If Photo tile is clicked for the first time, reveal the photo puzzle immediately
     if (topics[index] === "Photo") {
@@ -581,6 +526,8 @@ const AthleteUnknown: React.FC = () => {
           hint: newHint,
           photoRevealed: true,
           returningFromPhoto: false,
+          firstTileFlipped: firstTile,
+          lastTileFlipped: tileName,
         });
       } else {
         // Game won or gave up - just update visual state
@@ -613,6 +560,8 @@ const AthleteUnknown: React.FC = () => {
         tilesFlippedCount: s.tilesFlippedCount + 1,
         score: newScore,
         hint: newHint,
+        firstTileFlipped: firstTile,
+        lastTileFlipped: tileName,
       });
     } else {
       // Game won or gave up - just update visual state
@@ -622,7 +571,7 @@ const AthleteUnknown: React.FC = () => {
     }
   };
 
-  const photoUrl = s.playerData.Photo[0];
+  const photoUrl = s.playerData.Photo?.[0] || "";
 
   // Calculate background position for photo segments (3x3 grid)
   const getPhotoSegmentStyle = (index: number): React.CSSProperties => {
@@ -638,15 +587,11 @@ const AthleteUnknown: React.FC = () => {
   };
 
   const handleShare = () => {
-    // Get puzzle number from roundData
-    const puzzleNumber = s.roundData
-      ? getPuzzleNumber(s.roundData.roundId)
-      : String(DEFAULTS.DAILY_NUMBER);
-    const sportName =
-      activeSport.charAt(0).toUpperCase() + activeSport.slice(1);
+    // Get daily number from playerData or default to 1
+    const dailyNumber = s.playerData!.dailyNumber || 1;
 
     // Build the share text
-    let shareText = `Daily Athlete Unknown ${sportName} #${puzzleNumber}\n`;
+    let shareText = `Daily Uncover #${dailyNumber}\n`;
 
     // Create a 3x3 grid using emojis
     for (let i = 0; i < TOTAL_TILES; i++) {
@@ -690,6 +635,25 @@ const AthleteUnknown: React.FC = () => {
     football: "https://cdn.ssref.net/req/202512101/logos/pfr-logo.svg"
   };
 
+  // Format date for display (MM-DD-YY)
+  const formatDate = (dateString: string | undefined): string => {
+    if (!dateString) {
+      return "";
+    }
+    try {
+      const date = new Date(dateString);
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const year = String(date.getFullYear()).slice(-2);
+      return `${month}-${day}-${year}`;
+    } catch {
+      return dateString;
+    }
+  };
+
+  const playDate = (s.playerData?.playDate || s.roundStats?.playDate) as string | undefined;
+  const puzzleNumber = s.playerData?.dailyNumber || 1;
+
   return (
     <div className="athlete-unknown-game">
       <div className="sports-reference-attribution">
@@ -729,13 +693,13 @@ const AthleteUnknown: React.FC = () => {
       </div>
 
       <div className="puzzle-info">
-        <span className="puzzle-number">
-          Puzzle #{s.roundData ? getPuzzleNumber(s.roundData.roundId) : "..."}
-        </span>
-        <span className="separator">•</span>
-        <span className="play-date">
-          {s.roundData ? formatDateMMDDYY(s.roundData.playDate) : "..."}
-        </span>
+        <span className="puzzle-number">Puzzle #{puzzleNumber}</span>
+        {playDate && (
+          <>
+            <span className="separator">•</span>
+            <span className="puzzle-date">{formatDate(playDate)}</span>
+          </>
+        )}
         <span className="separator">•</span>
         <button
           className="today-stats-link"
@@ -872,33 +836,10 @@ const AthleteUnknown: React.FC = () => {
                 ? "Try Again Tomorrow!"
                 : `Correct! Your score is ${s.score}!`}
             </h2>
-            {!s.gaveUp && s.roundData && (
+            {!s.gaveUp && s.roundStats && (
               <p className="average-score">
-                The average score today is {s.roundData.stats.averageScore}
+                The average score today is {s.roundStats.averageScore}
               </p>
-            )}
-
-            {s.playerData && s.roundData && (
-              <div className="player-info-section">
-                <a
-                  href={getSportsReferenceUrl(
-                    activeSport,
-                    s.roundData.player.sportsReferencePath
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="player-name-link"
-                >
-                  {s.playerData.Name}
-                </a>
-                {s.roundData.player.photo && (
-                  <img
-                    src={s.roundData.player.photo}
-                    alt={s.playerData.Name}
-                    className="player-photo"
-                  />
-                )}
-              </div>
             )}
 
             <div className="results-grid">
@@ -923,26 +864,26 @@ const AthleteUnknown: React.FC = () => {
               </div>
             )}
 
-            {s.roundData && (
+            {s.roundStats && (
               <div className="round-stats-section">
                 <h3>Today's Round Stats</h3>
                 <div className="round-stats-grid">
                   <div className="round-stat-item">
                     <div className="round-stat-label">Games Played</div>
                     <div className="round-stat-value">
-                      {s.roundData.stats.totalPlays}
+                      {s.roundStats.totalPlays}
                     </div>
                   </div>
                   <div className="round-stat-item">
                     <div className="round-stat-label">Average Score</div>
                     <div className="round-stat-value">
-                      {s.roundData.stats.averageScore}
+                      {s.roundStats.averageScore}
                     </div>
                   </div>
                   <div className="round-stat-item">
                     <div className="round-stat-label">Win Rate</div>
                     <div className="round-stat-value">
-                      {s.roundData.stats.percentageCorrect}%
+                      {s.roundStats.percentageCorrect}%
                     </div>
                   </div>
                 </div>
@@ -961,12 +902,12 @@ const AthleteUnknown: React.FC = () => {
         onClose={() => setIsRulesModalOpen(false)}
       />
 
-      {s.roundData && (
+      {s.roundStats && (
         <TodayStatsModal
           isOpen={isTodayStatsModalOpen}
           onClose={() => setIsTodayStatsModalOpen(false)}
           roundStats={{
-            ...s.roundData.stats,
+            ...s.roundStats,
             name:
               s.finalRank || s.gaveUp
                 ? s.playerData?.Name || "Unknown Player"

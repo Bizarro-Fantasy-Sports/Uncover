@@ -1,0 +1,69 @@
+{
+  "playDate": "2025-11-19",
+  "sport": "basketball",
+  "roundId": "basketball222",
+  "created": "2025-11-11T10:00:00Z",
+  "lastUpdated": "2025-11-12T00:00:00Z",
+  "previouslyPlayedDates": [],
+  "player": {
+    "sport": "basketball",
+    "sportsReferencePath": "l/lewisra02.",
+    "name": "Rashard Lewis",
+    "bio": "DOB: August 8, 1979 in Pineville, LA",
+    "playerInformation": "6'10\", 215 lbs, Small Forward and Power Forward. Shoots Right",
+    "draftInformation": "2nd Rd (32nd) from Alief Elsik HS",
+    "yearsActive": "1998-2014",
+    "teamsPlayedOn": "SEA, ORL, WAS, MIA",
+    "jerseyNumbers": "7, 9",
+    "careerStats": "14.9 PTS, 5.2 REB, 1.7 AST, 90.9 WS",
+    "personalAchievements": "2x All-Star, 1x NBA Champ",
+    "photo": ""
+  },
+  "stats": {
+    "playDate": "2025-11-19",
+    "sport": "basketball",
+    "name": "Rashard Lewis",
+    "totalPlays": 100,
+    "percentageCorrect": 88,
+    "averageScore": 66,
+    "averageCorrectScore": 90,
+    "highestScore": 97,
+    "mostCommonFirstTileFlipped": "playerInformation",
+    "mostCommonLastTileFlipped": "photo",
+    "mostCommonTileFlipped": "teamsPlayedOn",
+    "leastCommonTileFlipped": "bio",
+    "mostFlippedTracker": {
+      "bio": 21,
+      "careerStats": 21,
+      "draftInformation": 21,
+      "jerseyNumbers": 21,
+      "personalAchievements": 21,
+      "photo": 21,
+      "playerInformation": 21,
+      "teamsPlayedOn": 21,
+      "yearsActive": 21
+    },
+    "firstFlippedTracker": {
+      "bio": 22,
+      "careerStats": 22,
+      "draftInformation": 22,
+      "jerseyNumbers": 22,
+      "personalAchievements": 22,
+      "photo": 22,
+      "playerInformation": 22,
+      "teamsPlayedOn": 22,
+      "yearsActive": 22
+    },
+    "lastFlippedTracker": {
+      "bio": 23,
+      "careerStats": 23,
+      "draftInformation": 23,
+      "jerseyNumbers": 23,
+      "personalAchievements": 23,
+      "photo": 23,
+      "playerInformation": 23,
+      "teamsPlayedOn": 23,
+      "yearsActive": 23
+    }
+  }
+}
