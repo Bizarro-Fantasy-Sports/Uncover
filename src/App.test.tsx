@@ -15,7 +15,7 @@ test("renders navigation links", () => {
   const nav = screen.getByRole("navigation");
   expect(within(nav).getByText("Home")).toBeInTheDocument();
   expect(within(nav).getByText("Daily Fact")).toBeInTheDocument();
-  expect(within(nav).getByText("Uncover")).toBeInTheDocument();
+  expect(within(nav).getByText("Athlete Unknown")).toBeInTheDocument();
   expect(within(nav).getByText("Upcoming Projects")).toBeInTheDocument();
   expect(within(nav).getByText("Contact Us")).toBeInTheDocument();
 });

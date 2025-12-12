@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./App.css";
 import ContactForm from "./ContactForm";
-import Uncover from "./Uncover";
+import AthleteUnknown from "./AthleteUnknown";
 
-type PageType = "Home" | "Daily Fact" | "Uncover" | "Projects" | "Contact";
+type PageType = "Home" | "Daily Fact" | "Athlete Unknown" | "Projects" | "Contact";
 
 function App() {
   const [activePage, setActivePage] = useState<PageType>("Home");
@@ -19,7 +19,7 @@ function App() {
             </section>
             <section className="content">
               <h2>News</h2>
-              <p> Upcoming: New "Uncover" trivia game</p>
+              <p> Upcoming: New "Athlete Unknown" trivia game</p>
             </section>
           </div>
         );
@@ -30,11 +30,11 @@ function App() {
             <p>Did you know that Bizarro has one "Z" and two "R"s?</p>
           </section>
         );
-      case "Uncover":
+      case "Athlete Unknown":
         return (
-          <Uncover />
+          <AthleteUnknown />
           // <section className="content">
-          //   <h2>Uncover</h2>
+          //   <h2>Athlete Unknown</h2>
           //   <h3>Try to guess the player! </h3>
           //   <p>
           //     Click on a tile to turn it over for player information. Once
@@ -87,10 +87,10 @@ function App() {
             Daily Fact
           </li>
           <li
-            className={activePage === "Uncover" ? "active" : ""}
-            onClick={() => setActivePage("Uncover")}
+            className={activePage === "Athlete Unknown" ? "active" : ""}
+            onClick={() => setActivePage("Athlete Unknown")}
           >
-            Uncover
+            Athlete Unknown
           </li>
           <li
             className={activePage === "Projects" ? "active" : ""}

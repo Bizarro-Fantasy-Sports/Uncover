@@ -12,7 +12,7 @@ describe("UserStats Component", () => {
   });
 
   it("displays user information", () => {
-    expect(screen.getByText(/User ID:/)).toBeInTheDocument();
+    expect(screen.getByText(/User:/)).toBeInTheDocument();
     expect(screen.getByText(/Member Since:/)).toBeInTheDocument();
     expect(screen.getByText(/FirstTestProdUser123/)).toBeInTheDocument();
   });

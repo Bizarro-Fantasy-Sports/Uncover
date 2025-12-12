@@ -38,6 +38,9 @@ interface TodayStatsModalProps {
 }
 
 const formatTileName = (tileName: string): string => {
+  if (!tileName) {
+    return "";
+  }
   return tileName
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (str) => str.toUpperCase())
@@ -49,7 +52,9 @@ const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
   onClose,
   roundStats,
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   if (!roundStats) {
     return (
@@ -83,8 +88,9 @@ const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
         <div className="today-stats-modal-header">
           <h2>
             Today's{" "}
-            {roundStats.sport.charAt(0).toUpperCase() +
-              roundStats.sport.slice(1)}{" "}
+            {roundStats.sport
+              ? roundStats.sport.charAt(0).toUpperCase() + roundStats.sport.slice(1)
+              : ""}{" "}
             Stats
           </h2>
           <button className="close-button" onClick={onClose}>

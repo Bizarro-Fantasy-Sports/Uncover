@@ -1,0 +1,69 @@
+{
+  "playDate": "2025-11-19",
+  "sport": "baseball",
+  "roundId": "baseball111",
+  "created": "2025-11-11T10:00:00Z",
+  "lastUpdated": "2025-11-12T00:00:00Z",
+  "previouslyPlayedDates": [],
+  "player": {
+    "sport": "baseball",
+    "sportsReferencePath": "e/eckstda01",
+    "name": "David Eckstein",
+    "bio": "DOB: January 20, 1975 in Sanford, FL",
+    "playerInformation": "5'6\", 170 lbs, Shortstop & Second Baseman, Bats: Right, Throws: Right",
+    "draftInformation": "19th Rd from University of Florida",
+    "yearsActive": "2001-2010",
+    "teamsPlayedOn": "ANA, STL, TOR, ARI, SDP",
+    "jerseyNumbers": "22, 11, 4, 3, 22",
+    "careerStats": ".280 BA, 35 HR, 123 SB, 20.9 WAR",
+    "personalAchievements": "2x All-Star, 2x World Series, 1x WS MVP",
+    "photo": ""
+  },
+  "stats": {
+    "playDate": "2025-11-19",
+    "sport": "baseball",
+    "name": "David Eckstein",
+    "totalPlays": 100,
+    "percentageCorrect": 81,
+    "averageScore": 55,
+    "averageCorrectScore": 88,
+    "highestScore": 97,
+    "mostCommonFirstTileFlipped": "playerInformation",
+    "mostCommonLastTileFlipped": "photo",
+    "mostCommonTileFlipped": "teamsPlayedOn",
+    "leastCommonTileFlipped": "bio",
+    "mostFlippedTracker": {
+      "bio": 11,
+      "careerStats": 11,
+      "draftInformation": 11,
+      "jerseyNumbers": 11,
+      "personalAchievements": 11,
+      "photo": 11,
+      "playerInformation": 11,
+      "teamsPlayedOn": 11,
+      "yearsActive": 11
+    },
+    "firstFlippedTracker": {
+      "bio": 12,
+      "careerStats": 12,
+      "draftInformation": 12,
+      "jerseyNumbers": 12,
+      "personalAchievements": 12,
+      "photo": 12,
+      "playerInformation": 12,
+      "teamsPlayedOn": 12,
+      "yearsActive": 12
+    },
+    "lastFlippedTracker": {
+      "bio": 13,
+      "careerStats": 13,
+      "draftInformation": 13,
+      "jerseyNumbers": 13,
+      "personalAchievements": 13,
+      "photo": 13,
+      "playerInformation": 13,
+      "teamsPlayedOn": 13,
+      "yearsActive": 13
+    }
+  }
+}
