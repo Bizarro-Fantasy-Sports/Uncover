@@ -16,6 +16,7 @@ The app uses environment variables to configure the API connection:
 - `.env.example` - Example configuration template
 
 **Important Files:**
+
 - `src/config/api.ts` - API configuration and endpoints
 - `src/services/api.ts` - API client service
 - `src/services/gameData.ts` - Unified data service (switches between API and mock data)
@@ -48,21 +49,23 @@ You need to have the backend API running locally. The backend should provide the
 #### Required API Endpoints
 
 **GET `/api/players/:sport/:date`**
+
 - Returns player data for the specified sport and date
 - Example: `GET /api/players/baseball/2025-12-06`
 - Response format:
+
 ```json
 {
-  "Name": "Jackie Robinson",
-  "Bio": "First African American to play in MLB...",
-  "Player Information": "Position: 2B, Bats: Right, Throws: Right",
-  "Draft Information": "Signed as amateur free agent",
-  "Years Active": "1947-1956",
-  "Teams Played On": "Brooklyn Dodgers",
-  "Jersey Numbers": "42",
-  "Career Stats": ".311 BA, 137 HR, 734 RBI",
-  "Personal Achievements": "6x All-Star, 1949 MVP...",
-  "Photo": ["/images/jackie-robinson.jpg"],
+  "name": "Jackie Robinson",
+  "bio": "First African American to play in MLB...",
+  "playerInformation": "Position: 2B, Bats: Right, Throws: Right",
+  "draftInformation": "Signed as amateur free agent",
+  "yearsActive": "1947-1956",
+  "teamsPlayedOn": "Brooklyn Dodgers",
+  "jerseyNumbers": "42",
+  "careerStats": ".311 BA, 137 HR, 734 RBI",
+  "personalAchievements": "6x All-Star, 1949 MVP...",
+  "photo": ["/images/jackie-robinson.jpg"],
   "dailyNumber": 1,
   "playDate": "2025-12-06",
   "sport": "baseball"
@@ -70,9 +73,11 @@ You need to have the backend API running locally. The backend should provide the
 ```
 
 **GET `/api/round-stats/:sport/:date`**
+
 - Returns aggregated statistics for all players who played that day
 - Example: `GET /api/round-stats/baseball/2025-12-06`
 - Response format:
+
 ```json
 {
   "playDate": "2025-12-06",
@@ -97,8 +102,10 @@ You need to have the backend API running locally. The backend should provide the
 ```
 
 **POST `/api/game-results`**
+
 - Receives game results when a player completes the game
 - Request body:
+
 ```json
 {
   "userId": "temp_user_123",
@@ -108,7 +115,17 @@ You need to have the backend API running locally. The backend should provide the
   "score": 85,
   "tilesFlipped": 5,
   "incorrectGuesses": 2,
-  "flippedTilesPattern": [true, false, true, true, false, false, true, true, false],
+  "flippedTilesPattern": [
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false
+  ],
   "firstTileFlipped": "playerInformation",
   "lastTileFlipped": "photo",
   "completed": true,
@@ -116,7 +133,9 @@ You need to have the backend API running locally. The backend should provide the
   "rank": "Elite"
 }
 ```
+
 - Response:
+
 ```json
 {
   "success": true,
@@ -146,6 +165,7 @@ The app will open at `http://localhost:3000`.
 ### Test 1: API Mode with Backend Running
 
 **Setup:**
+
 ```bash
 REACT_APP_USE_MOCK_DATA=false
 ```
@@ -153,6 +173,7 @@ REACT_APP_USE_MOCK_DATA=false
 **Backend:** Running on port 8080
 
 **Steps:**
+
 1. Open the app at `http://localhost:3000`
 2. Check browser console - you should see:
    ```
@@ -169,6 +190,7 @@ REACT_APP_USE_MOCK_DATA=false
 5. Check your backend logs to verify the POST request was received
 
 **Expected Results:**
+
 - Player data loads from API
 - Round stats load from API
 - Game results are submitted to API when you win
@@ -177,6 +199,7 @@ REACT_APP_USE_MOCK_DATA=false
 ### Test 2: API Mode with Backend NOT Running (Fallback to Mock)
 
 **Setup:**
+
 ```bash
 REACT_APP_USE_MOCK_DATA=false
 ```
@@ -184,6 +207,7 @@ REACT_APP_USE_MOCK_DATA=false
 **Backend:** Stopped
 
 **Steps:**
+
 1. Start the frontend only
 2. Check browser console - you should see:
    ```
@@ -194,6 +218,7 @@ REACT_APP_USE_MOCK_DATA=false
    ```
 
 **Expected Results:**
+
 - API calls fail gracefully
 - App automatically falls back to mock data (loads from local JSON files)
 - Game is still playable
@@ -202,6 +227,7 @@ REACT_APP_USE_MOCK_DATA=false
 ### Test 3: Mock Data Mode (No Backend Required)
 
 **Setup:**
+
 ```bash
 REACT_APP_USE_MOCK_DATA=true
 ```
@@ -209,6 +235,7 @@ REACT_APP_USE_MOCK_DATA=true
 **Backend:** Not needed
 
 **Steps:**
+
 1. Start the frontend
 2. Check browser console:
    ```
@@ -223,6 +250,7 @@ REACT_APP_USE_MOCK_DATA=true
    ```
 
 **Expected Results:**
+
 - All data loads from local JSON files and mock data service
 - No API calls are made
 - Game results are logged but not submitted
@@ -231,6 +259,7 @@ REACT_APP_USE_MOCK_DATA=true
 ### Test 4: Switch Between Sports
 
 **Steps:**
+
 1. Load the app (with backend running)
 2. Play baseball
 3. Click "BASKETBALL" tab
@@ -242,6 +271,7 @@ REACT_APP_USE_MOCK_DATA=true
 5. Switch to football - same behavior
 
 **Expected Results:**
+
 - Each sport loads its own player data from API
 - Each sport has separate round stats
 - Switching between sports triggers new API calls (only first time per sport)
@@ -249,6 +279,7 @@ REACT_APP_USE_MOCK_DATA=true
 ### Test 5: Results Submission After Winning
 
 **Steps:**
+
 1. Play the game (with backend running)
 2. Guess the player correctly
 3. Check console for submission:
@@ -265,6 +296,7 @@ REACT_APP_USE_MOCK_DATA=true
 4. Verify in backend that the data was received
 
 **Expected Results:**
+
 - Results are submitted exactly once per game
 - Submission includes all game data (score, tiles flipped, first/last tile, etc.)
 - LocalStorage prevents duplicate submissions
@@ -273,16 +305,19 @@ REACT_APP_USE_MOCK_DATA=true
 ### Test 6: Error Handling
 
 **Test 6a: Backend Returns 500 Error**
+
 1. Configure backend to return 500 for player data
 2. Start the app
 3. Should fall back to mock data automatically
 
 **Test 6b: Backend Returns Invalid JSON**
+
 1. Configure backend to return malformed JSON
 2. Start the app
 3. Should show error message with retry button
 
 **Test 6c: Network Timeout**
+
 1. Configure backend with slow response (>10 seconds)
 2. Start the app
 3. Should timeout and fall back to mock data
@@ -292,6 +327,7 @@ REACT_APP_USE_MOCK_DATA=true
 ### Console Logging
 
 The app has extensive console logging prefixed with:
+
 - `[API]` - API service calls
 - `[MOCK]` - Mock data service calls
 - `[Game]` - Game logic and result submission
@@ -299,6 +335,7 @@ The app has extensive console logging prefixed with:
 ### Check Network Tab
 
 Open browser DevTools > Network tab to see:
+
 - GET requests to `/api/players/:sport/:date`
 - GET requests to `/api/round-stats/:sport/:date`
 - POST request to `/api/game-results` (when you win)
@@ -306,23 +343,27 @@ Open browser DevTools > Network tab to see:
 ### LocalStorage Inspection
 
 Check Application > LocalStorage in DevTools:
+
 - `playerIndex_baseball` - Current player index for baseball
 - `submitted_baseball_2025-12-06` - Prevents duplicate result submission
 
 ### Common Issues
 
 **Issue: "Loading player data..." never completes**
+
 - Check if backend is running
 - Check CORS configuration on backend
 - Check network tab for failed requests
 - Verify API_BASE_URL in .env.local
 
 **Issue: Mock data loads instead of API data**
+
 - Check `REACT_APP_USE_MOCK_DATA` is set to `false`
 - Restart the dev server after changing .env.local
 - Check console to see which mode is active
 
 **Issue: Results not submitting**
+
 - Check if you already submitted for this game (check localStorage)
 - Verify backend POST endpoint is working
 - Check console for submission errors
@@ -352,6 +393,7 @@ REACT_APP_USE_MOCK_DATA=false
 ## Summary
 
 The integration is complete! The frontend now:
+
 - ✅ Fetches player data from backend API
 - ✅ Fetches round statistics from backend API
 - ✅ Submits game results when player wins

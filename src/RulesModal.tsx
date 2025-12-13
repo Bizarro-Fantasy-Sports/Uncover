@@ -9,22 +9,20 @@ interface RulesModalProps {
 
 // Tile category tooltips
 const tileTooltips: Record<string, string> = {
-  Bio: "Gives the birth date and location of the athlete",
-  "Player Information":
+  bio: "Gives the birth date and location of the athlete",
+  playerInformation:
     "Gives the physical measurements and position of the athlete",
-  "Draft Information":
+  draftInformation:
     'Gives the draft information of the athlete, if the player was not acquired via a draft of any kind, the value will be "Undrafted"',
-  "Years Active":
+  yearsActive:
     "Gives the years the athlete was active and participated in a major league game that season",
-  "Teams Played On":
+  teamsPlayedOn:
     "Gives the teams the athlete has played on, in chronological order, but not the duration or years of tenure on each team",
-  "Jersey Numbers":
+  jerseyNumbers:
     "Gives the jersey numbers the athlete has worn, in chronological order. Duplicate numbers even if worn on different teams will be removed",
-  "Career Stats":
-    "High-level career-long stats for the athlete. Varies by sport",
-  "Personal Achievements":
-    "Lists the following awards (see below) per sport",
-  Photo: "Reveals headshot of player",
+  careerStats: "High-level career-long stats for the athlete. Varies by sport",
+  personalAchievements: "Lists the following awards (see below) per sport",
+  photo: "Reveals headshot of player",
 };
 
 // Acronym definitions
@@ -101,7 +99,11 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
     );
   };
 
-  const renderAcronym = (acronym: string, additionalText?: string, uniqueId?: string) => {
+  const renderAcronym = (
+    acronym: string,
+    additionalText?: string,
+    uniqueId?: string
+  ) => {
     const def = acronymDefinitions[acronym];
     if (!def) {
       return (
@@ -169,10 +171,12 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
                 <strong>Start:</strong> {SCORING.INITIAL_SCORE} points
               </li>
               <li>
-                <strong>Tile flip:</strong> −{SCORING.REGULAR_TILE_PENALTY} pts (Photo: −{SCORING.PHOTO_TILE_PENALTY} pts)
+                <strong>Tile flip:</strong> −{SCORING.REGULAR_TILE_PENALTY} pts
+                (Photo: −{SCORING.PHOTO_TILE_PENALTY} pts)
               </li>
               <li>
-                <strong>Wrong guess:</strong> −{SCORING.INCORRECT_GUESS_PENALTY} pts
+                <strong>Wrong guess:</strong> −{SCORING.INCORRECT_GUESS_PENALTY}{" "}
+                pts
               </li>
             </ul>
           </div>
@@ -180,11 +184,14 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
           <div className="rules-section">
             <h3>Hints & Help</h3>
             <ul>
-              <li>Close spelling = hint / auto-correct after multiple close attempts</li>
-              <li>Stuck & &lt;{SCORING.HINT_THRESHOLD} pts = initials revealed</li>
               <li>
-                Difficulty increases Mon → Sat; Sundays are themed
+                Close spelling = hint / auto-correct after multiple close
+                attempts
               </li>
+              <li>
+                Stuck & &lt;{SCORING.HINT_THRESHOLD} pts = initials revealed
+              </li>
+              <li>Difficulty increases Mon → Sat; Sundays are themed</li>
             </ul>
           </div>
 
@@ -194,15 +201,15 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
               Each tile reveals info about the athlete:
             </p>
             <div className="tiles-list">
-              {renderTileWithTooltip("Bio")} •{" "}
-              {renderTileWithTooltip("Player Information")} •{" "}
-              {renderTileWithTooltip("Draft Information")} •{" "}
-              {renderTileWithTooltip("Years Active")} •{" "}
-              {renderTileWithTooltip("Teams Played On")} •{" "}
-              {renderTileWithTooltip("Jersey Numbers")} •{" "}
-              {renderTileWithTooltip("Career Stats")} •{" "}
-              {renderTileWithTooltip("Personal Achievements")} •{" "}
-              {renderTileWithTooltip("Photo")}
+              {renderTileWithTooltip("bio")} •{" "}
+              {renderTileWithTooltip("playerInformation")} •{" "}
+              {renderTileWithTooltip("draftInformation")} •{" "}
+              {renderTileWithTooltip("yearsActive")} •{" "}
+              {renderTileWithTooltip("teamsPlayedOn")} •{" "}
+              {renderTileWithTooltip("jerseyNumbers")} •{" "}
+              {renderTileWithTooltip("careerStats")} •{" "}
+              {renderTileWithTooltip("personalAchievements")} •{" "}
+              {renderTileWithTooltip("photo")}
             </div>
           </div>
 
@@ -235,8 +242,20 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
               <div className="position-group">
                 <h5>Quarterback</h5>
                 <ul>
-                  <li>{renderAcronym("Pass YDS", undefined, "football-qb-passyds")}</li>
-                  <li>{renderAcronym("Pass TDS", undefined, "football-qb-passtds")}</li>
+                  <li>
+                    {renderAcronym(
+                      "Pass YDS",
+                      undefined,
+                      "football-qb-passyds"
+                    )}
+                  </li>
+                  <li>
+                    {renderAcronym(
+                      "Pass TDS",
+                      undefined,
+                      "football-qb-passtds"
+                    )}
+                  </li>
                   <li>{renderAcronym("INT", undefined, "football-qb-int")}</li>
                   <li>{renderAcronym("AV", undefined, "football-qb-av")}</li>
                 </ul>
@@ -245,8 +264,16 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
               <div className="position-group">
                 <h5>Running Back</h5>
                 <ul>
-                  <li>{renderAcronym("RUSH", undefined, "football-rb-rush")}</li>
-                  <li>{renderAcronym("Rushing YDS", undefined, "football-rb-rushingyds")}</li>
+                  <li>
+                    {renderAcronym("RUSH", undefined, "football-rb-rush")}
+                  </li>
+                  <li>
+                    {renderAcronym(
+                      "Rushing YDS",
+                      undefined,
+                      "football-rb-rushingyds"
+                    )}
+                  </li>
                   <li>{renderAcronym("TDS", undefined, "football-rb-tds")}</li>
                   <li>{renderAcronym("AV", undefined, "football-rb-av")}</li>
                 </ul>
@@ -256,8 +283,12 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
                 <h5>Wide Receiver & Tight End</h5>
                 <ul>
                   <li>{renderAcronym("REC", undefined, "football-wr-rec")}</li>
-                  <li>{renderAcronym("Rec YDS", undefined, "football-wr-recyds")}</li>
-                  <li>{renderAcronym("Rec TDs", undefined, "football-wr-rectds")}</li>
+                  <li>
+                    {renderAcronym("Rec YDS", undefined, "football-wr-recyds")}
+                  </li>
+                  <li>
+                    {renderAcronym("Rec TDs", undefined, "football-wr-rectds")}
+                  </li>
                   <li>{renderAcronym("AV", undefined, "football-wr-av")}</li>
                 </ul>
               </div>
@@ -274,8 +305,16 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
                 <h5>Defensive Line</h5>
                 <ul>
                   <li>{renderAcronym("GS", undefined, "football-dl-gs")}</li>
-                  <li>{renderAcronym("Solo Tackles", undefined, "football-dl-tackles")}</li>
-                  <li>{renderAcronym("Sacks", undefined, "football-dl-sacks")}</li>
+                  <li>
+                    {renderAcronym(
+                      "Solo Tackles",
+                      undefined,
+                      "football-dl-tackles"
+                    )}
+                  </li>
+                  <li>
+                    {renderAcronym("Sacks", undefined, "football-dl-sacks")}
+                  </li>
                   <li>{renderAcronym("AV", undefined, "football-dl-av")}</li>
                 </ul>
               </div>
@@ -284,7 +323,13 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
                 <h5>Defensive Back</h5>
                 <ul>
                   <li>{renderAcronym("GS", undefined, "football-db-gs")}</li>
-                  <li>{renderAcronym("Solo Tackles", undefined, "football-db-tackles")}</li>
+                  <li>
+                    {renderAcronym(
+                      "Solo Tackles",
+                      undefined,
+                      "football-db-tackles"
+                    )}
+                  </li>
                   <li>{renderAcronym("INT", undefined, "football-db-int")}</li>
                   <li>{renderAcronym("AV", undefined, "football-db-av")}</li>
                 </ul>
@@ -299,11 +344,17 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
               <h4>Baseball</h4>
               <ul>
                 <li>{renderAcronym("HOF", undefined, "baseball-hof")}</li>
-                <li>{renderAcronym("WS Champ", undefined, "baseball-wschamp")}</li>
+                <li>
+                  {renderAcronym("WS Champ", undefined, "baseball-wschamp")}
+                </li>
                 <li>{renderAcronym("MVP", undefined, "baseball-mvp")}</li>
-                <li>{renderAcronym("Cy Young", undefined, "baseball-cyyoung")}</li>
+                <li>
+                  {renderAcronym("Cy Young", undefined, "baseball-cyyoung")}
+                </li>
                 <li>{renderAcronym("ROY", undefined, "baseball-roy")}</li>
-                <li>{renderAcronym("All-Star", undefined, "baseball-allstar")}</li>
+                <li>
+                  {renderAcronym("All-Star", undefined, "baseball-allstar")}
+                </li>
               </ul>
             </div>
 
@@ -311,15 +362,33 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
               <h4>Basketball</h4>
               <ul>
                 <li>{renderAcronym("HOF", undefined, "basketball-hof")}</li>
-                <li>{renderAcronym("NBA Champ", undefined, "basketball-nbachamp")}</li>
+                <li>
+                  {renderAcronym("NBA Champ", undefined, "basketball-nbachamp")}
+                </li>
                 <li>{renderAcronym("MVP", undefined, "basketball-mvp")}</li>
                 <li>{renderAcronym("ROY", undefined, "basketball-roy")}</li>
                 <li>{renderAcronym("6MOY", undefined, "basketball-6moy")}</li>
                 <li>{renderAcronym("MIPOY", undefined, "basketball-mipoy")}</li>
-                <li>{renderAcronym("All-NBA", undefined, "basketball-allnba")}</li>
-                <li>{renderAcronym("All-Defensive", undefined, "basketball-alldefensive")}</li>
-                <li>{renderAcronym("Finals MVP", undefined, "basketball-finalsmvp")}</li>
-                <li>{renderAcronym("All-Star", undefined, "basketball-allstar")}</li>
+                <li>
+                  {renderAcronym("All-NBA", undefined, "basketball-allnba")}
+                </li>
+                <li>
+                  {renderAcronym(
+                    "All-Defensive",
+                    undefined,
+                    "basketball-alldefensive"
+                  )}
+                </li>
+                <li>
+                  {renderAcronym(
+                    "Finals MVP",
+                    undefined,
+                    "basketball-finalsmvp"
+                  )}
+                </li>
+                <li>
+                  {renderAcronym("All-Star", undefined, "basketball-allstar")}
+                </li>
               </ul>
             </div>
 
@@ -327,11 +396,15 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
               <h4>Football</h4>
               <ul>
                 <li>{renderAcronym("HOF", undefined, "football-hof")}</li>
-                <li>{renderAcronym("Pro-Bowls", undefined, "football-probowls")}</li>
+                <li>
+                  {renderAcronym("Pro-Bowls", undefined, "football-probowls")}
+                </li>
                 <li>{renderAcronym("OPOY", undefined, "football-opoy")}</li>
                 <li>{renderAcronym("DPOY", undefined, "football-dpoy")}</li>
                 <li>{renderAcronym("ROY", undefined, "football-roy")}</li>
-                <li>{renderAcronym("All-Pro", undefined, "football-allpro")}</li>
+                <li>
+                  {renderAcronym("All-Pro", undefined, "football-allpro")}
+                </li>
                 <li>{renderAcronym("SB MVP", undefined, "football-sbmvp")}</li>
               </ul>
             </div>

@@ -1,10 +1,10 @@
-import type { PlayerData, RoundStats } from '../types/api';
+import type { PlayerData, RoundStats } from "../types/api";
 
 // Mock data service - used when REACT_APP_USE_MOCK_DATA=true or when API calls fail
 export class MockDataService {
   private static mockRoundStats: Record<string, RoundStats> = {
     baseball: {
-      playDate: new Date().toISOString().split('T')[0],
+      playDate: new Date().toISOString().split("T")[0],
       sport: "baseball",
       totalPlays: 100,
       percentageCorrect: 81,
@@ -50,7 +50,7 @@ export class MockDataService {
       },
     },
     basketball: {
-      playDate: new Date().toISOString().split('T')[0],
+      playDate: new Date().toISOString().split("T")[0],
       sport: "basketball",
       totalPlays: 100,
       percentageCorrect: 88,
@@ -96,7 +96,7 @@ export class MockDataService {
       },
     },
     football: {
-      playDate: new Date().toISOString().split('T')[0],
+      playDate: new Date().toISOString().split("T")[0],
       sport: "football",
       totalPlays: 100,
       percentageCorrect: 90,
@@ -143,41 +143,50 @@ export class MockDataService {
     },
   };
 
-  static async getPlayerData(sport: string, date?: string): Promise<PlayerData> {
+  static async getPlayerData(
+    sport: string,
+    date?: string
+  ): Promise<PlayerData> {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Load from local JSON files as before
     const sportFiles: Record<string, string> = {
-      baseball: "/UncoverBaseballData.json",
-      basketball: "/UncoverBasketballData.json",
-      football: "/UncoverFootballData.json",
+      baseball: "/AthleteUnknownBaseballData.json",
+      basketball: "/AthleteUnknownBasketballData.json",
+      football: "/AthleteUnknownFootballData.json",
     };
 
     const response = await fetch(sportFiles[sport]);
-    const data: PlayerData[] = await response.json();
+    const data: any[] = await response.json();
 
     const key = `playerIndex_${sport}`;
     const storedIndex = parseInt(localStorage.getItem(key) || "0");
     const index = storedIndex % data.length;
-    const playerData = data[index];
+    const roundData = data[index];
+    const playerData = roundData.player;
 
     localStorage.setItem(key, ((index + 1) % data.length).toString());
 
     return {
       ...playerData,
-      playDate: date || new Date().toISOString().split('T')[0],
+      dailyNumber: index + 1,
+      playDate:
+        date || roundData.playDate || new Date().toISOString().split("T")[0],
       sport,
     };
   }
 
-  static async getRoundStats(sport: string, date?: string): Promise<RoundStats> {
+  static async getRoundStats(
+    sport: string,
+    date?: string
+  ): Promise<RoundStats> {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     return {
       ...this.mockRoundStats[sport],
-      playDate: date || new Date().toISOString().split('T')[0],
+      playDate: date || new Date().toISOString().split("T")[0],
     };
   }
 }

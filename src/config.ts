@@ -32,7 +32,8 @@ export const DEFAULT_SPORT: SportType = SPORTS.BASEBALL;
 export const REFERENCE_URLS = {
   BASEBALL_WAR: "https://www.baseball-reference.com/about/war_explained.shtml",
   BASKETBALL_BPM: "https://www.basketball-reference.com/about/bpm2.html",
-  FOOTBALL_AV: "https://www.pro-football-reference.com/about/approximate_value.htm",
+  FOOTBALL_AV:
+    "https://www.pro-football-reference.com/about/approximate_value.htm",
 } as const;
 
 // ============================================================================
@@ -111,23 +112,24 @@ export const PHOTO_GRID = {
 } as const;
 
 // ============================================================================
-// TILE TOPICS
+// TILE NAMES
 // ============================================================================
 
-export const TILE_TOPICS = [
-  "Bio",
-  "Player Information",
-  "Draft Information",
-  "Years Active",
-  "Teams Played On",
-  "Jersey Numbers",
-  "Career Stats",
-  "Personal Achievements",
-  "Photo",
+// Tile names mapping (index 0-8 maps to backend tile names)
+export const TILE_NAMES = [
+  "bio",
+  "playerInformation",
+  "draftInformation",
+  "yearsActive",
+  "teamsPlayedOn",
+  "jerseyNumbers",
+  "careerStats",
+  "personalAchievements",
+  "photo",
 ] as const;
 
 // Total number of tiles in the game
-export const TOTAL_TILES = TILE_TOPICS.length;
+export const TOTAL_TILES = TILE_NAMES.length;
 
 // ============================================================================
 // LOCAL STORAGE KEYS

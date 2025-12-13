@@ -1,20 +1,20 @@
 // API Request/Response Types
 
 export interface PlayerData {
-  Name: string;
-  Bio: string;
-  "Player Information": string;
-  "Draft Information": string;
-  "Years Active": string;
-  "Teams Played On": string;
-  "Jersey Numbers": string;
-  "Career Stats": string;
-  "Personal Achievements": string;
-  Photo: string[];
+  name: string;
+  bio: string;
+  playerInformation: string;
+  draftInformation: string;
+  yearsActive: string;
+  teamsPlayedOn: string;
+  jerseyNumbers: string;
+  careerStats: string;
+  personalAchievements: string;
+  photo: string;
   dailyNumber?: number;
   playDate?: string;
   sport?: string;
-  [key: string]: string | string[] | number | undefined;
+  [key: string]: string | number | undefined;
 }
 
 export interface TileTracker {
