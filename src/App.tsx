@@ -1,12 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import "./App.css";
 import ContactForm from "./ContactForm";
 import AthleteUnknown from "./AthleteUnknown";
+import { apiService } from "./services/api";
 
-type PageType = "Home" | "Daily Fact" | "Athlete Unknown" | "Projects" | "Contact";
+type PageType =
+  | "Home"
+  | "Daily Fact"
+  | "Athlete Unknown"
+  | "Projects"
+  | "Contact";
 
 function App() {
   const [activePage, setActivePage] = useState<PageType>("Home");
+  const {
+    getAccessTokenSilently,
+    loginWithRedirect,
+    logout,
+    isAuthenticated,
+    user,
+    isLoading,
+  } = useAuth0();
+
+  // Initialize API service with Auth0 token function
+  useEffect(() => {
+    apiService.setGetAccessToken(getAccessTokenSilently);
+  }, [getAccessTokenSilently]);
 
   const renderPage = () => {
     switch (activePage) {
@@ -68,8 +88,28 @@ function App() {
   return (
     <div className="App">
       <header className="header">
-        <h1 className="site-title">Bizarro Fantasy Sports</h1>
-        <p className="tagline">Daily Fantasy Sports Games</p>
+        <div>
+          <h1 className="site-title">Bizarro Fantasy Sports</h1>
+          <p className="tagline">Daily Fantasy Sports Games</p>
+        </div>
+        <div className="auth-section">
+          {isLoading ? (
+            <span>Loading...</span>
+          ) : isAuthenticated ? (
+            <div className="user-info">
+              <span>Welcome, {user?.name || user?.email}</span>
+              <button
+                onClick={() =>
+                  logout({ logoutParams: { returnTo: window.location.origin } })
+                }
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => loginWithRedirect()}>Log In</button>
+          )}
+        </div>
       </header>
 
       <nav className="navbar">

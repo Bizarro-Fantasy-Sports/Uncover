@@ -11,10 +11,29 @@ import type {
 class ApiService {
   private baseUrl: string;
   private timeout: number;
+  private getAccessTokenSilently?: (options?: {
+    authorizationParams?: {
+      audience?: string;
+    };
+  }) => Promise<string>;
 
   constructor() {
     this.baseUrl = API_CONFIG.baseUrl;
     this.timeout = API_CONFIG.timeout;
+  }
+
+  /**
+   * Set the Auth0 getAccessTokenSilently function
+   * This should be called after the Auth0Provider is initialized
+   */
+  setGetAccessToken(
+    getAccessTokenSilently: (options?: {
+      authorizationParams?: {
+        audience?: string;
+      };
+    }) => Promise<string>
+  ): void {
+    this.getAccessTokenSilently = getAccessTokenSilently;
   }
 
   private async fetchWithTimeout(
@@ -25,11 +44,27 @@ class ApiService {
     const id = setTimeout(() => controller.abort(), this.timeout);
 
     try {
+      // Get access token if available
+      let token: string | undefined;
+      if (this.getAccessTokenSilently) {
+        try {
+          token = await this.getAccessTokenSilently({
+            authorizationParams: {
+              audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+            },
+          });
+        } catch (error) {
+          console.error("Error getting access token:", error);
+          // Continue without token - let the backend handle unauthorized requests
+        }
+      }
+
       const response = await fetch(url, {
         ...options,
         signal: controller.signal,
         headers: {
           "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
           ...options.headers,
         },
       });
