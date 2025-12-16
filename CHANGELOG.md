@@ -15,6 +15,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-18](https://github.com/Statsland-Fantasy/statsland-website/pull/17)
+
+### Added
+
+- Auth0 integration
+- Added makeshift login button
+
 ## [PR-17](https://github.com/Statsland-Fantasy/statsland-website/pull/17)
 
 ### Changed
