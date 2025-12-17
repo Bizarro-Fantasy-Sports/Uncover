@@ -15,6 +15,50 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-17](https://github.com/Statsland-Fantasy/statsland-website/pull/17)
+
+### Changed
+
+- Changed tile names to be Lower Camel Case instead of space-separated Title Case
+- Fix photo type
+
+## [PR-16](https://github.com/Statsland-Fantasy/statsland-website/pull/16)
+
+### Added
+
+- Added CHANGELOG
+
+## [PR-15](https://github.com/Statsland-Fantasy/statsland-website/pull/15)
+
+### Added
+
+- Created config file with configurable variables
+
+## [PR-14](https://github.com/Statsland-Fantasy/statsland-website/pull/14)
+
+### Changed
+
+- Allow configuration to call real BE API
+
+## [PR-13](https://github.com/Statsland-Fantasy/statsland-website/pull/13)
+
+### Changed
+
+- Renamed all instances of Uncover to Athlete Unknown
+- Small bug fixes
+
+## [PR-12](https://github.com/Statsland-Fantasy/statsland-website/pull/12)
+
+### Added
+
+- Add credit to Sports Reference
+
+## [PR-11](https://github.com/Statsland-Fantasy/statsland-website/pull/11)
+
+### Added
+
+- Guest user session persistence with localStorage
+
 ## [PR-10](https://github.com/Statsland-Fantasy/statsland-website/pull/10)
 
 ### Changed

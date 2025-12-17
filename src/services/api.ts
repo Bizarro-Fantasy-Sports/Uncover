@@ -1,3 +1,4 @@
+import { TILE_NAMES } from "../config";
 import API_CONFIG from "../config/api";
 import type {
   PlayerData,
@@ -6,19 +7,6 @@ import type {
   GameResultResponse,
   ApiError,
 } from "../types/api";
-
-// Tile names mapping (index 0-8 maps to backend tile names)
-const TILE_NAMES = [
-  "bio",
-  "playerInformation",
-  "draftInformation",
-  "yearsActive",
-  "teamsPlayedOn",
-  "jerseyNumbers",
-  "careerStats",
-  "personalAchievements",
-  "photo",
-];
 
 class ApiService {
   private baseUrl: string;
@@ -81,13 +69,15 @@ class ApiService {
    */
   private async getRound(sport: string, date?: string): Promise<any> {
     // Use browser's local timezone for date calculation
-    const dateParam = date || (() => {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
-      const day = String(now.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    })();
+    const dateParam =
+      date ||
+      (() => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      })();
     const url = `${this.baseUrl}${API_CONFIG.endpoints.getRound(sport, dateParam)}`;
 
     try {
@@ -113,16 +103,16 @@ class ApiService {
 
       // Transform backend Round.Player to frontend PlayerData format
       const playerData: PlayerData = {
-        Name: round.player.name,
-        Bio: round.player.bio,
-        "Player Information": round.player.playerInformation,
-        "Draft Information": round.player.draftInformation,
-        "Years Active": round.player.yearsActive,
-        "Teams Played On": round.player.teamsPlayedOn,
-        "Jersey Numbers": round.player.jerseyNumbers,
-        "Career Stats": round.player.careerStats,
-        "Personal Achievements": round.player.personalAchievements,
-        Photo: [round.player.photo],
+        name: round.player.name,
+        bio: round.player.bio,
+        playerInformation: round.player.playerInformation,
+        draftInformation: round.player.draftInformation,
+        yearsActive: round.player.yearsActive,
+        teamsPlayedOn: round.player.teamsPlayedOn,
+        jerseyNumbers: round.player.jerseyNumbers,
+        careerStats: round.player.careerStats,
+        personalAchievements: round.player.personalAchievements,
+        photo: round.player.photo,
         playDate: round.playDate,
         sport: round.sport,
       };
@@ -155,17 +145,17 @@ class ApiService {
    * Submit game results
    * @param gameResult - The game result data
    */
-  async submitGameResults(
-    gameResult: GameResult
-  ): Promise<GameResultResponse> {
+  async submitGameResults(gameResult: GameResult): Promise<GameResultResponse> {
     // Use browser's local timezone for date calculation
-    const dateParam = gameResult.playDate || (() => {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
-      const day = String(now.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    })();
+    const dateParam =
+      gameResult.playDate ||
+      (() => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      })();
     const url = `${this.baseUrl}${API_CONFIG.endpoints.submitGameResults(gameResult.sport, dateParam)}`;
 
     // Transform frontend format to backend format
@@ -173,7 +163,7 @@ class ApiService {
       score: gameResult.score,
       isCorrect: gameResult.completed,
       tilesFlipped: gameResult.flippedTilesPattern
-        .map((flipped, index) => flipped ? TILE_NAMES[index] : null)
+        .map((flipped, index) => (flipped ? TILE_NAMES[index] : null))
         .filter(Boolean),
     };
 

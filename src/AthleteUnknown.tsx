@@ -7,7 +7,7 @@ import type { RoundStats, GameResult } from "./types/api";
 import UserStats from "./UserStats";
 import {
   type SportType,
-  TILE_TOPICS,
+  TILE_NAMES,
   TOTAL_TILES,
   DEFAULT_SPORT,
   SPORT_LIST,
@@ -18,8 +18,6 @@ import {
   TIMING,
   PHOTO_GRID,
 } from "./config";
-
-const topics = TILE_TOPICS;
 
 // Helper Function for Name Guessing
 const lev = (a: string, b: string): number => {
@@ -45,21 +43,30 @@ const lev = (a: string, b: string): number => {
 
 const normalize = (str = ""): string => str.toLowerCase().replace(/\s/g, "");
 
+// Helper function to convert camelCase to Title Case with spaces
+const camelCaseToTitleCase = (str: string): string => {
+  // Insert space before capital letters and capitalize first letter
+  return str
+    .replace(/([A-Z])/g, " $1") // Add space before capital letters
+    .replace(/^./, (char) => char.toUpperCase()) // Capitalize first letter
+    .trim();
+};
+
 // Round stats are now fetched from API/backend - no more hardcoded data
 
 interface PlayerData {
-  Name: string;
-  Bio: string;
-  "Player Information": string;
-  "Draft Information": string;
-  "Years Active": string;
-  "Teams Played On": string;
-  "Jersey Numbers": string;
-  "Career Stats": string;
-  "Personal Achievements": string;
-  Photo: string[];
+  name: string;
+  bio: string;
+  playerInformation: string;
+  draftInformation: string;
+  yearsActive: string;
+  teamsPlayedOn: string;
+  jerseyNumbers: string;
+  careerStats: string;
+  personalAchievements: string;
+  photo: string;
   dailyNumber?: number;
-  [key: string]: string | string[] | number | undefined;
+  [key: string]: string | number | undefined;
 }
 
 interface GameState {
@@ -120,7 +127,11 @@ const getGuestSessionKey = (sport: SportType): string => {
   return `guestSession_${sport}`;
 };
 
-const saveGuestSession = (sport: SportType, state: GameState, playerIndex?: number): void => {
+const saveGuestSession = (
+  sport: SportType,
+  state: GameState,
+  playerIndex?: number
+): void => {
   try {
     // Only save persistent game state (exclude transient UI state)
     const persistentState = {
@@ -136,17 +147,23 @@ const saveGuestSession = (sport: SportType, state: GameState, playerIndex?: numb
       incorrectGuesses: state.incorrectGuesses,
       lastSubmittedGuess: state.lastSubmittedGuess,
       // Store player data identifier to verify it's the same puzzle
-      playerName_saved: state.playerData?.Name || "",
+      playerName_saved: state.playerData?.name || "",
       // Store player index so we can restore the same player
       playerIndex_saved: playerIndex,
     };
-    localStorage.setItem(getGuestSessionKey(sport), JSON.stringify(persistentState));
+    localStorage.setItem(
+      getGuestSessionKey(sport),
+      JSON.stringify(persistentState)
+    );
   } catch (error) {
     console.error("Failed to save guest session:", error);
   }
 };
 
-const loadGuestSession = (sport: SportType, currentPlayerName: string): Partial<GameState> | null => {
+const loadGuestSession = (
+  sport: SportType,
+  currentPlayerName: string
+): Partial<GameState> | null => {
   try {
     const saved = localStorage.getItem(getGuestSessionKey(sport));
     if (!saved) {
@@ -181,7 +198,7 @@ const clearGuestSession = (sport: SportType): void => {
 };
 
 const clearAllGuestSessions = (): void => {
-  SPORT_LIST.forEach(sport => clearGuestSession(sport));
+  SPORT_LIST.forEach((sport) => clearGuestSession(sport));
 };
 
 const AthleteUnknown: React.FC = () => {
@@ -189,7 +206,12 @@ const AthleteUnknown: React.FC = () => {
   const getInitialSport = (): SportType => {
     try {
       const saved = localStorage.getItem("activeSport");
-      if (saved && (saved === SPORTS.BASEBALL || saved === SPORTS.BASKETBALL || saved === SPORTS.FOOTBALL)) {
+      if (
+        saved &&
+        (saved === SPORTS.BASEBALL ||
+          saved === SPORTS.BASKETBALL ||
+          saved === SPORTS.FOOTBALL)
+      ) {
         return saved as SportType;
       }
     } catch (error) {
@@ -225,7 +247,10 @@ const AthleteUnknown: React.FC = () => {
       const newState = { ...currentSportState, ...patch };
 
       // Ensure currentPlayerIndex is preserved if not in the patch
-      if (newState.currentPlayerIndex === undefined && currentSportState.currentPlayerIndex !== undefined) {
+      if (
+        newState.currentPlayerIndex === undefined &&
+        currentSportState.currentPlayerIndex !== undefined
+      ) {
         newState.currentPlayerIndex = currentSportState.currentPlayerIndex;
       }
 
@@ -268,7 +293,8 @@ const AthleteUnknown: React.FC = () => {
       } catch (error) {
         console.error("Error loading game data:", error);
         updateState({
-          error: error instanceof Error ? error.message : "Failed to load game data",
+          error:
+            error instanceof Error ? error.message : "Failed to load game data",
           isLoading: false,
         });
       }
@@ -295,13 +321,15 @@ const AthleteUnknown: React.FC = () => {
       }
 
       try {
-        const playDate = (state.playerData.playDate || state.roundStats.playDate || new Date().toISOString().split("T")[0]) as string;
+        const playDate = (state.playerData.playDate ||
+          state.roundStats.playDate ||
+          new Date().toISOString().split("T")[0]) as string;
 
         const gameResult: GameResult = {
           userId: "temp_user_123", // TODO: Replace with actual user ID from auth
           sport: activeSport,
           playDate,
-          playerName: state.playerData.Name,
+          playerName: state.playerData.name,
           score: state.score,
           tilesFlipped: state.tilesFlippedCount,
           incorrectGuesses: state.incorrectGuesses,
@@ -340,7 +368,7 @@ const AthleteUnknown: React.FC = () => {
   // Show loading state
   if (s.isLoading) {
     return (
-      <div className="uncover-game">
+      <div className="athlete-unknown-game">
         <p>Loading player data and round statistics...</p>
       </div>
     );
@@ -349,7 +377,7 @@ const AthleteUnknown: React.FC = () => {
   // Show error state
   if (s.error) {
     return (
-      <div className="uncover-game">
+      <div className="athlete-unknown-game">
         <div className="error-message">
           <p>Error: {s.error}</p>
           <button onClick={() => window.location.reload()}>Retry</button>
@@ -361,7 +389,7 @@ const AthleteUnknown: React.FC = () => {
   // Ensure data is loaded
   if (!s.playerData || !s.roundStats) {
     return (
-      <div className="uncover-game">
+      <div className="athlete-unknown-game">
         <p>Loading game data...</p>
       </div>
     );
@@ -388,7 +416,7 @@ const AthleteUnknown: React.FC = () => {
 
     const playerData = s.playerData!;
     const a = normalize(s.playerName);
-    const b = normalize(playerData.Name);
+    const b = normalize(playerData.name);
     const distance = lev(a, b);
 
     // If game is already won, only allow reopening modal with correct answer
@@ -423,7 +451,8 @@ const AthleteUnknown: React.FC = () => {
     let newHint = s.hint;
 
     if (newScore < SCORING.HINT_THRESHOLD && !s.hint) {
-      newHint = playerData.Name.split(" ")
+      newHint = playerData.name
+        .split(" ")
         .map((w) => w[0])
         .join(".");
     }
@@ -432,7 +461,7 @@ const AthleteUnknown: React.FC = () => {
       if (s.previousCloseGuess && s.previousCloseGuess !== a) {
         const rank = evaluateRank(newScore);
         updateState({
-          message: `Correct, you were close! Player's name: ${playerData.Name}`,
+          message: `Correct, you were close! Player's name: ${playerData.name}`,
           messageType: "close",
           previousCloseGuess: "",
           score: newScore,
@@ -464,11 +493,6 @@ const AthleteUnknown: React.FC = () => {
     });
   };
 
-  // Helper to convert topic index to camelCase name for tracking
-  const getTileName = (index: number): string => {
-    return topics[index].replace(/\s+/g, "").replace(/^(.)/, (m) => m.toLowerCase());
-  };
-
   const handleGiveUp = () => {
     updateState({
       gaveUp: true,
@@ -489,7 +513,7 @@ const AthleteUnknown: React.FC = () => {
     }
 
     // If clicking an already-flipped Photo tile, reveal the photo again
-    if (s.flippedTiles[index] && topics[index] === "Photo") {
+    if (s.flippedTiles[index] && TILE_NAMES[index] === "photo") {
       updateState({ photoRevealed: true, returningFromPhoto: false });
       return;
     }
@@ -499,12 +523,12 @@ const AthleteUnknown: React.FC = () => {
     }
 
     // Track first and last tiles flipped
-    const tileName = getTileName(index);
+    const tileName = TILE_NAMES[index];
     const isFirstTile = s.tilesFlippedCount === 0;
     const firstTile = isFirstTile ? tileName : s.firstTileFlipped;
 
     // If Photo tile is clicked for the first time, reveal the photo puzzle immediately
-    if (topics[index] === "Photo") {
+    if (TILE_NAMES[index] === "photo") {
       const updated = [...s.flippedTiles];
       updated[index] = true;
 
@@ -514,7 +538,8 @@ const AthleteUnknown: React.FC = () => {
 
         let newHint = s.hint;
         if (newScore < SCORING.HINT_THRESHOLD && !s.hint) {
-          newHint = s.playerData!.Name.split(" ")
+          newHint = s
+            .playerData!.name.split(" ")
             .map((w) => w[0])
             .join(".");
         }
@@ -550,7 +575,8 @@ const AthleteUnknown: React.FC = () => {
 
       let newHint = s.hint;
       if (newScore < SCORING.HINT_THRESHOLD && !s.hint) {
-        newHint = s.playerData!.Name.split(" ")
+        newHint = s
+          .playerData!.name.split(" ")
           .map((w) => w[0])
           .join(".");
       }
@@ -571,7 +597,7 @@ const AthleteUnknown: React.FC = () => {
     }
   };
 
-  const photoUrl = s.playerData.Photo?.[0] || "";
+  const photoUrl = s.playerData.photo || "";
 
   // Calculate background position for photo segments (3x3 grid)
   const getPhotoSegmentStyle = (index: number): React.CSSProperties => {
@@ -591,7 +617,7 @@ const AthleteUnknown: React.FC = () => {
     const dailyNumber = s.playerData!.dailyNumber || 1;
 
     // Build the share text
-    let shareText = `Daily Uncover #${dailyNumber}\n`;
+    let shareText = `Daily Athlete Unknown #${dailyNumber}\n`;
 
     // Create a 3x3 grid using emojis
     for (let i = 0; i < TOTAL_TILES; i++) {
@@ -624,15 +650,18 @@ const AthleteUnknown: React.FC = () => {
 
   // Sports Reference URLs
   const sportsReferenceUrls: Record<SportType, string> = {
-    basketball: "https://www.basketball-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite&__hstc=213859787.d5011e8d60fd9a5193cb043be2a32532.1764028511872.1764187685470.1764486206944.5&__hssc=213859787.1.1764486206944&__hsfp=2724220660",
-    baseball: "https://www.baseball-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite",
-    football: "https://www.pro-football-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite"
+    basketball:
+      "https://www.basketball-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite&__hstc=213859787.d5011e8d60fd9a5193cb043be2a32532.1764028511872.1764187685470.1764486206944.5&__hssc=213859787.1.1764486206944&__hsfp=2724220660",
+    baseball:
+      "https://www.baseball-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite",
+    football:
+      "https://www.pro-football-reference.com/?utm_campaign=2023_07_ig_header_logo&utm_source=ig&utm_medium=sr_xsite",
   };
 
   const sportLogos: Record<SportType, string> = {
     baseball: "https://cdn.ssref.net/req/202512031/logos/br-logo.svg",
     basketball: "https://cdn.ssref.net/req/202512031/logos/bbr-logo.svg",
-    football: "https://cdn.ssref.net/req/202512101/logos/pfr-logo.svg"
+    football: "https://cdn.ssref.net/req/202512101/logos/pfr-logo.svg",
   };
 
   // Format date for display (MM-DD-YY)
@@ -651,7 +680,9 @@ const AthleteUnknown: React.FC = () => {
     }
   };
 
-  const playDate = (s.playerData?.playDate || s.roundStats?.playDate) as string | undefined;
+  const playDate = (s.playerData?.playDate || s.roundStats?.playDate) as
+    | string
+    | undefined;
   const puzzleNumber = s.playerData?.dailyNumber || 1;
 
   return (
@@ -768,7 +799,7 @@ const AthleteUnknown: React.FC = () => {
       </div>
 
       <div className="grid">
-        {topics.map((topic, index) => (
+        {TILE_NAMES.map((tile, index) => (
           <div
             key={index}
             className="tile"
@@ -787,13 +818,13 @@ const AthleteUnknown: React.FC = () => {
                       : ""
               }`}
             >
-              <div className="tile-front">{topic}</div>
+              <div className="tile-front">{camelCaseToTitleCase(tile)}</div>
               <div
                 className={`tile-back ${s.photoRevealed ? "photo-segment" : ""}`}
                 style={s.photoRevealed ? getPhotoSegmentStyle(index) : {}}
               >
                 {!s.photoRevealed &&
-                  (topic === "Photo" ? (
+                  (tile === "photo" ? (
                     <img
                       src={photoUrl}
                       alt="Player"
@@ -805,7 +836,7 @@ const AthleteUnknown: React.FC = () => {
                       }}
                     />
                   ) : (
-                    s.playerData![topic]
+                    s.playerData![tile]
                   ))}
                 {s.photoRevealed && index === 2 && (
                   <div className="flip-back-arrow">↻</div>
@@ -843,7 +874,7 @@ const AthleteUnknown: React.FC = () => {
             )}
 
             <div className="results-grid">
-              {topics.map((topic, index) => (
+              {TILE_NAMES.map((_, index) => (
                 <div
                   key={index}
                   className={`results-tile ${s.flippedTiles[index] ? "flipped" : "unflipped"}`}
@@ -894,7 +925,8 @@ const AthleteUnknown: React.FC = () => {
       )}
 
       <div className="sports-reference-credit">
-        All information and images courtesy of Sports-Reference (sports-reference.com)
+        All information and images courtesy of Sports-Reference
+        (sports-reference.com)
       </div>
 
       <RulesModal
@@ -910,16 +942,25 @@ const AthleteUnknown: React.FC = () => {
             ...s.roundStats,
             name:
               s.finalRank || s.gaveUp
-                ? s.playerData?.Name || "Unknown Player"
+                ? s.playerData?.name || "Unknown Player"
                 : "???",
           }}
         />
       )}
 
       {isStatsModalOpen && (
-        <div className="user-stats-modal" onClick={() => setIsStatsModalOpen(false)}>
-          <div className="user-stats-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-user-stats" onClick={() => setIsStatsModalOpen(false)}>
+        <div
+          className="user-stats-modal"
+          onClick={() => setIsStatsModalOpen(false)}
+        >
+          <div
+            className="user-stats-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="close-user-stats"
+              onClick={() => setIsStatsModalOpen(false)}
+            >
               ×
             </button>
             <UserStats />
