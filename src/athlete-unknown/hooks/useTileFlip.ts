@@ -45,7 +45,7 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
       const updated = [...state.flippedTiles];
       updated[index] = true;
 
-      // If Photo tile is clicked for the first time, reveal the photo puzzle
+      // If Photo tile is clicked for the first time, reveal the full segmented photo
       if (TILE_NAMES[index] === "photo") {
         // Only update score/counters if game is not won or gave up
         if (!state.finalRank && !state.gaveUp) {

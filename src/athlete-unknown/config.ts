@@ -145,8 +145,8 @@ export const STORAGE_KEYS = {
 // ============================================================================
 
 export const DEFAULTS = {
-  // Default daily puzzle number if not specified
-  DAILY_NUMBER: 1,
+  // Default daily round number if not specified
+  ROUND_ID_NUMBER: 1,
 
   // Default player index if none is stored
   PLAYER_INDEX: 0,

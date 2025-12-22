@@ -32,7 +32,7 @@ export const saveGuestSession = (
       lastSubmittedGuess: state.lastSubmittedGuess,
       firstTileFlipped: state.firstTileFlipped,
       lastTileFlipped: state.lastTileFlipped,
-      // Store player data identifier to verify it's the same puzzle
+      // Store player data identifier to verify it's the same round
       playerName_saved: state.round?.player?.name || "",
       // Store player index so we can restore the same player
       playerIndex_saved: playerIndex,
@@ -61,9 +61,9 @@ export const loadGuestSession = (
 
     const parsed = JSON.parse(saved);
 
-    // Only restore if it's the same player/puzzle
+    // Only restore if it's the same player/round
     if (parsed.playerName_saved !== currentPlayerName) {
-      // Different puzzle, clear old session
+      // Different round, clear old session
       clearGuestSession(sport);
       return null;
     }

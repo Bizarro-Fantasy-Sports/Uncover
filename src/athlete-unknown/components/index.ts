@@ -6,7 +6,6 @@
 export { SportsReferenceAttribution } from "./SportsReferenceAttribution";
 export { GameHeader } from "./GameHeader";
 export { ScoreDisplay } from "./ScoreDisplay";
-export { GameStats } from "./GameStats";
 export { PlayerInput } from "./PlayerInput";
 export { Tile } from "./Tile";
 export { TileGrid } from "./TileGrid";

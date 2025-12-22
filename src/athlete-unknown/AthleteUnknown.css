@@ -35,7 +35,7 @@
   display: block;
 }
 
-.puzzle-info {
+.round-info {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -44,7 +44,7 @@
   font-size: 1.1rem;
 }
 
-.puzzle-number {
+.round-number {
   font-weight: bold;
   color: #ffffff;
 }
@@ -453,8 +453,8 @@
   transform: scale(1.05);
 }
 
-/* Puzzle Info Section */
-.puzzle-info {
+/* Round Info Section */
+.round-info {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -464,12 +464,12 @@
   color: white;
 }
 
-.puzzle-number {
+.round-number {
   font-weight: bold;
   color: #ffffff;
 }
 
-.puzzle-date {
+.round-date {
   font-weight: bold;
   color: #ffffff;
 }
@@ -747,7 +747,7 @@
 
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
-  .puzzle-info {
+  .round-info {
     flex-wrap: wrap;
     font-size: 0.9rem;
   }

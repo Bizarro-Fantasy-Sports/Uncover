@@ -15,12 +15,12 @@ export const RoundInfo: React.FC<RoundInfoProps> = ({
   onRulesClick,
 }) => {
   return (
-    <div className="puzzle-info">
-      <span className="puzzle-number">Puzzle #{roundNumber}</span>
+    <div className="round-info">
+      <span className="round-number">Round #{roundNumber}</span>
       {playDate && (
         <>
           <span className="separator">•</span>
-          <span className="puzzle-date">{formatDate(playDate)}</span>
+          <span className="round-date">{formatDate(playDate)}</span>
         </>
       )}
       <span className="separator">•</span>

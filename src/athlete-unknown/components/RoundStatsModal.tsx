@@ -153,7 +153,7 @@ const RoundStatsModal: React.FC<RoundStatsModalProps> = ({
                   <span className="mystery-placeholder">{roundStats.name}</span>
                   <span className="mystery-hint">
                     {" "}
-                    (Solve the puzzle to reveal)
+                    (Solve the round to reveal)
                   </span>
                 </>
               ) : (

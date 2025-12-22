@@ -14,7 +14,6 @@ import {
   GameHeader,
   RoundInfo,
   ScoreDisplay,
-  GameStats,
   PlayerInput,
   TileGrid,
   ResultsModal,
@@ -46,7 +45,7 @@ const AthleteUnknown: React.FC = () => {
   const [activeSport, setActiveSport] = useState<SportType>(getInitialSport);
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
   const [isRoundStatsModalOpen, setIsRoundStatsModalOpen] = useState(false);
-  const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
+  const [isUserStatsModalOpen, setIsUserStatsModalOpen] = useState(false);
 
   // Core state management
   const { state, updateState } = useGameState(activeSport);
@@ -118,7 +117,7 @@ const AthleteUnknown: React.FC = () => {
       <GameHeader
         activeSport={activeSport}
         onSportChange={setActiveSport}
-        onStatsClick={() => setIsStatsModalOpen(true)}
+        onStatsClick={() => setIsUserStatsModalOpen(true)}
       />
 
       <RoundInfo
@@ -134,9 +133,6 @@ const AthleteUnknown: React.FC = () => {
         messageType={state.messageType}
         hint={state.hint}
         finalRank={state.finalRank}
-      />
-
-      <GameStats
         tilesFlipped={state.tilesFlippedCount}
         incorrectGuesses={state.incorrectGuesses}
       />
@@ -192,10 +188,10 @@ const AthleteUnknown: React.FC = () => {
         />
       )}
 
-      {isStatsModalOpen && (
+      {isUserStatsModalOpen && (
         <div
           className="user-stats-modal"
-          onClick={() => setIsStatsModalOpen(false)}
+          onClick={() => setIsUserStatsModalOpen(false)}
         >
           <div
             className="user-stats-modal-content"
@@ -203,7 +199,7 @@ const AthleteUnknown: React.FC = () => {
           >
             <button
               className="close-user-stats"
-              onClick={() => setIsStatsModalOpen(false)}
+              onClick={() => setIsUserStatsModalOpen(false)}
             >
               ×
             </button>
