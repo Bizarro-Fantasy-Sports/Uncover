@@ -51,21 +51,35 @@ const AthleteUnknown: React.FC = () => {
   const { state, updateState } = useGameState(activeSport);
 
   // Data fetching & submission
+  // updates the following fields in state
+  // isLoading, error, round
+  // TODO: rename to useRoundData
   useGameData({ activeSport, state, updateState });
 
   // Guest session persistence
+  // updates the following fields in state
+  // playerName, message, messageType, previousCloseGuess, flippedTiles, tilesFlippedCount, score, hint, finalRank
+  // incorrectGuesses, lastSubmittedGuess, firstTileFlipped, lastTileFlipped, playerName_saved,tate.finalRank, playerIndex_saved
+  // TODO: remove guest? I think this should be the logic for all users because  we don't save in-progress for signed in users either
   useGuestSession({ activeSport, state, updateState });
 
   // Game logic
+  // updates the following fields in state:
+  // message, messageType, previousCloseGuess, finalRank, hint, showResultsModal, lastSubmittedGuess
+  // TODO: rename to useUserSubmission
   const { handleNameSubmit, handleGiveUp } = useGameLogic({
     state,
     updateState,
   });
 
   // Tile interactions
+  // updates the following fields in state:
+  // photoRevealed, returningFromPhoto, flippedTiles, tilesFlippedCount, score, hint, firstTileFlipped, lastTileFlipped
   const { handleTileClick } = useTileFlip({ state, updateState });
 
   // Share functionality
+  // updates the following fields in state:
+  // copiedText
   const { handleShare } = useShareResults({ state, updateState });
 
   // Save active sport to localStorage when it changes

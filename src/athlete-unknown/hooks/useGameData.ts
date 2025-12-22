@@ -112,7 +112,7 @@ export const useGameData = ({
     try {
       updateState({ isLoading: true, error: null });
 
-      const testPlayDate = "???";
+      // const testPlayDate = "???";
       const roundData = await gameDataService.getRoundData(
         activeSport,
         undefined // until a testPlayDate can be inserted from FE to BE
