@@ -15,7 +15,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-## [PR-18](https://github.com/Statsland-Fantasy/statsland-website/pull/17)
+## [PR-19](https://github.com/Statsland-Fantasy/statsland-website/pull/19)
+
+### Added
+
+- Reorganized all AthleteUnknown related files to be in its own directory. All components, API service files, types, utils, config, etc
+- Broke up large AthleteUnknown.tsx file to have individual files for custom hooks, utils, and UI components
+
+## [PR-18](https://github.com/Statsland-Fantasy/statsland-website/pull/18)
 
 ### Added
 
