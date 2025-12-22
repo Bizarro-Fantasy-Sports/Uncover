@@ -1,0 +1,218 @@
+import React, { useEffect, useState } from "react";
+import "./AthleteUnknown.css";
+import { type SportType, DEFAULT_SPORT, SPORTS } from "./config";
+import { useGameState } from "./hooks/useGameState";
+import { useGameLogic } from "./hooks/useGameLogic";
+import { useTileFlip } from "./hooks/useTileFlip";
+import { useGameData } from "./hooks/useGameData";
+import { useGuestSession } from "./hooks/useGuestSession";
+import { useShareResults } from "./hooks/useShareResults";
+import { STORAGE_KEYS } from "./utils/storage";
+import {
+  SportsReferenceAttribution,
+  GameHeader,
+  PuzzleInfo,
+  ScoreDisplay,
+  GameStats,
+  PlayerInput,
+  TileGrid,
+  ResultsModal,
+  RoundStatsModal,
+  RulesModal,
+  SportsReferenceCredit,
+  UserStatsModal,
+} from "./components";
+
+const AthleteUnknown: React.FC = () => {
+  // Restore previously active sport from localStorage, default to baseball
+  const getInitialSport = (): SportType => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_SPORT);
+      if (
+        saved &&
+        (saved === SPORTS.BASEBALL ||
+          saved === SPORTS.BASKETBALL ||
+          saved === SPORTS.FOOTBALL)
+      ) {
+        return saved as SportType;
+      }
+    } catch (error) {
+      console.error("Failed to load active sport:", error);
+    }
+    return DEFAULT_SPORT;
+  };
+
+  const [activeSport, setActiveSport] = useState<SportType>(getInitialSport);
+  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
+  const [isRoundStatsModalOpen, setIsRoundStatsModalOpen] = useState(false);
+  const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
+
+  // Core state management
+  const { state, updateState } = useGameState(activeSport);
+
+  // Data fetching & submission
+  useGameData({ activeSport, state, updateState });
+
+  // Guest session persistence
+  useGuestSession({ activeSport, state, updateState });
+
+  // Game logic
+  const { handleNameSubmit, handleGiveUp } = useGameLogic({
+    state,
+    updateState,
+  });
+
+  // Tile interactions
+  const { handleTileClick } = useTileFlip({ state, updateState });
+
+  // Share functionality
+  const { handleShare } = useShareResults({ state, updateState });
+
+  // Save active sport to localStorage when it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.ACTIVE_SPORT, activeSport);
+    } catch (error) {
+      console.error("Failed to save active sport:", error);
+    }
+  }, [activeSport]);
+
+  // Show loading state
+  if (state.isLoading) {
+    return (
+      <div className="athlete-unknown-game">
+        <p>Loading player data and round statistics...</p>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (state.error) {
+    return (
+      <div className="athlete-unknown-game">
+        <div className="error-message">
+          <p>Error: {state.error}</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </div>
+    );
+  }
+
+  // Ensure data is loaded
+  if (!state.playerData || !state.roundStats) {
+    return (
+      <div className="athlete-unknown-game">
+        <p>Loading game data...</p>
+      </div>
+    );
+  }
+
+  const playDate = (state.playerData?.playDate ||
+    state.roundStats?.playDate) as string | undefined;
+  const puzzleNumber = state.playerData?.dailyNumber || 1;
+
+  return (
+    <div className="athlete-unknown-game">
+      <SportsReferenceAttribution activeSport={activeSport} />
+
+      <GameHeader
+        activeSport={activeSport}
+        onSportChange={setActiveSport}
+        onStatsClick={() => setIsStatsModalOpen(true)}
+      />
+
+      <PuzzleInfo
+        puzzleNumber={puzzleNumber}
+        playDate={playDate}
+        onRoundStatsClick={() => setIsRoundStatsModalOpen(true)}
+        onRulesClick={() => setIsRulesModalOpen(true)}
+      />
+
+      <ScoreDisplay
+        score={state.score}
+        message={state.message}
+        messageType={state.messageType}
+        hint={state.hint}
+        finalRank={state.finalRank}
+      />
+
+      <GameStats
+        tilesFlipped={state.tilesFlippedCount}
+        incorrectGuesses={state.incorrectGuesses}
+      />
+
+      <PlayerInput
+        playerName={state.playerName}
+        score={state.score}
+        finalRank={state.finalRank}
+        gaveUp={state.gaveUp}
+        onPlayerNameChange={(name) => updateState({ playerName: name })}
+        onSubmit={handleNameSubmit}
+        onGiveUp={handleGiveUp}
+        onViewResults={() => updateState({ showResultsModal: true })}
+      />
+
+      <TileGrid
+        flippedTiles={state.flippedTiles}
+        photoRevealed={state.photoRevealed}
+        returningFromPhoto={state.returningFromPhoto}
+        playerData={state.playerData}
+        onTileClick={handleTileClick}
+      />
+
+      <ResultsModal
+        isOpen={state.showResultsModal}
+        gaveUp={state.gaveUp}
+        score={state.score}
+        flippedTiles={state.flippedTiles}
+        copiedText={state.copiedText}
+        roundStats={state.roundStats}
+        onClose={() => updateState({ showResultsModal: false })}
+        onShare={handleShare}
+      />
+
+      <SportsReferenceCredit />
+
+      <RulesModal
+        isOpen={isRulesModalOpen}
+        onClose={() => setIsRulesModalOpen(false)}
+      />
+
+      {state.roundStats && (
+        <RoundStatsModal
+          isOpen={isRoundStatsModalOpen}
+          onClose={() => setIsRoundStatsModalOpen(false)}
+          roundStats={{
+            ...state.roundStats,
+            name:
+              state.finalRank || state.gaveUp
+                ? state.playerData?.name || "Unknown Player"
+                : "???",
+          }}
+        />
+      )}
+
+      {isStatsModalOpen && (
+        <div
+          className="user-stats-modal"
+          onClick={() => setIsStatsModalOpen(false)}
+        >
+          <div
+            className="user-stats-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="close-user-stats"
+              onClick={() => setIsStatsModalOpen(false)}
+            >
+              ×
+            </button>
+            <UserStatsModal />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AthleteUnknown;

@@ -1,25 +1,22 @@
+import HttpClient from "../../services/httpClient";
+import API_CONFIG from "../../config/api";
 import { TILE_NAMES } from "../config";
-import API_CONFIG from "../config/api";
 import type {
   PlayerData,
   RoundStats,
   GameResult,
   GameResultResponse,
-  ApiError,
 } from "../types/api";
 
-class ApiService {
-  private baseUrl: string;
-  private timeout: number;
-  private getAccessTokenSilently?: (options?: {
-    authorizationParams?: {
-      audience?: string;
-    };
-  }) => Promise<string>;
+/**
+ * Athlete Unknown API Service
+ * Game-specific API methods for the Athlete Unknown game
+ */
+class AthleteUnknownApiService {
+  private httpClient: HttpClient;
 
   constructor() {
-    this.baseUrl = API_CONFIG.baseUrl;
-    this.timeout = API_CONFIG.timeout;
+    this.httpClient = new HttpClient(API_CONFIG.baseUrl, API_CONFIG.timeout);
   }
 
   /**
@@ -33,68 +30,7 @@ class ApiService {
       };
     }) => Promise<string>
   ): void {
-    this.getAccessTokenSilently = getAccessTokenSilently;
-  }
-
-  private async fetchWithTimeout(
-    url: string,
-    options: RequestInit = {}
-  ): Promise<Response> {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), this.timeout);
-
-    try {
-      // Get access token if available
-      let token: string | undefined;
-      if (this.getAccessTokenSilently) {
-        try {
-          token = await this.getAccessTokenSilently({
-            authorizationParams: {
-              audience: process.env.REACT_APP_AUTH0_AUDIENCE,
-            },
-          });
-        } catch (error) {
-          console.error("Error getting access token:", error);
-          // Continue without token - let the backend handle unauthorized requests
-        }
-      }
-
-      const response = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-          ...options.headers,
-        },
-      });
-      clearTimeout(id);
-      return response;
-    } catch (error) {
-      clearTimeout(id);
-      throw error;
-    }
-  }
-
-  private async handleResponse<T>(response: Response): Promise<T> {
-    if (!response.ok) {
-      const error: ApiError = {
-        message: `HTTP error! status: ${response.status}`,
-        status: response.status,
-      };
-
-      try {
-        const errorData = await response.json();
-        error.details = errorData;
-        error.message = errorData.message || error.message;
-      } catch {
-        // Response body is not JSON
-      }
-
-      throw error;
-    }
-
-    return response.json();
+    this.httpClient.setGetAccessToken(getAccessTokenSilently);
   }
 
   /**
@@ -113,14 +49,13 @@ class ApiService {
         const day = String(now.getDate()).padStart(2, "0");
         return `${year}-${month}-${day}`;
       })();
-    const url = `${this.baseUrl}${API_CONFIG.endpoints.getRound(sport, dateParam)}`;
+    const endpoint = `/v1/round?sport=${sport}&playDate=${dateParam}`;
 
     try {
-      const response = await this.fetchWithTimeout(url);
-      return this.handleResponse<any>(response);
+      return await this.httpClient.get<any>(endpoint);
     } catch (error) {
       console.error("Error fetching round data:", error);
-      throw this.formatError(error, "Failed to load round data");
+      throw this.httpClient.formatError(error, "Failed to load round data");
     }
   }
 
@@ -155,7 +90,7 @@ class ApiService {
       return playerData;
     } catch (error) {
       console.error("Error fetching player data:", error);
-      throw this.formatError(error, "Failed to load player data");
+      throw this.httpClient.formatError(error, "Failed to load player data");
     }
   }
 
@@ -172,7 +107,10 @@ class ApiService {
       return round.stats as RoundStats;
     } catch (error) {
       console.error("Error fetching round stats:", error);
-      throw this.formatError(error, "Failed to load round statistics");
+      throw this.httpClient.formatError(
+        error,
+        "Failed to load round statistics"
+      );
     }
   }
 
@@ -191,7 +129,7 @@ class ApiService {
         const day = String(now.getDate()).padStart(2, "0");
         return `${year}-${month}-${day}`;
       })();
-    const url = `${this.baseUrl}${API_CONFIG.endpoints.submitGameResults(gameResult.sport, dateParam)}`;
+    const endpoint = `/v1/results?sport=${gameResult.sport}&playDate=${dateParam}`;
 
     // Transform frontend format to backend format
     const backendPayload = {
@@ -203,11 +141,7 @@ class ApiService {
     };
 
     try {
-      const response = await this.fetchWithTimeout(url, {
-        method: "POST",
-        body: JSON.stringify(backendPayload),
-      });
-      const result = await this.handleResponse<any>(response);
+      const result = await this.httpClient.post<any>(endpoint, backendPayload);
 
       return {
         success: true,
@@ -216,7 +150,10 @@ class ApiService {
       };
     } catch (error) {
       console.error("Error submitting game results:", error);
-      throw this.formatError(error, "Failed to submit game results");
+      throw this.httpClient.formatError(
+        error,
+        "Failed to submit game results"
+      );
     }
   }
 
@@ -225,36 +162,20 @@ class ApiService {
    * @param userId - The user ID
    */
   async getUserStats(userId: string): Promise<any> {
-    const url = `${this.baseUrl}${API_CONFIG.endpoints.getUserStats(userId)}`;
+    const endpoint = `/v1/stats/user?userId=${userId}`;
 
     try {
-      const response = await this.fetchWithTimeout(url);
-      return this.handleResponse<any>(response);
+      return await this.httpClient.get<any>(endpoint);
     } catch (error) {
       console.error("Error fetching user stats:", error);
-      throw this.formatError(error, "Failed to load user statistics");
+      throw this.httpClient.formatError(
+        error,
+        "Failed to load user statistics"
+      );
     }
-  }
-
-  private formatError(error: any, defaultMessage: string): ApiError {
-    if (error.name === "AbortError") {
-      return {
-        message: "Request timeout - please try again",
-        status: 408,
-      };
-    }
-
-    if (error.message && error.status) {
-      return error as ApiError;
-    }
-
-    return {
-      message: defaultMessage,
-      details: error,
-    };
   }
 }
 
 // Export singleton instance
-export const apiService = new ApiService();
-export default apiService;
+export const athleteUnknownApiService = new AthleteUnknownApiService();
+export default athleteUnknownApiService;

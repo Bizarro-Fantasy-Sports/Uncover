@@ -1,7 +1,13 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
-import RulesModal from "./RulesModal";
+import { RulesModal } from "./RulesModal";
 
 describe("RulesModal", () => {
   const mockOnClose = jest.fn();
@@ -13,12 +19,16 @@ describe("RulesModal", () => {
   describe("Modal Visibility", () => {
     test("does not render when isOpen is false", () => {
       render(<RulesModal isOpen={false} onClose={mockOnClose} />);
-      expect(screen.queryByText("How to Play — Athlete Unknown")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("How to Play — Athlete Unknown")
+      ).not.toBeInTheDocument();
     });
 
     test("renders when isOpen is true", () => {
       render(<RulesModal isOpen={true} onClose={mockOnClose} />);
-      expect(screen.getByText("How to Play — Athlete Unknown")).toBeInTheDocument();
+      expect(
+        screen.getByText("How to Play — Athlete Unknown")
+      ).toBeInTheDocument();
     });
   });
 
@@ -35,7 +45,8 @@ describe("RulesModal", () => {
     test("closes when overlay is clicked", () => {
       render(<RulesModal isOpen={true} onClose={mockOnClose} />);
 
-      const overlay = screen.getByText("How to Play — Athlete Unknown")
+      const overlay = screen
+        .getByText("How to Play — Athlete Unknown")
         .closest(".rules-modal-overlay");
       fireEvent.click(overlay!);
 
@@ -45,7 +56,8 @@ describe("RulesModal", () => {
     test("does not close when modal content is clicked", () => {
       render(<RulesModal isOpen={true} onClose={mockOnClose} />);
 
-      const modalContent = screen.getByText("How to Play — Athlete Unknown")
+      const modalContent = screen
+        .getByText("How to Play — Athlete Unknown")
         .closest(".rules-modal-content");
       fireEvent.click(modalContent!);
 
@@ -57,8 +69,12 @@ describe("RulesModal", () => {
     test("displays game introduction", () => {
       render(<RulesModal isOpen={true} onClose={mockOnClose} />);
 
-      expect(screen.getByText(/Guess the mystery athlete/i)).toBeInTheDocument();
-      expect(screen.getByText(/flipping as few information tiles as possible/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Guess the mystery athlete/i)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/flipping as few information tiles as possible/i)
+      ).toBeInTheDocument();
     });
 
     test("displays scoring rules", () => {
@@ -77,8 +93,12 @@ describe("RulesModal", () => {
       render(<RulesModal isOpen={true} onClose={mockOnClose} />);
 
       expect(screen.getByText(/Close spelling = hint/i)).toBeInTheDocument();
-      expect(screen.getByText(/Stuck & <70 pts = initials revealed/i)).toBeInTheDocument();
-      expect(screen.getByText(/Difficulty increases Mon → Sat/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Stuck & <70 pts = initials revealed/i)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/Difficulty increases Mon → Sat/i)
+      ).toBeInTheDocument();
     });
 
     test("displays tile information section", () => {
@@ -91,7 +111,9 @@ describe("RulesModal", () => {
     test("displays footer message", () => {
       render(<RulesModal isOpen={true} onClose={mockOnClose} />);
 
-      expect(screen.getByText(/Share your score and play again tomorrow!/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Share your score and play again tomorrow!/i)
+      ).toBeInTheDocument();
     });
   });
 
@@ -103,13 +125,17 @@ describe("RulesModal", () => {
       fireEvent.mouseEnter(bioElement);
 
       await waitFor(() => {
-        expect(screen.getByText(/birth date and location of the athlete/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/birth date and location of the athlete/i)
+        ).toBeInTheDocument();
       });
 
       fireEvent.mouseLeave(bioElement);
 
       await waitFor(() => {
-        expect(screen.queryByText(/birth date and location of the athlete/i)).not.toBeInTheDocument();
+        expect(
+          screen.queryByText(/birth date and location of the athlete/i)
+        ).not.toBeInTheDocument();
       });
     });
 
@@ -122,7 +148,9 @@ describe("RulesModal", () => {
       fireEvent.mouseEnter(tileElement);
 
       await waitFor(() => {
-        expect(screen.getByText(/physical measurements and position/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/physical measurements and position/i)
+        ).toBeInTheDocument();
       });
 
       fireEvent.mouseLeave(tileElement);
@@ -135,7 +163,9 @@ describe("RulesModal", () => {
       fireEvent.mouseEnter(draftInfoElement);
 
       await waitFor(() => {
-        expect(screen.getByText(/draft information of the athlete/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/draft information of the athlete/i)
+        ).toBeInTheDocument();
       });
     });
 
@@ -146,7 +176,9 @@ describe("RulesModal", () => {
       fireEvent.mouseEnter(careerStatsElement);
 
       await waitFor(() => {
-        expect(screen.getByText(/High-level career-long stats/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/High-level career-long stats/i)
+        ).toBeInTheDocument();
       });
     });
   });
@@ -193,12 +225,17 @@ describe("RulesModal", () => {
 
       // Wait for tooltip text to appear - use regex for more flexibility
       const tooltipText = await screen.findByText((content, element) => {
-        return element?.textContent?.includes("Wins Above Replacement") || false;
+        return (
+          element?.textContent?.includes("Wins Above Replacement") || false
+        );
       });
       expect(tooltipText).toBeInTheDocument();
 
       const link = screen.getByText("Explanation Article");
-      expect(link).toHaveAttribute("href", "https://www.baseball-reference.com/about/war_explained.shtml");
+      expect(link).toHaveAttribute(
+        "href",
+        "https://www.baseball-reference.com/about/war_explained.shtml"
+      );
       expect(link).toHaveAttribute("target", "_blank");
 
       act(() => {
@@ -266,7 +303,10 @@ describe("RulesModal", () => {
       expect(tooltipText).toBeInTheDocument();
 
       const link = screen.getByText("Explanation Article");
-      expect(link).toHaveAttribute("href", "https://www.basketball-reference.com/about/bpm2.html");
+      expect(link).toHaveAttribute(
+        "href",
+        "https://www.basketball-reference.com/about/bpm2.html"
+      );
 
       act(() => {
         fireEvent.mouseLeave(bpmElement!);
@@ -348,7 +388,10 @@ describe("RulesModal", () => {
       expect(tooltipText).toBeInTheDocument();
 
       const link = screen.getByText("Explanation Article");
-      expect(link).toHaveAttribute("href", "https://www.pro-football-reference.com/about/approximate_value.htm");
+      expect(link).toHaveAttribute(
+        "href",
+        "https://www.pro-football-reference.com/about/approximate_value.htm"
+      );
 
       act(() => {
         fireEvent.mouseLeave(firstAvElement!);
@@ -425,11 +468,13 @@ describe("RulesModal", () => {
     test("modal has correct class names", () => {
       render(<RulesModal isOpen={true} onClose={mockOnClose} />);
 
-      const overlay = screen.getByText("How to Play — Athlete Unknown")
+      const overlay = screen
+        .getByText("How to Play — Athlete Unknown")
         .closest(".rules-modal-overlay");
       expect(overlay).toBeInTheDocument();
 
-      const content = screen.getByText("How to Play — Athlete Unknown")
+      const content = screen
+        .getByText("How to Play — Athlete Unknown")
         .closest(".rules-modal-content");
       expect(content).toBeInTheDocument();
     });
@@ -444,10 +489,14 @@ describe("RulesModal", () => {
     test("sections have correct class names", () => {
       render(<RulesModal isOpen={true} onClose={mockOnClose} />);
 
-      const scoringSection = screen.getByText("Scoring").closest(".rules-section");
+      const scoringSection = screen
+        .getByText("Scoring")
+        .closest(".rules-section");
       expect(scoringSection).toBeInTheDocument();
 
-      const hintsSection = screen.getByText("Hints & Help").closest(".rules-section");
+      const hintsSection = screen
+        .getByText("Hints & Help")
+        .closest(".rules-section");
       expect(hintsSection).toBeInTheDocument();
     });
   });

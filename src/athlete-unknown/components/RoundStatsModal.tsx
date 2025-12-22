@@ -1,5 +1,5 @@
 import React from "react";
-import "./TodayStatsModal.css";
+import "./RoundStatsModal.css";
 
 interface TileTracker {
   bio: number;
@@ -31,7 +31,7 @@ interface RoundStats {
   lastFlippedTracker: TileTracker;
 }
 
-interface TodayStatsModalProps {
+interface RoundStatsModalProps {
   isOpen: boolean;
   onClose: () => void;
   roundStats: RoundStats | null;
@@ -47,7 +47,7 @@ const formatTileName = (tileName: string): string => {
     .trim();
 };
 
-const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
+const RoundStatsModal: React.FC<RoundStatsModalProps> = ({
   isOpen,
   onClose,
   roundStats,
@@ -58,18 +58,18 @@ const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
 
   if (!roundStats) {
     return (
-      <div className="today-stats-modal-overlay" onClick={onClose}>
+      <div className="round-stats-modal-overlay" onClick={onClose}>
         <div
-          className="today-stats-modal-content"
+          className="round-stats-modal-content"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="today-stats-modal-header">
+          <div className="round-stats-modal-header">
             <h2>Today's Stats</h2>
             <button className="close-button" onClick={onClose}>
               ×
             </button>
           </div>
-          <div className="today-stats-modal-body">
+          <div className="round-stats-modal-body">
             <p className="no-stats-message">
               Complete today's game to see your results here.
             </p>
@@ -80,16 +80,17 @@ const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
   }
 
   return (
-    <div className="today-stats-modal-overlay" onClick={onClose}>
+    <div className="round-stats-modal-overlay" onClick={onClose}>
       <div
-        className="today-stats-modal-content"
+        className="round-stats-modal-content"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="today-stats-modal-header">
+        <div className="round-stats-modal-header">
           <h2>
             Today's{" "}
             {roundStats.sport
-              ? roundStats.sport.charAt(0).toUpperCase() + roundStats.sport.slice(1)
+              ? roundStats.sport.charAt(0).toUpperCase() +
+                roundStats.sport.slice(1)
               : ""}{" "}
             Stats
           </h2>
@@ -98,7 +99,7 @@ const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
           </button>
         </div>
 
-        <div className="today-stats-modal-body">
+        <div className="round-stats-modal-body">
           <div className="stats-summary">
             <div className="stat-item">
               <div className="stat-label">Games Played</div>
@@ -166,4 +167,4 @@ const TodayStatsModal: React.FC<TodayStatsModalProps> = ({
   );
 };
 
-export default TodayStatsModal;
+export { RoundStatsModal };

@@ -2,204 +2,24 @@ import React, { useEffect, useState } from "react";
 import "./AthleteUnknown.css";
 import RulesModal from "./RulesModal";
 import TodayStatsModal from "./TodayStatsModal";
-import gameDataService from "./services/gameData";
-import type { RoundStats, GameResult } from "./types/api";
 import UserStats from "./UserStats";
 import {
   type SportType,
   TILE_NAMES,
-  TOTAL_TILES,
   DEFAULT_SPORT,
   SPORT_LIST,
   SPORTS,
-  SCORING,
-  RANKS,
-  GUESS_ACCURACY,
-  TIMING,
   PHOTO_GRID,
 } from "./config";
+import { useGameState } from "./features/game/hooks/useGameState";
+import { useGameLogic } from "./features/game/hooks/useGameLogic";
+import { useTileFlip } from "./features/game/hooks/useTileFlip";
+import { useGameData } from "./features/game/hooks/useGameData";
+import { useGuestSession } from "./features/game/hooks/useGuestSession";
+import { useShareResults } from "./features/game/hooks/useShareResults";
+import { camelCaseToTitleCase, formatDate } from "./utils/formatting";
+import { STORAGE_KEYS } from "./constants/storage";
 
-// Helper Function for Name Guessing
-const lev = (a: string, b: string): number => {
-  const dp = Array.from({ length: a.length + 1 }, () =>
-    Array(b.length + 1).fill(0)
-  );
-  for (let i = 0; i <= a.length; i++) {
-    dp[i][0] = i;
-  }
-  for (let j = 0; j <= b.length; j++) {
-    dp[0][j] = j;
-  }
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      dp[i][j] =
-        a[i - 1] === b[j - 1]
-          ? dp[i - 1][j - 1]
-          : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
-    }
-  }
-  return dp[a.length][b.length];
-};
-
-const normalize = (str = ""): string => str.toLowerCase().replace(/\s/g, "");
-
-// Helper function to convert camelCase to Title Case with spaces
-const camelCaseToTitleCase = (str: string): string => {
-  // Insert space before capital letters and capitalize first letter
-  return str
-    .replace(/([A-Z])/g, " $1") // Add space before capital letters
-    .replace(/^./, (char) => char.toUpperCase()) // Capitalize first letter
-    .trim();
-};
-
-// Round stats are now fetched from API/backend - no more hardcoded data
-
-interface PlayerData {
-  name: string;
-  bio: string;
-  playerInformation: string;
-  draftInformation: string;
-  yearsActive: string;
-  teamsPlayedOn: string;
-  jerseyNumbers: string;
-  careerStats: string;
-  personalAchievements: string;
-  photo: string;
-  dailyNumber?: number;
-  [key: string]: string | number | undefined;
-}
-
-interface GameState {
-  playersList: PlayerData[] | null;
-  playerData: PlayerData | null;
-  roundStats: RoundStats | null;
-  playerName: string;
-  message: string;
-  messageType: string;
-  previousCloseGuess: string;
-  flippedTiles: boolean[];
-  tilesFlippedCount: number;
-  photoRevealed: boolean;
-  returningFromPhoto: boolean;
-  score: number;
-  hint: string;
-  finalRank: string;
-  incorrectGuesses: number;
-  showResultsModal: boolean;
-  copiedText: string;
-  lastSubmittedGuess: string;
-  isLoading: boolean;
-  error: string | null;
-  firstTileFlipped: string | null;
-  lastTileFlipped: string | null;
-  currentPlayerIndex?: number;
-  gaveUp: boolean;
-}
-
-const initialState: GameState = {
-  playersList: null,
-  playerData: null,
-  roundStats: null,
-  playerName: "",
-  message: "",
-  messageType: "",
-  previousCloseGuess: "",
-  flippedTiles: Array(TOTAL_TILES).fill(false),
-  tilesFlippedCount: 0,
-  photoRevealed: false,
-  returningFromPhoto: false,
-  score: SCORING.INITIAL_SCORE,
-  hint: "",
-  finalRank: "",
-  incorrectGuesses: 0,
-  showResultsModal: false,
-  copiedText: "",
-  lastSubmittedGuess: "",
-  isLoading: true,
-  error: null,
-  firstTileFlipped: null,
-  lastTileFlipped: null,
-  gaveUp: false,
-};
-
-// Guest session persistence utilities
-const getGuestSessionKey = (sport: SportType): string => {
-  return `guestSession_${sport}`;
-};
-
-const saveGuestSession = (
-  sport: SportType,
-  state: GameState,
-  playerIndex?: number
-): void => {
-  try {
-    // Only save persistent game state (exclude transient UI state)
-    const persistentState = {
-      playerName: state.playerName,
-      message: state.message,
-      messageType: state.messageType,
-      previousCloseGuess: state.previousCloseGuess,
-      flippedTiles: state.flippedTiles,
-      tilesFlippedCount: state.tilesFlippedCount,
-      score: state.score,
-      hint: state.hint,
-      finalRank: state.finalRank,
-      incorrectGuesses: state.incorrectGuesses,
-      lastSubmittedGuess: state.lastSubmittedGuess,
-      // Store player data identifier to verify it's the same puzzle
-      playerName_saved: state.playerData?.name || "",
-      // Store player index so we can restore the same player
-      playerIndex_saved: playerIndex,
-    };
-    localStorage.setItem(
-      getGuestSessionKey(sport),
-      JSON.stringify(persistentState)
-    );
-  } catch (error) {
-    console.error("Failed to save guest session:", error);
-  }
-};
-
-const loadGuestSession = (
-  sport: SportType,
-  currentPlayerName: string
-): Partial<GameState> | null => {
-  try {
-    const saved = localStorage.getItem(getGuestSessionKey(sport));
-    if (!saved) {
-      return null;
-    }
-
-    const parsed = JSON.parse(saved);
-
-    // Only restore if it's the same player/puzzle
-    if (parsed.playerName_saved !== currentPlayerName) {
-      // Different puzzle, clear old session
-      clearGuestSession(sport);
-      return null;
-    }
-
-    // Return only the game state fields (not the saved player name or index)
-    // eslint-disable-next-line no-unused-vars
-    const { playerName_saved, playerIndex_saved, ...gameStateFields } = parsed;
-    return gameStateFields;
-  } catch (error) {
-    console.error("Failed to load guest session:", error);
-    return null;
-  }
-};
-
-const clearGuestSession = (sport: SportType): void => {
-  try {
-    localStorage.removeItem(getGuestSessionKey(sport));
-  } catch (error) {
-    console.error("Failed to clear guest session:", error);
-  }
-};
-
-const clearAllGuestSessions = (): void => {
-  SPORT_LIST.forEach((sport) => clearGuestSession(sport));
-};
 
 const AthleteUnknown: React.FC = () => {
   // Restore previously active sport from localStorage, default to baseball
@@ -733,7 +553,7 @@ const AthleteUnknown: React.FC = () => {
         )}
         <span className="separator">•</span>
         <button
-          className="today-stats-link"
+          className="round-stats-link"
           onClick={() => setIsTodayStatsModalOpen(true)}
         >
           Today's Stats

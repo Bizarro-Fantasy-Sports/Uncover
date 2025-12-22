@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./UserStats.css";
+import "./UserStatsModal.css";
 
 // TypeScript interfaces for user stats
 interface TileTracker {
@@ -54,7 +54,7 @@ const sampleUserStats: UserStatsData = {
         photo: 19,
         playerInformation: 12,
         teamsPlayedOn: 15,
-        yearsActive: 14
+        yearsActive: 14,
       },
       highestScore: 90,
       lastTileFlippedTracker: {
@@ -66,7 +66,7 @@ const sampleUserStats: UserStatsData = {
         photo: 91,
         playerInformation: 21,
         teamsPlayedOn: 51,
-        yearsActive: 41
+        yearsActive: 41,
       },
       mostTileFlippedTracker: {
         bio: 11,
@@ -77,7 +77,7 @@ const sampleUserStats: UserStatsData = {
         photo: 91,
         playerInformation: 21,
         teamsPlayedOn: 51,
-        yearsActive: 41
+        yearsActive: 41,
       },
       mostCommonFirstTileFlipped: "playerInformation",
       mostCommonLastTileFlipped: "photo",
@@ -85,7 +85,7 @@ const sampleUserStats: UserStatsData = {
       leastCommonTileFlipped: "bio",
       percentageCorrect: 0.81,
       sport: "basketball",
-      totalPlays: 10
+      totalPlays: 10,
     },
     {
       averageCorrectScore: 70,
@@ -99,7 +99,7 @@ const sampleUserStats: UserStatsData = {
         photo: 29,
         playerInformation: 22,
         teamsPlayedOn: 25,
-        yearsActive: 24
+        yearsActive: 24,
       },
       highestScore: 90,
       lastTileFlippedTracker: {
@@ -111,7 +111,7 @@ const sampleUserStats: UserStatsData = {
         photo: 92,
         playerInformation: 22,
         teamsPlayedOn: 52,
-        yearsActive: 42
+        yearsActive: 42,
       },
       mostTileFlippedTracker: {
         bio: 12,
@@ -122,7 +122,7 @@ const sampleUserStats: UserStatsData = {
         photo: 92,
         playerInformation: 22,
         teamsPlayedOn: 52,
-        yearsActive: 42
+        yearsActive: 42,
       },
       mostCommonFirstTileFlipped: "playerInformation",
       mostCommonLastTileFlipped: "photo",
@@ -130,7 +130,7 @@ const sampleUserStats: UserStatsData = {
       leastCommonTileFlipped: "bio",
       percentageCorrect: 0.82,
       sport: "baseball",
-      totalPlays: 30
+      totalPlays: 30,
     },
     {
       averageCorrectScore: 70,
@@ -144,7 +144,7 @@ const sampleUserStats: UserStatsData = {
         photo: 39,
         playerInformation: 32,
         teamsPlayedOn: 35,
-        yearsActive: 34
+        yearsActive: 34,
       },
       highestScore: 90,
       lastTileFlippedTracker: {
@@ -156,7 +156,7 @@ const sampleUserStats: UserStatsData = {
         photo: 93,
         playerInformation: 23,
         teamsPlayedOn: 53,
-        yearsActive: 43
+        yearsActive: 43,
       },
       mostTileFlippedTracker: {
         bio: 13,
@@ -167,7 +167,7 @@ const sampleUserStats: UserStatsData = {
         photo: 93,
         playerInformation: 23,
         teamsPlayedOn: 53,
-        yearsActive: 43
+        yearsActive: 43,
       },
       mostCommonFirstTileFlipped: "playerInformation",
       mostCommonLastTileFlipped: "photo",
@@ -175,27 +175,31 @@ const sampleUserStats: UserStatsData = {
       leastCommonTileFlipped: "bio",
       percentageCorrect: 0.83,
       sport: "football",
-      totalPlays: 30
-    }
+      totalPlays: 30,
+    },
   ],
-  userCreated: "2025-11-19T07:47:47.242Z"
+  userCreated: "2025-11-19T07:47:47.242Z",
 };
 
-const UserStats: React.FC = () => {
+const UserStatsModal: React.FC = () => {
   const [selectedSport, setSelectedSport] = useState<string>("basketball");
   const [userStats] = useState<UserStatsData>(sampleUserStats);
 
-  const currentSportStats = userStats.sports.find(s => s.sport === selectedSport);
+  const currentSportStats = userStats.sports.find(
+    (s) => s.sport === selectedSport
+  );
 
   const formatTileName = (name: string): string => {
-    return name.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+    return name
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, (str) => str.toUpperCase());
   };
 
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
-      day: "numeric"
+      day: "numeric",
     });
   };
 
@@ -214,7 +218,7 @@ const UserStats: React.FC = () => {
 
       {/* Sport Selector */}
       <div className="sport-selector">
-        {userStats.sports.map(sport => (
+        {userStats.sports.map((sport) => (
           <button
             key={sport.sport}
             className={`sport-button ${selectedSport === sport.sport ? "active" : ""}`}
@@ -234,11 +238,15 @@ const UserStats: React.FC = () => {
             <div className="stat-label">Total Plays</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value">{(currentSportStats.percentageCorrect * 100).toFixed(0)}%</div>
+            <div className="stat-value">
+              {(currentSportStats.percentageCorrect * 100).toFixed(0)}%
+            </div>
             <div className="stat-label">Accuracy</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value">{currentSportStats.averageCorrectScore}</div>
+            <div className="stat-value">
+              {currentSportStats.averageCorrectScore}
+            </div>
             <div className="stat-label">Average Score</div>
           </div>
           <div className="stat-card">
@@ -246,7 +254,9 @@ const UserStats: React.FC = () => {
             <div className="stat-label">Highest Score</div>
           </div>
           <div className="stat-card highlight">
-            <div className="stat-value">{currentSportStats.currentDailyStreak}</div>
+            <div className="stat-value">
+              {currentSportStats.currentDailyStreak}
+            </div>
             <div className="stat-label">Current Streak</div>
           </div>
         </div>
@@ -260,22 +270,30 @@ const UserStats: React.FC = () => {
             <h3>Most Common</h3>
             <div className="pattern-item">
               <span className="pattern-label">First Tile:</span>
-              <span className="pattern-value">{formatTileName(currentSportStats.mostCommonFirstTileFlipped)}</span>
+              <span className="pattern-value">
+                {formatTileName(currentSportStats.mostCommonFirstTileFlipped)}
+              </span>
             </div>
             <div className="pattern-item">
               <span className="pattern-label">Most Flipped:</span>
-              <span className="pattern-value">{formatTileName(currentSportStats.mostCommonTileFlipped)}</span>
+              <span className="pattern-value">
+                {formatTileName(currentSportStats.mostCommonTileFlipped)}
+              </span>
             </div>
             <div className="pattern-item">
               <span className="pattern-label">Last Tile:</span>
-              <span className="pattern-value">{formatTileName(currentSportStats.mostCommonLastTileFlipped)}</span>
+              <span className="pattern-value">
+                {formatTileName(currentSportStats.mostCommonLastTileFlipped)}
+              </span>
             </div>
           </div>
           <div className="pattern-card">
             <h3>Least Common</h3>
             <div className="pattern-item">
               <span className="pattern-label">Tile:</span>
-              <span className="pattern-value">{formatTileName(currentSportStats.leastCommonTileFlipped)}</span>
+              <span className="pattern-value">
+                {formatTileName(currentSportStats.leastCommonTileFlipped)}
+              </span>
             </div>
           </div>
         </div>
@@ -295,14 +313,34 @@ const UserStats: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {Object.keys(currentSportStats.firstTileFlippedTracker).map(tile => (
-                <tr key={tile}>
-                  <td className="tile-name">{formatTileName(tile)}</td>
-                  <td>{currentSportStats.firstTileFlippedTracker[tile as keyof TileTracker]}</td>
-                  <td>{currentSportStats.lastTileFlippedTracker[tile as keyof TileTracker]}</td>
-                  <td>{currentSportStats.mostTileFlippedTracker[tile as keyof TileTracker]}</td>
-                </tr>
-              ))}
+              {Object.keys(currentSportStats.firstTileFlippedTracker).map(
+                (tile) => (
+                  <tr key={tile}>
+                    <td className="tile-name">{formatTileName(tile)}</td>
+                    <td>
+                      {
+                        currentSportStats.firstTileFlippedTracker[
+                          tile as keyof TileTracker
+                        ]
+                      }
+                    </td>
+                    <td>
+                      {
+                        currentSportStats.lastTileFlippedTracker[
+                          tile as keyof TileTracker
+                        ]
+                      }
+                    </td>
+                    <td>
+                      {
+                        currentSportStats.mostTileFlippedTracker[
+                          tile as keyof TileTracker
+                        ]
+                      }
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>
@@ -311,4 +349,4 @@ const UserStats: React.FC = () => {
   );
 };
 
-export default UserStats;
+export { UserStatsModal };

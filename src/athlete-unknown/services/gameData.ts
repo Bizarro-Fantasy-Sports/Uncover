@@ -1,5 +1,5 @@
-import API_CONFIG from "../config/api";
-import apiService from "./api";
+import API_CONFIG from "../../config/api";
+import athleteUnknownApiService from "./api";
 import MockDataService from "./mockData";
 import type {
   PlayerData,
@@ -36,7 +36,10 @@ class GameDataService {
       console.log(
         `[API] Fetching player data for ${sport} on ${date || "today"}`
       );
-      return await apiService.getPlayerBySportAndDate(sport, date);
+      return await athleteUnknownApiService.getPlayerBySportAndDate(
+        sport,
+        date
+      );
     } catch (error) {
       console.warn(
         "[API] Failed to fetch player data, falling back to mock data:",
@@ -60,7 +63,7 @@ class GameDataService {
       console.log(
         `[API] Fetching round stats for ${sport} on ${date || "today"}`
       );
-      return await apiService.getRoundStats(sport, date);
+      return await athleteUnknownApiService.getRoundStats(sport, date);
     } catch (error) {
       console.warn(
         "[API] Failed to fetch round stats, falling back to mock data:",
@@ -87,7 +90,8 @@ class GameDataService {
 
     try {
       console.log("[API] Submitting game results:", gameResult);
-      const response = await apiService.submitGameResults(gameResult);
+      const response =
+        await athleteUnknownApiService.submitGameResults(gameResult);
       console.log("[API] Game results submitted successfully:", response);
       return response;
     } catch (error) {

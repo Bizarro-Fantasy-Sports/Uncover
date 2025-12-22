@@ -1,4 +1,4 @@
-// API Request/Response Types
+// Athlete Unknown API Types
 
 export interface PlayerData {
   name: string;
@@ -68,10 +68,4 @@ export interface GameResultResponse {
   message: string;
   result?: GameResult;
   roundStats?: RoundStats;
-}
-
-export interface ApiError {
-  message: string;
-  status?: number;
-  details?: any;
 }

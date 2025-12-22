@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./RulesModal.css";
-import { REFERENCE_URLS, SCORING } from "./config";
+import { REFERENCE_URLS, SCORING } from "../config";
 
 interface RulesModalProps {
   isOpen: boolean;
@@ -419,4 +419,4 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default RulesModal;
+export { RulesModal };

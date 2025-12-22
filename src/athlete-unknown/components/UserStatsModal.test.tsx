@@ -1,10 +1,10 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import UserStats from "./UserStats";
+import { UserStatsModal } from "./UserStatsModal";
 
-describe("UserStats Component", () => {
+describe("UserStatsModal Component", () => {
   beforeEach(() => {
-    render(<UserStats />);
+    render(<UserStatsModal />);
   });
 
   it("renders the component with title", () => {
@@ -86,7 +86,9 @@ describe("UserStats Component", () => {
     expect(screen.getAllByText("Career Stats").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Draft Information").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Jersey Numbers").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Personal Achievements").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Personal Achievements").length).toBeGreaterThan(
+      0
+    );
     expect(screen.getAllByText("Photo").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Player Information").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Teams Played On").length).toBeGreaterThan(0);

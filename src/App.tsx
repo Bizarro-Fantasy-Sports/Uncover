@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./App.css";
 import ContactForm from "./ContactForm";
-import AthleteUnknown from "./AthleteUnknown";
-import { apiService } from "./services/api";
+import AthleteUnknown from "./athlete-unknown/AthleteUnknown";
+import { athleteUnknownApiService } from "./athlete-unknown/services/api";
 
 type PageType =
   | "Home"
@@ -25,7 +25,7 @@ function App() {
 
   // Initialize API service with Auth0 token function
   useEffect(() => {
-    apiService.setGetAccessToken(getAccessTokenSilently);
+    athleteUnknownApiService.setGetAccessToken(getAccessTokenSilently);
   }, [getAccessTokenSilently]);
 
   const renderPage = () => {

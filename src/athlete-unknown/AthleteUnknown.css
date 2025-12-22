@@ -54,7 +54,7 @@
   font-weight: 500;
 }
 
-.today-stats-link,
+.round-stats-link,
 .rules-link {
   background: none;
   border: none;
@@ -68,7 +68,7 @@
   transition: opacity 0.2s ease;
 }
 
-.today-stats-link:hover,
+.round-stats-link:hover,
 .rules-link:hover {
   opacity: 0.8;
 }

@@ -1,4 +1,4 @@
-.today-stats-modal-overlay {
+.round-stats-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -12,7 +12,7 @@
   padding: 1rem;
 }
 
-.today-stats-modal-content {
+.round-stats-modal-content {
   background: linear-gradient(135deg, #1e1e2f, #2a2a3f);
   border-radius: 12px;
   max-width: 700px;
@@ -23,7 +23,7 @@
   color: white;
 }
 
-.today-stats-modal-header {
+.round-stats-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,13 +35,13 @@
   z-index: 1;
 }
 
-.today-stats-modal-header h2 {
+.round-stats-modal-header h2 {
   margin: 0;
   font-size: 1.6rem;
   color: #00b4d8;
 }
 
-.today-stats-modal-body {
+.round-stats-modal-body {
   padding: 2rem;
 }
 
@@ -64,7 +64,9 @@
   padding: 1rem;
   border-radius: 8px;
   text-align: center;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
 }
 
 .stat-item:hover {
@@ -146,19 +148,19 @@
 }
 
 @media (max-width: 768px) {
-  .today-stats-modal-content {
+  .round-stats-modal-content {
     max-height: 90vh;
   }
 
-  .today-stats-modal-header {
+  .round-stats-modal-header {
     padding: 1rem 1.5rem;
   }
 
-  .today-stats-modal-header h2 {
+  .round-stats-modal-header h2 {
     font-size: 1.3rem;
   }
 
-  .today-stats-modal-body {
+  .round-stats-modal-body {
     padding: 1.5rem;
   }
 
