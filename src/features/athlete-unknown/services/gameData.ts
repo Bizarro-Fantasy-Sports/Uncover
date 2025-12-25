@@ -1,6 +1,6 @@
-import API_CONFIG from "@/config/api";
-import athleteUnknownApiService from "./api";
-import MockDataService from "./mockData";
+import { API_CONFIG } from "@/config";
+import { athleteUnknownApiService } from "./api";
+import { MockDataService } from "./mockData";
 import type {
   GameResult,
   GameResultResponse,
@@ -93,5 +93,5 @@ class GameDataService {
 }
 
 // Export singleton instance
-export const gameDataService = new GameDataService();
-export default gameDataService;
+const gameDataService = new GameDataService();
+export { gameDataService };

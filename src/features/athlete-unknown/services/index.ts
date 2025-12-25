@@ -1,3 +1,3 @@
 export { athleteUnknownApiService } from "./api";
-export { gameDataService, default as getGameData } from "./gameData";
-export { default as MockDataService } from "./mockData";
+export { gameDataService } from "./gameData";
+export { MockDataService } from "./mockData";

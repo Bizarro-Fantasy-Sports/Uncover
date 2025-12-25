@@ -1,5 +1,5 @@
-import HttpClient from "@/services/httpClient";
-import API_CONFIG from "@/config";
+import { HttpClient } from "@/services";
+import { API_CONFIG } from "@/config";
 import { TILE_NAMES } from "@/features/athlete-unknown/config";
 import type {
   GameResult,
@@ -117,5 +117,5 @@ class AthleteUnknownApiService {
 }
 
 // Export singleton instance
-export const athleteUnknownApiService = new AthleteUnknownApiService();
-export default athleteUnknownApiService;
+const athleteUnknownApiService = new AthleteUnknownApiService();
+export { athleteUnknownApiService };

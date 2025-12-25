@@ -1,1 +1,1 @@
-export { API_CONFIG, default } from "./api";
+export { API_CONFIG } from "./api";

@@ -4,5 +4,3 @@ export const API_CONFIG = {
   timeout: 10000, // 10 second timeout
   useMockData: process.env.REACT_APP_USE_MOCK_DATA === "true",
 };
-
-export default API_CONFIG;

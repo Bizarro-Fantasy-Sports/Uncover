@@ -1,7 +1,7 @@
 import type { Round } from "@/features/athlete-unknown/types";
 
 // Mock data service - used when REACT_APP_USE_MOCK_DATA=true or when API calls fail
-export class MockDataService {
+class MockDataService {
   static async getRoundData(sport: string): Promise<Round> {
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -27,4 +27,4 @@ export class MockDataService {
   }
 }
 
-export default MockDataService;
+export { MockDataService };
