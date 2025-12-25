@@ -4,6 +4,11 @@
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 
+// Polyfill TextEncoder/TextDecoder for Jest environment
+import { TextEncoder, TextDecoder } from "util";
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder as any;
+
 // Suppress act() warnings - we're properly handling async with waitFor
 const originalError = console.error;
 beforeAll(() => {
