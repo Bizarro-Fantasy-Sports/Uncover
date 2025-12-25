@@ -23,7 +23,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/athlete-unknown/:sport",
+        path: "/athlete-unknown",
         Component: AthleteUnknown,
       },
       {
