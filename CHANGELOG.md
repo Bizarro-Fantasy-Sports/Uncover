@@ -15,6 +15,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-20](https://github.com/Statsland-Fantasy/statsland-website/pull/20)
+
+### Added
+
+- React Router to handle URL navigation
+- Barrel exporting for simpler grouped together importing
+- Path aliasing to enable absolute vs relative import paths
+
+### Changed
+
+- Project structure to better match bulletproof react's structure
+- Removed all default exports. All exports (and imports) are named now
+- Functional component arrow functions converted to normal function notation
+
 ## [PR-19](https://github.com/Statsland-Fantasy/statsland-website/pull/19)
 
 ### Added
