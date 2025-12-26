@@ -454,6 +454,9 @@
   background-size: 450px 450px;
   background-repeat: no-repeat;
   padding: 0;
+  /* Improve rendering quality for upscaled images */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .flip-back-arrow {
@@ -479,6 +482,9 @@
   height: 100%;
   object-fit: cover;
   border-radius: 8px;
+  /* Improve rendering quality for upscaled images */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 /* Modal */
@@ -525,6 +531,9 @@
   display: block;
   margin: 0 auto;
   border-radius: 10px;
+  /* Improve rendering quality for upscaled images */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .final-rank {
@@ -979,4 +988,7 @@
   max-height: 200px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Improve rendering quality for upscaled images */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
