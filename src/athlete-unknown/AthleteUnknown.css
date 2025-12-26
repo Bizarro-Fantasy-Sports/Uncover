@@ -242,7 +242,7 @@
   grid-gap: 7.5px;
   justify-content: center;
   margin-top: 20px;
-  padding-top: 50px; /* Space for tooltips */
+  padding: 50px; /* Space for tooltips on all sides */
 }
 
 .tile {
@@ -256,13 +256,10 @@
   z-index: 1;
 }
 
-/* Custom tooltip */
+/* Custom tooltip - base styles */
 .tile[data-tooltip]:not([data-tooltip=""])::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%);
   background-color: #0077b6;
   color: white;
   padding: 8px 12px;
@@ -282,15 +279,11 @@
   opacity: 1;
 }
 
-/* Tooltip arrow */
+/* Tooltip arrow - base styles */
 .tile[data-tooltip]:not([data-tooltip=""])::before {
   content: "";
   position: absolute;
-  bottom: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: #0077b6;
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
@@ -299,6 +292,62 @@
 
 .tile[data-tooltip]:not([data-tooltip=""]):hover::before {
   opacity: 1;
+}
+
+/* Tooltip position: TOP */
+.tile[data-tooltip-position="top"]::after {
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tile[data-tooltip-position="top"]::before {
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: #0077b6;
+}
+
+/* Tooltip position: BOTTOM */
+.tile[data-tooltip-position="bottom"]::after {
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tile[data-tooltip-position="bottom"]::before {
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: #0077b6;
+}
+
+/* Tooltip position: RIGHT */
+.tile[data-tooltip-position="right"]::after {
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tile[data-tooltip-position="right"]::before {
+  left: calc(100% + 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: #0077b6;
+}
+
+/* Tooltip position: LEFT */
+.tile[data-tooltip-position="left"]::after {
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tile[data-tooltip-position="left"]::before {
+  right: calc(100% + 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: #0077b6;
 }
 
 /* Clip tile content but not tooltip */
