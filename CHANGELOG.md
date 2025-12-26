@@ -15,6 +15,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-21] ()
+
+### Changed
+
+- theme field replaced previouslyPlayedDates and averageCorrectScore replaced averageScore in Round
+- submitting the user’s stats to the “/results” endpoint to update user and round stats is not called when the round is determined correct via the “close enough”
+
+### Added
+
+- Tooltip for flipped tile theme reminder
+- Photo and name of correct answer player in results modal when finished
+
 ## [PR-20]
 
 ### Added

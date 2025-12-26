@@ -4,6 +4,7 @@ import { formatDate } from "../../utils/formatting";
 interface RoundInfoProps {
   roundNumber: number;
   playDate?: string;
+  theme?: string;
   onRoundStatsClick: () => void;
   onRulesClick: () => void;
   isPlaytester?: boolean;
@@ -16,6 +17,7 @@ interface RoundInfoProps {
 export const RoundInfo: React.FC<RoundInfoProps> = ({
   roundNumber,
   playDate,
+  theme,
   onRoundStatsClick,
   onRulesClick,
   isPlaytester = false,
@@ -32,6 +34,7 @@ export const RoundInfo: React.FC<RoundInfoProps> = ({
         style={isPlaytester ? { cursor: "default" } : undefined}
       >
         Round #{roundNumber}
+        {theme && ` - ${theme}`}        
       </span>
       {showDatePicker && isPlaytester && onDateSelect && (
         <input

@@ -242,28 +242,131 @@
   grid-gap: 7.5px;
   justify-content: center;
   margin-top: 20px;
+  padding: 50px; /* Space for tooltips on all sides */
 }
 
 .tile {
   position: relative;
   width: 150px;
   height: 150px;
-  overflow: hidden;
+  overflow: visible; /* Allow tooltip to show */
   border: 2px solid #0077b6;
   border-radius: 8px;
   perspective: 1000px;
+  z-index: 1;
 }
 
+/* Custom tooltip - base styles */
+.tile[data-tooltip]:not([data-tooltip=""])::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background-color: #0077b6;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 119, 182, 0.3);
+}
+
+.tile[data-tooltip]:not([data-tooltip=""]):hover::after {
+  opacity: 1;
+}
+
+/* Tooltip arrow - base styles */
+.tile[data-tooltip]:not([data-tooltip=""])::before {
+  content: "";
+  position: absolute;
+  border: 6px solid transparent;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.tile[data-tooltip]:not([data-tooltip=""]):hover::before {
+  opacity: 1;
+}
+
+/* Tooltip position: TOP */
+.tile[data-tooltip-position="top"]::after {
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tile[data-tooltip-position="top"]::before {
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: #0077b6;
+}
+
+/* Tooltip position: BOTTOM */
+.tile[data-tooltip-position="bottom"]::after {
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tile[data-tooltip-position="bottom"]::before {
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: #0077b6;
+}
+
+/* Tooltip position: RIGHT */
+.tile[data-tooltip-position="right"]::after {
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tile[data-tooltip-position="right"]::before {
+  left: calc(100% + 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: #0077b6;
+}
+
+/* Tooltip position: LEFT */
+.tile[data-tooltip-position="left"]::after {
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tile[data-tooltip-position="left"]::before {
+  right: calc(100% + 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: #0077b6;
+}
+
+/* Clip tile content but not tooltip */
 .tile-inner {
   position: relative;
   width: 100%;
   height: 100%;
   cursor: pointer;
+  border-radius: 8px;
+  transform-style: preserve-3d;
+}
+
+/* Overflow hidden for non-photo-reveal to prevent tooltip clipping */
+.tile-inner:not(.photo-reveal) {
+  overflow: hidden;
 }
 
 /* Transition for returning from photo reveal */
 .tile-inner.returning-from-photo {
-  transform-style: preserve-3d;
   transition: transform 0.6s ease-out;
 }
 
@@ -280,21 +383,20 @@
   color: transparent;
 }
 
-/* Slide animation for regular tiles */
-.tile-inner.flipped:not(.photo-reveal):not(.no-slide-anim) .tile-front {
-  transform: translateX(-100%);
-  transition: transform 0.6s ease-out;
+/* Flip animation for regular tiles */
+.tile-inner.flipped:not(.photo-reveal) .tile-front {
+  opacity: 0;
+  transform: rotateY(180deg);
+  transition: all 0.6s ease-out;
 }
 
-/* No slide animation - just show the back immediately */
-.tile-inner.flipped.no-slide-anim .tile-front {
-  transform: translateX(-100%);
-  transition: none;
+.tile-inner.flipped:not(.photo-reveal) .tile-back {
+  opacity: 1;
+  transition: opacity 0.3s ease-out 0.3s;
 }
 
 /* Flip animation for photo reveal */
 .tile-inner.photo-reveal {
-  transform-style: preserve-3d;
   transform: rotateY(180deg);
   transition: transform 0.6s ease-out;
 }
@@ -318,23 +420,34 @@
   background-color: #0077b6;
   color: white;
   z-index: 2;
+  transition: all 0.6s ease-out;
 }
 
 .tile-back {
   background-color: #90e0ef;
   color: #000;
-  overflow: auto;
+  overflow: hidden;
   z-index: 1;
+  word-wrap: break-word;
+  white-space: normal;
+  text-align: center;
+  opacity: 0;
 }
 
-/* Only apply 3D transforms for photo reveal */
-.tile-inner.photo-reveal .tile-front,
-.tile-inner.photo-reveal .tile-back {
-  backface-visibility: hidden;
+/* Photo reveal mode - use 3D flip */
+.tile-inner.photo-reveal .tile-front {
+  backface-visibility: hidden !important;
+  transform: rotateY(0deg) !important;
+  opacity: 1 !important;
+  transition: none !important;
 }
 
 .tile-inner.photo-reveal .tile-back {
-  transform: rotateY(180deg);
+  backface-visibility: hidden !important;
+  transform: rotateY(180deg) !important;
+  opacity: 1 !important;
+  transition: none !important;
+  display: flex !important;
 }
 
 .tile-back.photo-segment {

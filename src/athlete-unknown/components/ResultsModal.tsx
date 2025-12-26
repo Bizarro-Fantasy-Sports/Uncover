@@ -1,6 +1,6 @@
 import React from "react";
 import { TILE_NAMES } from "../config";
-import type { RoundStats } from "../types/api";
+import type { RoundStats, PlayerData } from "../types/api";
 
 interface ResultsModalProps {
   isOpen: boolean;
@@ -9,6 +9,7 @@ interface ResultsModalProps {
   flippedTiles: boolean[];
   copiedText: string;
   roundStats: RoundStats | null;
+  playerData: PlayerData;
   onClose: () => void;
   onShare: () => void;
 }
@@ -20,6 +21,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
   flippedTiles,
   copiedText,
   roundStats,
+  playerData,
   onClose,
   onShare,
 }) => {
@@ -39,9 +41,27 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
         </h2>
         {!gaveUp && roundStats && (
           <p className="average-score">
-            The average score today is {roundStats.averageScore}
+            The average score today is {roundStats.averageCorrectScore}
           </p>
         )}
+
+        <div className="player-info-section">
+          <a
+            href={playerData.sportsReferenceURL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="player-name-link"
+          >
+            {playerData.name}
+          </a>
+          {playerData.photo && (
+            <img
+              src={playerData.photo}
+              alt={playerData.name}
+              className="player-photo"
+            />
+          )}
+        </div>
 
         <div className="results-grid">
           {TILE_NAMES.map((_, index) => (
@@ -76,7 +96,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
               <div className="round-stat-item">
                 <div className="round-stat-label">Average Score</div>
                 <div className="round-stat-value">
-                  {roundStats.averageScore}
+                  {roundStats.averageCorrectScore}
                 </div>
               </div>
               <div className="round-stat-item">
