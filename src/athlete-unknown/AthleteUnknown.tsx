@@ -25,7 +25,7 @@ import {
 } from "./components";
 
 const AthleteUnknown: React.FC = () => {
-  const { user, getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
   const [userRoles, setUserRoles] = useState<string[]>([]);
 
   // Extract roles from access token
@@ -35,11 +35,11 @@ const AthleteUnknown: React.FC = () => {
         const accessToken = await getAccessTokenSilently();
 
         // Decode JWT to get payload (JWT format: header.payload.signature)
-        const base64Url = accessToken.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const base64Url = accessToken.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         const payload = JSON.parse(window.atob(base64));
 
-        const roles = payload['https://statslandfantasy.com/roles'] || [];
+        const roles = payload["https://statslandfantasy.com/roles"] || [];
         console.log("[AthleteUnknown] Access Token roles:", roles);
         setUserRoles(roles);
       } catch (error) {
@@ -80,9 +80,6 @@ const AthleteUnknown: React.FC = () => {
 
   // Check if user is a playtester
   const isPlaytester = userRoles.includes("Playtester");
-
-  console.log("[AthleteUnknown] User roles:", userRoles);
-  console.log("[AthleteUnknown] Is playtester:", isPlaytester);
 
   // Core state management - pass selectedPlayDate to ensure each puzzle has its own state
   const { state, updateState } = useGameState(activeSport, selectedPlayDate);
