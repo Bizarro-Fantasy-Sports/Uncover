@@ -19,7 +19,7 @@ export const RoundInfo: React.FC<RoundInfoProps> = ({
   return (
     <div className="round-info">
       <span className="round-number">
-        Puzzle #{roundNumber}
+        Round #{roundNumber}
         {theme && ` - ${theme}`}
       </span>
       {playDate && (
