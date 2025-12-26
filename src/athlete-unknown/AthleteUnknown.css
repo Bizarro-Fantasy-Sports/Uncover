@@ -331,9 +331,15 @@
 }
 
 /* Flip animation for regular tiles */
-.tile-inner.flipped:not(.photo-reveal) {
+.tile-inner.flipped:not(.photo-reveal) .tile-front {
+  opacity: 0;
   transform: rotateY(180deg);
-  transition: transform 0.6s ease-out;
+  transition: all 0.6s ease-out;
+}
+
+.tile-inner.flipped:not(.photo-reveal) .tile-back {
+  opacity: 1;
+  transition: opacity 0.3s ease-out 0.3s;
 }
 
 /* Flip animation for photo reveal */
@@ -355,7 +361,6 @@
   font-weight: bold;
   border-radius: 8px;
   overflow: hidden;
-  backface-visibility: hidden;
 }
 
 .tile-front {
@@ -363,6 +368,7 @@
   color: white;
   z-index: 2;
   transform: rotateY(0deg);
+  transition: all 0.6s ease-out;
 }
 
 .tile-back {
@@ -370,10 +376,21 @@
   color: #000;
   overflow: hidden;
   z-index: 1;
-  transform: rotateY(180deg);
   word-wrap: break-word;
   white-space: normal;
   text-align: center;
+  opacity: 0;
+}
+
+/* Photo reveal specific transforms */
+.tile-inner.photo-reveal .tile-front,
+.tile-inner.photo-reveal .tile-back {
+  backface-visibility: hidden;
+}
+
+.tile-inner.photo-reveal .tile-back {
+  transform: rotateY(180deg);
+  opacity: 1;
 }
 
 .tile-back.photo-segment {
