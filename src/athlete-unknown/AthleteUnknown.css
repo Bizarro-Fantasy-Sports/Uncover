@@ -383,14 +383,16 @@
 }
 
 /* Photo reveal specific transforms */
-.tile-inner.photo-reveal .tile-front,
-.tile-inner.photo-reveal .tile-back {
+.tile-inner.photo-reveal .tile-front {
   backface-visibility: hidden;
+  opacity: 1;
 }
 
 .tile-inner.photo-reveal .tile-back {
+  backface-visibility: hidden;
   transform: rotateY(180deg);
   opacity: 1;
+  transition: none;
 }
 
 .tile-back.photo-segment {
