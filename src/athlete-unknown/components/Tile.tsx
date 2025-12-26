@@ -29,7 +29,7 @@ export const Tile: React.FC<TileProps> = ({
   const tooltipTitle = isFlipped && !photoRevealed ? camelCaseToTitleCase(tileName) : "";
 
   return (
-    <div className="tile" onClick={onClick} title={tooltipTitle}>
+    <div className="tile" onClick={onClick}>
       <div
         className={`tile-inner ${
           photoRevealed
@@ -42,6 +42,7 @@ export const Tile: React.FC<TileProps> = ({
                 ? "flipped"
                 : ""
         }`}
+        title={tooltipTitle}
       >
         <div className="tile-front">{camelCaseToTitleCase(tileName)}</div>
         <div
