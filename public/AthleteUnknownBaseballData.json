@@ -8,7 +8,7 @@
     "theme": "",
     "player": {
       "sport": "baseball",
-      "sportsReferencePath": "o/ohtansh01",
+      "sportsReferenceURL": "o/ohtansh01",
       "name": "Shohei Ohtani",
       "bio": "DOB: July 5, 1994 & in Oshu, Japan",
       "playerInformation": "6'3\" & 210lbs & Designated Hitter & Pitcher, Bats: Left, Throws: Right",
@@ -77,7 +77,7 @@
     "theme": "",
     "player": {
       "sport": "baseball",
-      "sportsReferencePath": "p/poseybu01",
+      "sportsReferenceURL": "p/poseybu01",
       "name": "Buster Posey",
       "bio": "DOB: March 27, 1987 & in Leesburg, GA",
       "playerInformation": "6'1\" & 213lbs & Catcher & First Baseman, Bats: Right, Throws: Right",
@@ -146,7 +146,7 @@
     "theme": "",
     "player": {
       "sport": "baseball",
-      "sportsReferencePath": "c/casteni01",
+      "sportsReferenceURL": "c/casteni01",
       "name": "Nick Castellanos",
       "bio": "DOB: March 4, 1992 & in Hialeah, FL",
       "playerInformation": "6'3\" & 203lbs & Rightfielder & Third Baseman, Bats: Right, Throws: Right",
@@ -215,7 +215,7 @@
     "theme": "",
     "player": {
       "sport": "baseball",
-      "sportsReferencePath": "p/powelbo01",
+      "sportsReferenceURL": "p/powelbo01",
       "name": "Boog Powell",
       "bio": "DOB: August 17, 1941 & in Lakeland, FL",
       "playerInformation": "6'4\" & 230lbs & First Baseman & Leftfielder",
@@ -284,7 +284,7 @@
     "theme": "",
     "player": {
       "sport": "baseball",
-      "sportsReferencePath": "c/cabreor01",
+      "sportsReferenceURL": "c/cabreor01",
       "name": "Orlando Cabrera",
       "bio": "DOB: November 2, 1974 & in Cartagena, Colombia",
       "playerInformation": "5'10\" & 195lbs & Shortstop & Second Baseman",

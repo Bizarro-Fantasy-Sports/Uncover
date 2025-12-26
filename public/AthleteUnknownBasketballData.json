@@ -8,7 +8,7 @@
     "theme": "",
     "player": {
       "sport": "basketball",
-      "sportsReferencePath": "r/rambiku01",
+      "sportsReferenceURL": "r/rambiku01",
       "name": "Kurt Rambis",
       "bio": "DOB: February 25, 1958 in Terre Haute, Indiana",
       "playerInformation": "6'8\", 213lbs, Power Forward. Shoots Right",
@@ -77,7 +77,7 @@
     "theme": "",
     "player": {
       "sport": "basketball",
-      "sportsReferencePath": "a/anthoca01",
+      "sportsReferenceURL": "a/anthoca01",
       "name": "Carmelo Anthony",
       "bio": "DOB: May 29, 1984 in Brooklyn, NY",
       "playerInformation": "6'7\", 238 lbs, Small Forward and Power Forward",
@@ -146,7 +146,7 @@
     "theme": "",
     "player": {
       "sport": "basketball",
-      "sportsReferencePath": "t/turiaro01",
+      "sportsReferenceURL": "t/turiaro01",
       "name": "Ronny Turiaf",
       "bio": "DOB: January 13, 1983 in Le Robert, Martinique",
       "playerInformation": "6'10\", 249 lbs, Center. Shoots Right",
@@ -215,7 +215,7 @@
     "theme": "",
     "player": {
       "sport": "basketball",
-      "sportsReferencePath": "h/hardeja01",
+      "sportsReferenceURL": "h/hardeja01",
       "name": "James Harden",
       "bio": "DOB: August 26, 1989 in Los Angeles, CA",
       "playerInformation": "6'5\", 220 lbs, Point Guard and Shooting Guard. Shoots Left",
@@ -284,7 +284,7 @@
     "theme": "",
     "player": {
       "sport": "basketball",
-      "sportsReferencePath": "k/koryeky01",
+      "sportsReferenceURL": "k/koryeky01",
       "name": "Kyle Korver",
       "bio": "DOB: March 17, 1981 in Lakewood, CA",
       "playerInformation": "6'7\", 212 lbs, Shooting Guard, Small Forward, and Power Forward. Shoots Right",

@@ -29,6 +29,20 @@ export const Tile: React.FC<TileProps> = ({
   // Show tooltip for flipped tiles (not in photo reveal mode)
   const tooltipText = isFlipped && !photoRevealed ? camelCaseToTitleCase(tileName) : "";
 
+  // Debug logging
+  React.useEffect(() => {
+    if (isFlipped && !photoRevealed) {
+      console.log(`Tile ${tileName} (index ${index}):`, {
+        tileName,
+        isFlipped,
+        photoRevealed,
+        tileContent,
+        playerDataKeys: Object.keys(playerData),
+        playerDataValue: playerData[tileName]
+      });
+    }
+  }, [isFlipped, photoRevealed, tileName, index, tileContent, playerData]);
+
   return (
     <div className="tile" onClick={onClick} data-tooltip={tooltipText}>
       <div
@@ -68,15 +82,17 @@ export const Tile: React.FC<TileProps> = ({
                 lineHeight: "1.4",
                 padding: "5px",
                 color: "#000",
+                backgroundColor: "#FFD700",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 textAlign: "center",
                 width: "100%",
                 height: "100%",
+                border: "2px solid red",
               }}
             >
-              {tileContent}
+              {tileContent || `[${tileName}: NO DATA]`}
             </div>
           )}
           {photoRevealed && index === 2 && (
