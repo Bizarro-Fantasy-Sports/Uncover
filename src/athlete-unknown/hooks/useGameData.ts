@@ -106,7 +106,16 @@ export const useGameData = ({
 
     submitResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.finalRank, activeSport]);
+  }, [
+    state.finalRank,
+    state.score,
+    state.tilesFlippedCount,
+    state.incorrectGuesses,
+    state.flippedTiles,
+    state.firstTileFlipped,
+    state.lastTileFlipped,
+    activeSport,
+  ]);
 
   const refetchData = useCallback(async () => {
     try {

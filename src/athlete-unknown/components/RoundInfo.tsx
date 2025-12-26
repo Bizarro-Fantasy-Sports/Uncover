@@ -4,6 +4,7 @@ import { formatDate } from "../../utils/formatting";
 interface RoundInfoProps {
   roundNumber: number;
   playDate?: string;
+  theme?: string;
   onRoundStatsClick: () => void;
   onRulesClick: () => void;
 }
@@ -11,12 +12,16 @@ interface RoundInfoProps {
 export const RoundInfo: React.FC<RoundInfoProps> = ({
   roundNumber,
   playDate,
+  theme,
   onRoundStatsClick,
   onRulesClick,
 }) => {
   return (
     <div className="round-info">
-      <span className="round-number">Round #{roundNumber}</span>
+      <span className="round-number">
+        Puzzle #{roundNumber}
+        {theme && ` - ${theme}`}
+      </span>
       {playDate && (
         <>
           <span className="separator">•</span>

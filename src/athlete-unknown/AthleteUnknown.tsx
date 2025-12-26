@@ -137,6 +137,7 @@ const AthleteUnknown: React.FC = () => {
       <RoundInfo
         roundNumber={roundNumber}
         playDate={playDate}
+        theme={state.round.theme}
         onRoundStatsClick={() => setIsRoundStatsModalOpen(true)}
         onRulesClick={() => setIsRulesModalOpen(true)}
       />
@@ -177,6 +178,7 @@ const AthleteUnknown: React.FC = () => {
         flippedTiles={state.flippedTiles}
         copiedText={state.copiedText}
         roundStats={state.round.stats}
+        playerData={state.round.player}
         onClose={() => updateState({ showResultsModal: false })}
         onShare={handleShare}
       />

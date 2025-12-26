@@ -5,7 +5,7 @@
     "roundId": "basketball001",
     "created": "2025-11-11T10:00:00Z",
     "lastUpdated": "2025-11-12T00:00:00Z",
-    "previouslyPlayedDates": [],
+    "theme": "",
     "player": {
       "sport": "basketball",
       "sportsReferencePath": "r/rambiku01",

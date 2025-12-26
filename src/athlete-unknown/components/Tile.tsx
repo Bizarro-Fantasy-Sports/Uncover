@@ -25,8 +25,11 @@ export const Tile: React.FC<TileProps> = ({
 }) => {
   const photoUrl = playerData.photo || "";
 
+  // Show tooltip for flipped tiles (not in photo reveal mode)
+  const tooltipTitle = isFlipped && !photoRevealed ? camelCaseToTitleCase(tileName) : "";
+
   return (
-    <div className="tile" onClick={onClick}>
+    <div className="tile" onClick={onClick} title={tooltipTitle}>
       <div
         className={`tile-inner ${
           photoRevealed
