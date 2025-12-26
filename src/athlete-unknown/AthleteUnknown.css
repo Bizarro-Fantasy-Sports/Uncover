@@ -242,23 +242,73 @@
   grid-gap: 7.5px;
   justify-content: center;
   margin-top: 20px;
+  padding-top: 50px; /* Space for tooltips */
 }
 
 .tile {
   position: relative;
   width: 150px;
   height: 150px;
-  overflow: hidden;
+  overflow: visible; /* Allow tooltip to show */
   border: 2px solid #0077b6;
   border-radius: 8px;
   perspective: 1000px;
+  z-index: 1;
 }
 
+/* Custom tooltip */
+.tile[data-tooltip]:not([data-tooltip=""])::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #0077b6;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 119, 182, 0.3);
+}
+
+.tile[data-tooltip]:not([data-tooltip=""]):hover::after {
+  opacity: 1;
+}
+
+/* Tooltip arrow */
+.tile[data-tooltip]:not([data-tooltip=""])::before {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #0077b6;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.tile[data-tooltip]:not([data-tooltip=""]):hover::before {
+  opacity: 1;
+}
+
+/* Clip tile content but not tooltip */
 .tile-inner {
   position: relative;
   width: 100%;
   height: 100%;
   cursor: pointer;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 /* Transition for returning from photo reveal */
@@ -280,15 +330,17 @@
   color: transparent;
 }
 
-/* Slide animation for regular tiles */
-.tile-inner.flipped:not(.photo-reveal):not(.no-slide-anim) .tile-front {
-  transform: translateX(-100%);
+/* Flip animation for regular tiles */
+.tile-inner.flipped:not(.photo-reveal):not(.no-slide-anim) {
+  transform-style: preserve-3d;
+  transform: rotateY(180deg);
   transition: transform 0.6s ease-out;
 }
 
-/* No slide animation - just show the back immediately */
-.tile-inner.flipped.no-slide-anim .tile-front {
-  transform: translateX(-100%);
+/* No animation - just show the back immediately */
+.tile-inner.flipped.no-slide-anim {
+  transform-style: preserve-3d;
+  transform: rotateY(180deg);
   transition: none;
 }
 
@@ -312,6 +364,7 @@
   font-weight: bold;
   border-radius: 8px;
   overflow: hidden;
+  backface-visibility: hidden;
 }
 
 .tile-front {
@@ -325,15 +378,6 @@
   color: #000;
   overflow: auto;
   z-index: 1;
-}
-
-/* Only apply 3D transforms for photo reveal */
-.tile-inner.photo-reveal .tile-front,
-.tile-inner.photo-reveal .tile-back {
-  backface-visibility: hidden;
-}
-
-.tile-inner.photo-reveal .tile-back {
   transform: rotateY(180deg);
 }
 
