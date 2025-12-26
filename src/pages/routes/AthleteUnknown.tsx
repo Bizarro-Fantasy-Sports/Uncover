@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import "./AthleteUnknown.css";
 import {
   type SportType,
@@ -32,6 +33,32 @@ import {
 } from "@/features/athlete-unknown/components";
 
 export function AthleteUnknown(): React.ReactElement {
+  const { getAccessTokenSilently } = useAuth0();
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+
+  // Extract roles from access token
+  useEffect(() => {
+    const extractRoles = async () => {
+      try {
+        const accessToken = await getAccessTokenSilently();
+
+        // Decode JWT to get payload (JWT format: header.payload.signature)
+        const base64Url = accessToken.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const payload = JSON.parse(window.atob(base64));
+
+        const roles = payload["https://statslandfantasy.com/roles"] || [];
+        console.log("[AthleteUnknown] Access Token roles:", roles);
+        setUserRoles(roles);
+      } catch (error) {
+        console.error("[AthleteUnknown] Error extracting roles:", error);
+        setUserRoles([]);
+      }
+    };
+
+    extractRoles();
+  }, [getAccessTokenSilently]);
+
   // Restore previously active sport from localStorage, default to baseball
   const getInitialSport = (): SportType => {
     try {
@@ -54,15 +81,22 @@ export function AthleteUnknown(): React.ReactElement {
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
   const [isRoundStatsModalOpen, setIsRoundStatsModalOpen] = useState(false);
   const [isUserStatsModalOpen, setIsUserStatsModalOpen] = useState(false);
+  const [selectedPlayDate, setSelectedPlayDate] = useState<string | undefined>(
+    undefined
+  );
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // Core state management
-  const { state, updateState } = useGameState(activeSport);
+  // Check if user is a playtester
+  const isPlaytester = userRoles.includes("Playtester");
+
+  // Core state management - pass selectedPlayDate to ensure each puzzle has its own state
+  const { state, updateState } = useGameState(activeSport, selectedPlayDate);
 
   // Data fetching & submission
   // updates the following fields in state
   // isLoading, error, round
   // TODO: rename to useRoundData
-  useGameData({ activeSport, state, updateState });
+  useGameData({ activeSport, state, updateState, playDate: selectedPlayDate });
 
   // Guest session persistence
   // updates the following fields in state
@@ -132,6 +166,26 @@ export function AthleteUnknown(): React.ReactElement {
   const playDate = state.round?.playDate as string | undefined;
   const roundNumber = extractRoundNumber(state.round.roundId);
 
+  // Handler for date selection in playtesting mode
+  const handleDateSelect = (date: string) => {
+    setSelectedPlayDate(date);
+    setShowDatePicker(false);
+  };
+
+  // Handler for toggling date picker
+  const handleTitleClick = () => {
+    console.log("[AthleteUnknown] Title clicked! isPlaytester:", isPlaytester);
+    if (isPlaytester) {
+      console.log(
+        "[AthleteUnknown] Toggling date picker. Current state:",
+        showDatePicker
+      );
+      setShowDatePicker(!showDatePicker);
+    } else {
+      console.log("[AthleteUnknown] User is not a playtester, ignoring click");
+    }
+  };
+
   return (
     <div className="athlete-unknown-game">
       <SportsReferenceAttribution activeSport={activeSport} />
@@ -145,8 +199,14 @@ export function AthleteUnknown(): React.ReactElement {
       <RoundInfo
         roundNumber={roundNumber}
         playDate={playDate}
+        theme={state.round.theme}
         onRoundStatsClick={() => setIsRoundStatsModalOpen(true)}
         onRulesClick={() => setIsRulesModalOpen(true)}
+        isPlaytester={isPlaytester}
+        showDatePicker={showDatePicker}
+        selectedPlayDate={selectedPlayDate}
+        onTitleClick={handleTitleClick}
+        onDateSelect={handleDateSelect}
       />
 
       <ScoreDisplay
@@ -185,6 +245,7 @@ export function AthleteUnknown(): React.ReactElement {
         flippedTiles={state.flippedTiles}
         copiedText={state.copiedText}
         roundStats={state.round.stats}
+        playerData={state.round.player}
         onClose={() => updateState({ showResultsModal: false })}
         onShare={handleShare}
       />

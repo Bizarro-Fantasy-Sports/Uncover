@@ -121,11 +121,11 @@ export const TILE_NAMES = [
   "playerInformation",
   "draftInformation",
   "yearsActive",
+  "photo",
   "teamsPlayedOn",
   "jerseyNumbers",
   "careerStats",
   "personalAchievements",
-  "photo",
 ] as const;
 
 // Total number of tiles in the game

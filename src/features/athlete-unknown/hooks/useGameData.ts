@@ -14,28 +14,24 @@ interface UseGameDataProps {
   activeSport: SportType;
   state: GameState;
   updateState: (patch: Partial<GameState>) => void;
+  playDate?: string;
 }
 
 export const useGameData = ({
   activeSport,
   state,
   updateState,
+  playDate,
 }: UseGameDataProps) => {
   // Load player data and round stats from API
   useEffect(() => {
-    // Already loaded - do nothing
-    if (state.round) {
-      return;
-    }
-
     const loadData = async () => {
       try {
         updateState({ isLoading: true, error: null });
 
-        // const testPlayDate = "???";
         const roundData = await gameDataService.getRoundData(
           activeSport,
-          undefined // until a testPlayDate can be inserted from FE to BE
+          playDate // Pass the playDate for playtesting
         );
 
         updateState({
@@ -55,7 +51,7 @@ export const useGameData = ({
 
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSport]); // state intentionally excluded to prevent infinite re-renders
+  }, [activeSport, playDate]); // Reload when sport or playDate changes
 
   // Submit game results when player wins
   useEffect(() => {
@@ -65,11 +61,22 @@ export const useGameData = ({
         return;
       }
 
-      // Check if already submitted
-      const playDate = (state.round.playDate ||
-        new Date().toISOString().split("T")[0]) as string;
+      // Get current date in local timezone
+      const now = new Date();
+      const currentDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
-      const submissionKey = getGameSubmissionKey(activeSport, playDate);
+      const roundPlayDate = state.round.playDate || currentDate;
+
+      // Only submit stats if current date matches the round's playDate
+      // This prevents stat submission for playtesting future rounds
+      if (currentDate !== roundPlayDate) {
+        console.log(
+          "[Athlete Unknown] Skipping stats submission - playtesting future round"
+        );
+        return;
+      }
+
+      const submissionKey = getGameSubmissionKey(activeSport, roundPlayDate);
       if (localStorage.getItem(submissionKey)) {
         return; // Already submitted
       }
@@ -78,7 +85,7 @@ export const useGameData = ({
         const gameResult: GameResult = {
           userId: "temp_user_123", // TODO: Replace with actual user ID from auth
           sport: activeSport,
-          playDate,
+          playDate: roundPlayDate,
           playerName: state.round.player.name,
           score: state.score,
           tilesFlipped: state.tilesFlippedCount,
@@ -106,16 +113,24 @@ export const useGameData = ({
 
     submitResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.finalRank, activeSport]);
+  }, [
+    state.finalRank,
+    state.score,
+    state.tilesFlippedCount,
+    state.incorrectGuesses,
+    state.flippedTiles,
+    state.firstTileFlipped,
+    state.lastTileFlipped,
+    activeSport,
+  ]);
 
   const refetchData = useCallback(async () => {
     try {
       updateState({ isLoading: true, error: null });
 
-      // const testPlayDate = "???";
       const roundData = await gameDataService.getRoundData(
         activeSport,
-        undefined // until a testPlayDate can be inserted from FE to BE
+        playDate // Pass the playDate for playtesting
       );
 
       updateState({
@@ -131,7 +146,7 @@ export const useGameData = ({
         isLoading: false,
       });
     }
-  }, [activeSport, updateState]);
+  }, [activeSport, updateState, playDate]);
 
   return {
     refetchData,
