@@ -1,12 +1,12 @@
 /**
  * Core game state management hook
- * Manages game state for all sports and provides update functions
+ * Manages game state for all sports and dates, provides update functions
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { PlayerData, Round } from "../types/api";
 import type { SportType } from "../config";
-import { TOTAL_TILES, SCORING, SPORTS } from "../config";
+import { TOTAL_TILES, SCORING } from "../config";
 
 export interface GameState {
   playersList: PlayerData[] | null;
@@ -59,19 +59,33 @@ const createInitialState = (): GameState => ({
   gaveUp: false,
 });
 
-export const useGameState = (activeSport: SportType) => {
-  const [gameStates, setGameStates] = useState<Record<SportType, GameState>>({
-    [SPORTS.BASEBALL]: createInitialState(),
-    [SPORTS.BASKETBALL]: createInitialState(),
-    [SPORTS.FOOTBALL]: createInitialState(),
-  } as Record<SportType, GameState>);
+export const useGameState = (activeSport: SportType, playDate?: string) => {
+  // Key by sport + playDate to ensure each puzzle has its own state
+  // If no playDate provided, use today's date so each day gets its own state
+  const effectivePlayDate = playDate || new Date().toISOString().split('T')[0];
+  const stateKey = `${activeSport}_${effectivePlayDate}`;
 
-  const currentState = gameStates[activeSport];
+  const [gameStates, setGameStates] = useState<Record<string, GameState>>({});
+
+  // Initialize state for current key if it doesn't exist
+  useEffect(() => {
+    setGameStates((prev) => {
+      if (!prev[stateKey]) {
+        return {
+          ...prev,
+          [stateKey]: createInitialState(),
+        };
+      }
+      return prev;
+    });
+  }, [stateKey]);
+
+  const currentState = gameStates[stateKey] || createInitialState();
 
   const updateState = useCallback(
     (patch: Partial<GameState>) => {
       setGameStates((prev) => {
-        const currentSportState = prev[activeSport];
+        const currentSportState = prev[stateKey] || createInitialState();
         const newState = { ...currentSportState, ...patch };
 
         // Preserve currentPlayerIndex if not in patch
@@ -84,11 +98,11 @@ export const useGameState = (activeSport: SportType) => {
 
         return {
           ...prev,
-          [activeSport]: newState,
+          [stateKey]: newState,
         };
       });
     },
-    [activeSport]
+    [stateKey]
   );
 
   const resetState = useCallback(() => {

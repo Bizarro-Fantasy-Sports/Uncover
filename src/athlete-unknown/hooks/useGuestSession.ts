@@ -26,16 +26,17 @@ export const useGuestSession = ({
 }: UseGuestSessionProps) => {
   // Auto-save guest session whenever state changes
   useEffect(() => {
-    if (state.round) {
-      saveGuestSession(activeSport, state, state.currentPlayerIndex);
+    if (state.round?.playDate) {
+      saveGuestSession(activeSport, state.round.playDate, state, state.currentPlayerIndex);
     }
   }, [activeSport, state]);
 
   // Load guest session on mount (if player data is available)
   useEffect(() => {
-    if (state.round && !state.finalRank) {
+    if (state.round?.playDate && !state.finalRank) {
       const savedSession = loadGuestSession(
         activeSport,
+        state.round.playDate,
         state.round.player.name
       );
       if (savedSession) {
@@ -43,10 +44,10 @@ export const useGuestSession = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSport, state.round?.player?.name]); // Only run when sport or player changes
+  }, [activeSport, state.round?.playDate, state.round?.player?.name]); // Only run when sport, date, or player changes
 
   return {
-    clearSession: () => clearGuestSession(activeSport),
+    clearSession: () => state.round?.playDate ? clearGuestSession(activeSport, state.round.playDate) : undefined,
     clearAllSessions: clearAllGuestSessions,
   };
 };

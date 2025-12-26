@@ -13,6 +13,7 @@ import type { GameState } from "../hooks/useGameState";
  */
 export const saveGuestSession = (
   sport: SportType,
+  playDate: string,
   state: GameState,
   playerIndex?: number
 ): void => {
@@ -38,7 +39,7 @@ export const saveGuestSession = (
       playerIndex_saved: playerIndex,
     };
     localStorage.setItem(
-      getGuestSessionKey(sport),
+      getGuestSessionKey(sport, playDate),
       JSON.stringify(persistentState)
     );
   } catch (error) {
@@ -51,10 +52,11 @@ export const saveGuestSession = (
  */
 export const loadGuestSession = (
   sport: SportType,
+  playDate: string,
   currentPlayerName: string
 ): Partial<GameState> | null => {
   try {
-    const saved = localStorage.getItem(getGuestSessionKey(sport));
+    const saved = localStorage.getItem(getGuestSessionKey(sport, playDate));
     if (!saved) {
       return null;
     }
@@ -64,7 +66,7 @@ export const loadGuestSession = (
     // Only restore if it's the same player/round
     if (parsed.playerName_saved !== currentPlayerName) {
       // Different round, clear old session
-      clearGuestSession(sport);
+      clearGuestSession(sport, playDate);
       return null;
     }
 
@@ -79,19 +81,30 @@ export const loadGuestSession = (
 };
 
 /**
- * Clear guest session for a specific sport
+ * Clear guest session for a specific sport and date
  */
-export const clearGuestSession = (sport: SportType): void => {
+export const clearGuestSession = (sport: SportType, playDate: string): void => {
   try {
-    localStorage.removeItem(getGuestSessionKey(sport));
+    localStorage.removeItem(getGuestSessionKey(sport, playDate));
   } catch (error) {
     console.error("Failed to clear guest session:", error);
   }
 };
 
 /**
- * Clear all guest sessions for all sports
+ * Clear all guest sessions for all sports and dates
  */
 export const clearAllGuestSessions = (): void => {
-  SPORT_LIST.forEach((sport) => clearGuestSession(sport));
+  try {
+    // Get all keys from localStorage
+    const keys = Object.keys(localStorage);
+    // Filter keys that match the guest session prefix
+    const guestSessionKeys = keys.filter(key =>
+      key.startsWith("guestSession_")
+    );
+    // Remove all guest session keys
+    guestSessionKeys.forEach(key => localStorage.removeItem(key));
+  } catch (error) {
+    console.error("Failed to clear all guest sessions:", error);
+  }
 };

@@ -27,6 +27,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Tooltip for flipped tile theme reminder
 - Photo and name of correct answer player in results modal when finished
 
+## [PR-20]
+
+### Added
+
+- Added playtesting mode : including playtester role check, date picker for future rounds, and API future round read
+
 ## [PR-19](https://github.com/Statsland-Fantasy/statsland-website/pull/19)
 
 ### Added

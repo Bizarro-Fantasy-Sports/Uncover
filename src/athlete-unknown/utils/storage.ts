@@ -12,10 +12,10 @@ export const STORAGE_KEYS = {
 } as const;
 
 /**
- * Get the guest session key for a specific sport
+ * Get the guest session key for a specific sport and date
  */
-export const getGuestSessionKey = (sport: SportType): string => {
-  return `${STORAGE_KEYS.GUEST_SESSION_PREFIX}${sport}`;
+export const getGuestSessionKey = (sport: SportType, playDate: string): string => {
+  return `${STORAGE_KEYS.GUEST_SESSION_PREFIX}${sport}_${playDate}`;
 };
 
 /**
