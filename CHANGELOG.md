@@ -15,6 +15,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-25]
+
+### Added
+
+- Added FE deploy pipline
+
 ## [PR-24]
 
 ### Changed
