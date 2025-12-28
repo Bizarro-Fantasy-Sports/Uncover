@@ -21,6 +21,11 @@ updates:
     labels:
       - "dependencies"
       - "automated"
+    # Ignore incompatible major version updates
+    ignore:
+      # TypeScript 5.x is not compatible with react-scripts 5.0.1
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     # Group minor and patch updates together
     groups:
       development-dependencies:

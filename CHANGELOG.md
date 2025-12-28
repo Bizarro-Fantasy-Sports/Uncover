@@ -15,6 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed web-vitals v5 API compatibility in reportWebVitals.ts
+- Updated Dependabot configuration to ignore TypeScript major version updates (TypeScript 5.x is incompatible with react-scripts 5.0.1)
+
 ## [PR-25]
 
 ### Added
