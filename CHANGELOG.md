@@ -15,6 +15,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [Mid-Round Progress Persistence]
+
+### Added
+
+- LocalStorage persistence for mid-round game progress across all users
+  - Automatically saves game state after each action (tile flips, guesses, score updates)
+  - Restores in-progress games when user reopens tab or refreshes page
+  - Storage key format: `currentSession_<sport>_<playDate>`
+  - Saved data includes: score, tiles flipped, hints, guesses, messages, and all game state
+  - Automatically clears saved progress when round is completed or user gives up
+  - Console logging for debugging save/load/clear operations
+
+### Changed
+
+- Enhanced `useGameState` hook to automatically save and restore game progress
+- Added `MidRoundProgress` interface for type-safe localStorage operations
+- Extended storage utilities with new functions: `saveMidRoundProgress`, `loadMidRoundProgress`, `clearMidRoundProgress`
+
+### Impact
+
+- Users can now safely close/refresh the browser without losing their progress
+- Improves user experience by eliminating frustration from accidental tab closures
+- Works for both authenticated and guest users
+- No performance impact - saves are non-blocking and use efficient localStorage API
+
 ## [PR-37]
 
 ### Changed

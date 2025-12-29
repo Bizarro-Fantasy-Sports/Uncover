@@ -94,7 +94,10 @@ export function AthleteUnknown(): React.ReactElement {
   const isPlaytester = userRoles.includes("Playtester");
 
   // Core state management - pass selectedPlayDate to ensure each puzzle has its own state
-  const { state, updateState } = useGameState(activeSport, selectedPlayDate);
+  const { state, updateState, clearProgress } = useGameState(
+    activeSport,
+    selectedPlayDate
+  );
 
   // Data fetching & submission
   // updates the following fields in state
@@ -140,6 +143,17 @@ export function AthleteUnknown(): React.ReactElement {
   useEffect(() => {
     setActiveSport(getValidSport(sport));
   }, [sport, setActiveSport]);
+
+  // Clear localStorage when round is completed
+  useEffect(() => {
+    if (
+      state.showResultsModal &&
+      (state.finalRank || state.gaveUp) &&
+      state.round
+    ) {
+      clearProgress();
+    }
+  }, [state.showResultsModal, state.finalRank, state.gaveUp, state.round, clearProgress]);
 
   // Show loading state
   if (state.isLoading) {

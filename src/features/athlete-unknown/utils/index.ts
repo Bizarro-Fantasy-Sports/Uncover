@@ -9,6 +9,11 @@ export {
   STORAGE_KEYS,
   getGuestSessionKey,
   getGameSubmissionKey,
+  getCurrentSessionKey,
+  saveMidRoundProgress,
+  loadMidRoundProgress,
+  clearMidRoundProgress,
+  type MidRoundProgress,
 } from "./storage";
 export {
   calculateLevenshteinDistance,
