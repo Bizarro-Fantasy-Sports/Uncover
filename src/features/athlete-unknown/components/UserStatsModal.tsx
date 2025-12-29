@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./UserStatsModal.css";
-import { TileTracker, UserSportStats, UserStats } from "../types";
+import {
+  TileTracker,
+  UserSportStats,
+  UserStats,
+} from "@/features/athlete-unknown/types";
 import { useParams } from "react-router";
 
 interface UserStatsModalProps {

@@ -1,6 +1,6 @@
 import React from "react";
 import "./RoundStatsModal.css";
-import { RoundStats } from "../types";
+import { RoundStats } from "@/features/athlete-unknown/types";
 
 interface RoundStatsModalProps {
   isOpen: boolean;
