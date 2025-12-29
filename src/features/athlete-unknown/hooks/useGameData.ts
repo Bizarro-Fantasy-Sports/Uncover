@@ -57,55 +57,55 @@ export const useGameData = ({
 
   // Submit game results when player wins
   useEffect(() => {
-    // const submitResults = async () => {
-    //   // Only submit if game is won and we haven't submitted yet
-    //   if (!state.finalRank || !state.round) {
-    //     return;
-    //   }
-    //   // Get current date in local timezone
-    //   const now = new Date();
-    //   const currentDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    //   const roundPlayDate = state.round.playDate || currentDate;
-    //   // Only submit stats if current date matches the round's playDate
-    //   // This prevents stat submission for playtesting future rounds
-    //   if (currentDate !== roundPlayDate) {
-    //     console.log(
-    //       "[Athlete Unknown] Skipping stats submission - playtesting future round"
-    //     );
-    //     return;
-    //   }
-    //   const submissionKey = getGameSubmissionKey(activeSport, roundPlayDate);
-    //   if (localStorage.getItem(submissionKey)) {
-    //     return; // Already submitted
-    //   }
-    //   try {
-    //     const gameResult: GameResult = {
-    //       userId: "temp_user_123", // TODO: Replace with actual user ID from auth
-    //       sport: activeSport,
-    //       playDate: roundPlayDate,
-    //       playerName: state.round.player.name,
-    //       score: state.score,
-    //       tilesFlipped: state.tilesFlippedCount,
-    //       incorrectGuesses: state.incorrectGuesses,
-    //       flippedTilesPattern: state.flippedTiles,
-    //       firstTileFlipped: state.firstTileFlipped || undefined,
-    //       lastTileFlipped: state.lastTileFlipped || undefined,
-    //       completed: true,
-    //       completedAt: new Date().toISOString(),
-    //       rank: state.finalRank,
-    //     };
-    //     console.log("[Athlete Unknown] Submitting game results:", gameResult);
-    //     const response = await gameDataService.submitGameResults(gameResult);
-    //     if (response?.success) {
-    //       console.log("[Athlete Unknown] Results submitted successfully");
-    //       localStorage.setItem(submissionKey, "true");
-    //     }
-    //   } catch (error) {
-    //     console.error("[Athlete Unknown] Failed to submit results:", error);
-    //     // Don't block the user experience if submission fails
-    //   }
-    // };
-    // submitResults();
+    const submitResults = async () => {
+      // Only submit if game is won and we haven't submitted yet
+      if (!state.finalRank || !state.round) {
+        return;
+      }
+      // Get current date in local timezone
+      const now = new Date();
+      const currentDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      const roundPlayDate = state.round.playDate || currentDate;
+      // Only submit stats if current date matches the round's playDate
+      // This prevents stat submission for playtesting future rounds
+      if (currentDate !== roundPlayDate) {
+        console.log(
+          "[Athlete Unknown] Skipping stats submission - playtesting future round"
+        );
+        return;
+      }
+      const submissionKey = getGameSubmissionKey(activeSport, roundPlayDate);
+      if (localStorage.getItem(submissionKey)) {
+        return; // Already submitted
+      }
+      try {
+        const gameResult: GameResult = {
+          userId: "temp_user_123", // TODO: Replace with actual user ID from auth
+          sport: activeSport,
+          playDate: roundPlayDate,
+          playerName: state.round.player.name,
+          score: state.score,
+          tilesFlipped: state.tilesFlippedCount,
+          incorrectGuesses: state.incorrectGuesses,
+          flippedTilesPattern: state.flippedTiles,
+          firstTileFlipped: state.firstTileFlipped || undefined,
+          lastTileFlipped: state.lastTileFlipped || undefined,
+          completed: true,
+          completedAt: new Date().toISOString(),
+          rank: state.finalRank,
+        };
+        console.log("[Athlete Unknown] Submitting game results:", gameResult);
+        const response = await gameDataService.submitGameResults(gameResult);
+        if (response?.success) {
+          console.log("[Athlete Unknown] Results submitted successfully");
+          localStorage.setItem(submissionKey, "true");
+        }
+      } catch (error) {
+        console.error("[Athlete Unknown] Failed to submit results:", error);
+        // Don't block the user experience if submission fails
+      }
+    };
+    submitResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     state.finalRank,
