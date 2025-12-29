@@ -1,193 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./UserStatsModal.css";
+import { TileTracker, UserSportStats, UserStats } from "../types";
 
-// TypeScript interfaces for user stats
-interface TileTracker {
-  bio: number;
-  careerStats: number;
-  draftInformation: number;
-  jerseyNumbers: number;
-  personalAchievements: number;
-  photo: number;
-  playerInformation: number;
-  teamsPlayedOn: number;
-  yearsActive: number;
+interface UserStatsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  userStats: UserStats | null;
 }
 
-interface SportStats {
-  sport: string;
-  totalPlays: number;
-  percentageCorrect: number;
-  averageCorrectScore: number;
-  highestScore: number;
-  currentDailyStreak: number;
-  firstTileFlippedTracker: TileTracker;
-  lastTileFlippedTracker: TileTracker;
-  mostTileFlippedTracker: TileTracker;
-  mostCommonFirstTileFlipped: string;
-  mostCommonLastTileFlipped: string;
-  mostCommonTileFlipped: string;
-  leastCommonTileFlipped: string;
-}
-
-interface UserStatsData {
-  userId: string;
-  userName: string;
-  userCreated: string;
-  sports: SportStats[];
-}
-
-// Sample data - this would eventually come from backend/localStorage
-const sampleUserStats: UserStatsData = {
-  userId: "FirstTestProdUser123",
-  userName: "FirstTestProdUser123",
-  sports: [
-    {
-      averageCorrectScore: 70,
-      currentDailyStreak: 3,
-      firstTileFlippedTracker: {
-        bio: 11,
-        careerStats: 17,
-        draftInformation: 13,
-        jerseyNumbers: 16,
-        personalAchievements: 18,
-        photo: 19,
-        playerInformation: 12,
-        teamsPlayedOn: 15,
-        yearsActive: 14,
-      },
-      highestScore: 90,
-      lastTileFlippedTracker: {
-        bio: 11,
-        careerStats: 71,
-        draftInformation: 31,
-        jerseyNumbers: 61,
-        personalAchievements: 81,
-        photo: 91,
-        playerInformation: 21,
-        teamsPlayedOn: 51,
-        yearsActive: 41,
-      },
-      mostTileFlippedTracker: {
-        bio: 11,
-        careerStats: 71,
-        draftInformation: 31,
-        jerseyNumbers: 61,
-        personalAchievements: 81,
-        photo: 91,
-        playerInformation: 21,
-        teamsPlayedOn: 51,
-        yearsActive: 41,
-      },
-      mostCommonFirstTileFlipped: "playerInformation",
-      mostCommonLastTileFlipped: "photo",
-      mostCommonTileFlipped: "careerStats",
-      leastCommonTileFlipped: "bio",
-      percentageCorrect: 0.81,
-      sport: "basketball",
-      totalPlays: 10,
-    },
-    {
-      averageCorrectScore: 70,
-      currentDailyStreak: 5,
-      firstTileFlippedTracker: {
-        bio: 21,
-        careerStats: 27,
-        draftInformation: 23,
-        jerseyNumbers: 26,
-        personalAchievements: 28,
-        photo: 29,
-        playerInformation: 22,
-        teamsPlayedOn: 25,
-        yearsActive: 24,
-      },
-      highestScore: 90,
-      lastTileFlippedTracker: {
-        bio: 12,
-        careerStats: 72,
-        draftInformation: 32,
-        jerseyNumbers: 62,
-        personalAchievements: 82,
-        photo: 92,
-        playerInformation: 22,
-        teamsPlayedOn: 52,
-        yearsActive: 42,
-      },
-      mostTileFlippedTracker: {
-        bio: 12,
-        careerStats: 72,
-        draftInformation: 32,
-        jerseyNumbers: 62,
-        personalAchievements: 82,
-        photo: 92,
-        playerInformation: 22,
-        teamsPlayedOn: 52,
-        yearsActive: 42,
-      },
-      mostCommonFirstTileFlipped: "playerInformation",
-      mostCommonLastTileFlipped: "photo",
-      mostCommonTileFlipped: "careerStats",
-      leastCommonTileFlipped: "bio",
-      percentageCorrect: 0.82,
-      sport: "baseball",
-      totalPlays: 30,
-    },
-    {
-      averageCorrectScore: 70,
-      currentDailyStreak: 7,
-      firstTileFlippedTracker: {
-        bio: 31,
-        careerStats: 37,
-        draftInformation: 33,
-        jerseyNumbers: 36,
-        personalAchievements: 38,
-        photo: 39,
-        playerInformation: 32,
-        teamsPlayedOn: 35,
-        yearsActive: 34,
-      },
-      highestScore: 90,
-      lastTileFlippedTracker: {
-        bio: 13,
-        careerStats: 73,
-        draftInformation: 33,
-        jerseyNumbers: 63,
-        personalAchievements: 83,
-        photo: 93,
-        playerInformation: 23,
-        teamsPlayedOn: 53,
-        yearsActive: 43,
-      },
-      mostTileFlippedTracker: {
-        bio: 13,
-        careerStats: 73,
-        draftInformation: 33,
-        jerseyNumbers: 63,
-        personalAchievements: 83,
-        photo: 93,
-        playerInformation: 23,
-        teamsPlayedOn: 53,
-        yearsActive: 43,
-      },
-      mostCommonFirstTileFlipped: "playerInformation",
-      mostCommonLastTileFlipped: "photo",
-      mostCommonTileFlipped: "careerStats",
-      leastCommonTileFlipped: "bio",
-      percentageCorrect: 0.83,
-      sport: "football",
-      totalPlays: 30,
-    },
-  ],
-  userCreated: "2025-11-19T07:47:47.242Z",
-};
-
-function UserStatsModal(): React.ReactElement {
-  const [selectedSport, setSelectedSport] = useState<string>("basketball");
-  const [userStats] = useState<UserStatsData>(sampleUserStats);
-
-  const currentSportStats = userStats.sports.find(
-    (s) => s.sport === selectedSport
-  );
+function UserStatsModal({
+  isOpen,
+  onClose,
+  userStats,
+}: UserStatsModalProps): React.ReactElement | null {
+  const [selectedSport, setSelectedSport] = useState<string>("baseball");
+  const [selectedSportStats, setSelectedSportStats] =
+    useState<UserSportStats | null>();
 
   const formatTileName = (name: string): string => {
     return name
@@ -203,8 +31,15 @@ function UserStatsModal(): React.ReactElement {
     });
   };
 
-  if (!currentSportStats) {
-    return <div className="user-stats-container">No stats available</div>;
+  useEffect(() => {
+    const stats = userStats?.sports.filter(
+      (sportStats) => sportStats.sport === selectedSport
+    );
+    setSelectedSportStats(stats?.[0] ?? null);
+  }, [userStats, selectedSport]);
+
+  if (!isOpen || !userStats || !selectedSportStats) {
+    return null;
   }
 
   return (
@@ -214,6 +49,7 @@ function UserStatsModal(): React.ReactElement {
       <div className="user-info">
         <p>User: {userStats.userName}</p>
         <p>Member Since: {formatDate(userStats.userCreated)}</p>
+        <p>Current Daily Streak: {userStats.currentDailyStreak}</p>
       </div>
 
       {/* Sport Selector */}
@@ -234,30 +70,34 @@ function UserStatsModal(): React.ReactElement {
         <h2>Overview</h2>
         <div className="stats-grid">
           <div className="stat-card">
-            <div className="stat-value">{currentSportStats.totalPlays}</div>
+            <div className="stat-value">
+              {selectedSportStats.stats.totalPlays}
+            </div>
             <div className="stat-label">Total Plays</div>
           </div>
           <div className="stat-card">
             <div className="stat-value">
-              {(currentSportStats.percentageCorrect * 100).toFixed(0)}%
+              {selectedSportStats.stats.percentageCorrect.toFixed(0)}%
             </div>
             <div className="stat-label">Accuracy</div>
           </div>
           <div className="stat-card">
             <div className="stat-value">
-              {currentSportStats.averageCorrectScore}
+              {selectedSportStats.stats.averageCorrectScore}
             </div>
             <div className="stat-label">Average Score</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value">{currentSportStats.highestScore}</div>
+            <div className="stat-value">
+              {selectedSportStats.stats.highestScore}
+            </div>
             <div className="stat-label">Highest Score</div>
           </div>
           <div className="stat-card highlight">
             <div className="stat-value">
-              {currentSportStats.currentDailyStreak}
+              {selectedSportStats.stats.averageNumberOfTileFlips}
             </div>
-            <div className="stat-label">Current Streak</div>
+            <div className="stat-label">Average # of Tile Flips</div>
           </div>
         </div>
       </div>
@@ -271,19 +111,23 @@ function UserStatsModal(): React.ReactElement {
             <div className="pattern-item">
               <span className="pattern-label">First Tile:</span>
               <span className="pattern-value">
-                {formatTileName(currentSportStats.mostCommonFirstTileFlipped)}
+                {formatTileName(
+                  selectedSportStats.stats.mostCommonFirstTileFlipped
+                )}
               </span>
             </div>
             <div className="pattern-item">
               <span className="pattern-label">Most Flipped:</span>
               <span className="pattern-value">
-                {formatTileName(currentSportStats.mostCommonTileFlipped)}
+                {formatTileName(selectedSportStats.stats.mostCommonTileFlipped)}
               </span>
             </div>
             <div className="pattern-item">
               <span className="pattern-label">Last Tile:</span>
               <span className="pattern-value">
-                {formatTileName(currentSportStats.mostCommonLastTileFlipped)}
+                {formatTileName(
+                  selectedSportStats.stats.mostCommonLastTileFlipped
+                )}
               </span>
             </div>
           </div>
@@ -292,7 +136,9 @@ function UserStatsModal(): React.ReactElement {
             <div className="pattern-item">
               <span className="pattern-label">Tile:</span>
               <span className="pattern-value">
-                {formatTileName(currentSportStats.leastCommonTileFlipped)}
+                {formatTileName(
+                  selectedSportStats.stats.leastCommonTileFlipped
+                )}
               </span>
             </div>
           </div>
@@ -313,27 +159,27 @@ function UserStatsModal(): React.ReactElement {
               </tr>
             </thead>
             <tbody>
-              {Object.keys(currentSportStats.firstTileFlippedTracker).map(
+              {Object.keys(selectedSportStats.stats.firstFlippedTracker).map(
                 (tile) => (
                   <tr key={tile}>
                     <td className="tile-name">{formatTileName(tile)}</td>
                     <td>
                       {
-                        currentSportStats.firstTileFlippedTracker[
+                        selectedSportStats.stats.firstFlippedTracker[
                           tile as keyof TileTracker
                         ]
                       }
                     </td>
                     <td>
                       {
-                        currentSportStats.lastTileFlippedTracker[
+                        selectedSportStats.stats.lastFlippedTracker[
                           tile as keyof TileTracker
                         ]
                       }
                     </td>
                     <td>
                       {
-                        currentSportStats.mostTileFlippedTracker[
+                        selectedSportStats.stats.mostFlippedTracker[
                           tile as keyof TileTracker
                         ]
                       }

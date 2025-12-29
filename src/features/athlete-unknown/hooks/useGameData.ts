@@ -35,8 +35,6 @@ export const useGameData = ({
           userStatsService.getUserStats(),
         ]);
 
-        console.log("USER STATS DATA!!!!!11", userStatsData);
-
         updateState({
           round: roundData,
           userStats: userStatsData,

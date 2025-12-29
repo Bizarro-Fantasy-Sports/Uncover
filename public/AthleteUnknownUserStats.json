@@ -1,0 +1,177 @@
+{
+  "userId": "test user",
+  "userName": "test user name",
+  "userCreated": "2025-11-17T00:00:00Z",
+  "currentDailyStreak": 5,
+  "lastDayPlayed": "2025-12-01",
+  "sports": [
+    {
+      "sport": "baseball",
+      "stats": {
+        "totalPlays": 100,
+        "percentageCorrect": 81,
+        "averageCorrectScore": 88,
+        "averageNumberOfTileFlips": 1.1,
+        "highestScore": 97,
+        "mostCommonFirstTileFlipped": "playerInformation",
+        "mostCommonLastTileFlipped": "photo",
+        "mostCommonTileFlipped": "teamsPlayedOn",
+        "leastCommonTileFlipped": "bio",
+        "mostFlippedTracker": {
+          "bio": 11,
+          "careerStats": 11,
+          "draftInformation": 11,
+          "jerseyNumbers": 11,
+          "personalAchievements": 11,
+          "photo": 11,
+          "playerInformation": 11,
+          "teamsPlayedOn": 11,
+          "yearsActive": 11
+        },
+        "firstFlippedTracker": {
+          "bio": 12,
+          "careerStats": 12,
+          "draftInformation": 12,
+          "jerseyNumbers": 12,
+          "personalAchievements": 12,
+          "photo": 12,
+          "playerInformation": 12,
+          "teamsPlayedOn": 12,
+          "yearsActive": 12
+        },
+        "lastFlippedTracker": {
+          "bio": 13,
+          "careerStats": 13,
+          "draftInformation": 13,
+          "jerseyNumbers": 13,
+          "personalAchievements": 13,
+          "photo": 13,
+          "playerInformation": 13,
+          "teamsPlayedOn": 13,
+          "yearsActive": 13
+        }
+      },
+      "history": [
+        {
+          "playDate": "2025-12-02",
+          "score": 99,
+          "isCorrect": true,
+          "tilesFlipped": ["bio", "photo"],
+          "incorrectGuesses": 0
+        }
+      ]
+    },
+    {
+      "sport": "basketball",
+      "stats": {
+        "totalPlays": 200,
+        "percentageCorrect": 82,
+        "averageCorrectScore": 77,
+        "averageNumberOfTileFlips": 2.2,
+        "highestScore": 98,
+        "mostCommonFirstTileFlipped": "draftInformation",
+        "mostCommonLastTileFlipped": "careerStats",
+        "mostCommonTileFlipped": "photo",
+        "leastCommonTileFlipped": "teamsPlayedOn",
+        "mostFlippedTracker": {
+          "bio": 21,
+          "careerStats": 21,
+          "draftInformation": 21,
+          "jerseyNumbers": 21,
+          "personalAchievements": 21,
+          "photo": 21,
+          "playerInformation": 21,
+          "teamsPlayedOn": 21,
+          "yearsActive": 21
+        },
+        "firstFlippedTracker": {
+          "bio": 22,
+          "careerStats": 22,
+          "draftInformation": 22,
+          "jerseyNumbers": 22,
+          "personalAchievements": 22,
+          "photo": 22,
+          "playerInformation": 22,
+          "teamsPlayedOn": 22,
+          "yearsActive": 22
+        },
+        "lastFlippedTracker": {
+          "bio": 23,
+          "careerStats": 23,
+          "draftInformation": 23,
+          "jerseyNumbers": 23,
+          "personalAchievements": 23,
+          "photo": 23,
+          "playerInformation": 23,
+          "teamsPlayedOn": 23,
+          "yearsActive": 23
+        }
+      },
+      "history": [
+        {
+          "playDate": "2025-12-02",
+          "score": 89,
+          "isCorrect": true,
+          "tilesFlipped": ["bio", "photo"],
+          "incorrectGuesses": 1
+        }
+      ]
+    },
+    {
+      "sport": "football",
+      "stats": {
+        "totalPlays": 300,
+        "percentageCorrect": 83,
+        "averageCorrectScore": 66,
+        "averageNumberOfTileFlips": 3.3,
+        "highestScore": 98,
+        "mostCommonFirstTileFlipped": "personalAchievements",
+        "mostCommonLastTileFlipped": "jerseyNumbers",
+        "mostCommonTileFlipped": "yearsActive",
+        "leastCommonTileFlipped": "bio",
+        "mostFlippedTracker": {
+          "bio": 31,
+          "careerStats": 31,
+          "draftInformation": 31,
+          "jerseyNumbers": 31,
+          "personalAchievements": 31,
+          "photo": 31,
+          "playerInformation": 31,
+          "teamsPlayedOn": 31,
+          "yearsActive": 31
+        },
+        "firstFlippedTracker": {
+          "bio": 32,
+          "careerStats": 32,
+          "draftInformation": 32,
+          "jerseyNumbers": 32,
+          "personalAchievements": 32,
+          "photo": 32,
+          "playerInformation": 32,
+          "teamsPlayedOn": 32,
+          "yearsActive": 32
+        },
+        "lastFlippedTracker": {
+          "bio": 33,
+          "careerStats": 33,
+          "draftInformation": 33,
+          "jerseyNumbers": 33,
+          "personalAchievements": 33,
+          "photo": 33,
+          "playerInformation": 33,
+          "teamsPlayedOn": 33,
+          "yearsActive": 33
+        }
+      },
+      "history": [
+        {
+          "playDate": "2025-12-02",
+          "score": 0,
+          "isCorrect": false,
+          "tilesFlipped": ["bio", "photo", "draftInformation"],
+          "incorrectGuesses": 10
+        }
+      ]
+    }
+  ]
+}

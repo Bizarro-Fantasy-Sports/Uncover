@@ -288,7 +288,11 @@ export function AthleteUnknown(): React.ReactElement {
             >
               ×
             </button>
-            <UserStatsModal />
+            <UserStatsModal
+              isOpen={isUserStatsModalOpen}
+              onClose={() => setIsUserStatsModalOpen(false)}
+              userStats={state.userStats}
+            />
           </div>
         </div>
       )}

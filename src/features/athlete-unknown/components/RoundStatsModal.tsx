@@ -1,35 +1,6 @@
 import React from "react";
 import "./RoundStatsModal.css";
-
-interface TileTracker {
-  bio: number;
-  careerStats: number;
-  draftInformation: number;
-  jerseyNumbers: number;
-  personalAchievements: number;
-  photo: number;
-  playerInformation: number;
-  teamsPlayedOn: number;
-  yearsActive: number;
-}
-
-interface RoundStats {
-  playDate: string;
-  sport: string;
-  name: string;
-  totalPlays: number;
-  percentageCorrect: number;
-  averageCorrectScore: number;
-  averageNumberOfTileFlips: number;
-  highestScore: number;
-  mostCommonFirstTileFlipped: string;
-  mostCommonLastTileFlipped: string;
-  mostCommonTileFlipped: string;
-  leastCommonTileFlipped: string;
-  mostFlippedTracker: TileTracker;
-  firstFlippedTracker: TileTracker;
-  lastFlippedTracker: TileTracker;
-}
+import { RoundStats } from "../types";
 
 interface RoundStatsModalProps {
   isOpen: boolean;
