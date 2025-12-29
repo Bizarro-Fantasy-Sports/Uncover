@@ -15,10 +15,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-37]
+
+### Changed
+
+- User stats are now retrieved and shown in the user stats modal
+- Clean up model changes
+- Refactor for cleaner code
+
+## [PRs 26-34]
+
+### Changed
+
+- Updated GitHub actions script versions
+- Dependabot package version upgrades
+
+## [PR-35 & PR-36]
+
 ### Fixed
 
 - Fixed web-vitals v5 API compatibility in reportWebVitals.ts
-- Updated Dependabot configuration to ignore TypeScript major version updates (TypeScript 5.x is incompatible with react-scripts 5.0.1)
+- Fix changelog reminder workflow syntax error
 
 ## [PR-25]
 
