@@ -1,9 +1,3 @@
-export {
-  loadGuestSession,
-  saveGuestSession,
-  clearGuestSession,
-  clearAllGuestSessions,
-} from "./guestSession";
 export { calculateNewScore, evaluateRank, generateHint } from "./scoring";
 export {
   STORAGE_KEYS,
