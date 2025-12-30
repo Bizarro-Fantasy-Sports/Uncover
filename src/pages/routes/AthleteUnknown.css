@@ -360,6 +360,20 @@
   transform-style: preserve-3d;
 }
 
+/* Show magnifying glass cursor for unrevealed tiles */
+.tile-inner:not(.flipped):not(.photo-reveal) {
+  cursor:
+    url("../../assets/cursors/magnifying-glass.svg") 12 12,
+    pointer;
+}
+
+/* Show rotate arrow cursor for photo reveal mode */
+.tile-inner.photo-reveal {
+  cursor:
+    url("../../assets/cursors/arrow-rotate-left.svg") 12 12,
+    pointer;
+}
+
 /* Overflow hidden for non-photo-reveal to prevent tooltip clipping */
 .tile-inner:not(.photo-reveal) {
   overflow: hidden;
