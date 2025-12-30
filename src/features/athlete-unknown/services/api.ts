@@ -7,6 +7,7 @@ import type {
   Round,
   UserStats,
 } from "@/features/athlete-unknown/types";
+import { getCurrentDateString } from "@/features/athlete-unknown/utils";
 
 /**
  * Athlete Unknown API Service
@@ -40,15 +41,7 @@ class AthleteUnknownApiService {
    */
   async getRound(sport: string, date?: string): Promise<Round> {
     // Use browser's local timezone for date calculation
-    const dateParam =
-      date ||
-      (() => {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const day = String(now.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-      })();
+    const dateParam = date || getCurrentDateString();
     const endpoint = `/v1/round?sport=${sport}&playDate=${dateParam}`;
 
     try {
@@ -65,15 +58,7 @@ class AthleteUnknownApiService {
    */
   async submitGameResults(gameResult: GameResult): Promise<GameResultResponse> {
     // Use browser's local timezone for date calculation
-    const dateParam =
-      gameResult.playDate ||
-      (() => {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const day = String(now.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-      })();
+    const dateParam = gameResult.playDate || getCurrentDateString();
     const endpoint = `/v1/results?sport=${gameResult.sport}&playDate=${dateParam}`;
 
     // Transform frontend format to backend format

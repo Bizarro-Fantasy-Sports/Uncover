@@ -16,7 +16,6 @@ import {
   useGameLogic,
   useTileFlip,
   useGameData,
-  useGuestSession,
   useShareResults,
 } from "@/features/athlete-unknown/hooks";
 import {
@@ -94,20 +93,16 @@ export function AthleteUnknown(): React.ReactElement {
   const isPlaytester = userRoles.includes("Playtester");
 
   // Core state management - pass selectedPlayDate to ensure each puzzle has its own state
-  const { state, updateState } = useGameState(activeSport, selectedPlayDate);
+  const { state, updateState, clearProgress } = useGameState(
+    activeSport,
+    selectedPlayDate
+  );
 
   // Data fetching & submission
   // updates the following fields in state
   // isLoading, error, round
   // TODO: rename to useRoundData
   useGameData({ activeSport, state, updateState, playDate: selectedPlayDate });
-
-  // Guest session persistence
-  // updates the following fields in state
-  // playerName, message, messageType, previousCloseGuess, flippedTiles, tilesFlippedCount, score, hint, finalRank
-  // incorrectGuesses, lastSubmittedGuess, firstTileFlipped, lastTileFlipped, playerName_saved,tate.finalRank, playerIndex_saved
-  // TODO: remove guest? I think this should be the logic for all users because  we don't save in-progress for signed in users either
-  useGuestSession({ activeSport, state, updateState });
 
   // Game logic
   // updates the following fields in state:
@@ -140,6 +135,17 @@ export function AthleteUnknown(): React.ReactElement {
   useEffect(() => {
     setActiveSport(getValidSport(sport));
   }, [sport, setActiveSport]);
+
+  // Clear localStorage when round is completed
+  useEffect(() => {
+    if (
+      state.showResultsModal &&
+      (state.finalRank || state.gaveUp) &&
+      state.round
+    ) {
+      clearProgress();
+    }
+  }, [state.showResultsModal, state.finalRank, state.gaveUp, state.round, clearProgress]);
 
   // Show loading state
   if (state.isLoading) {
