@@ -1,7 +1,6 @@
 export { calculateNewScore, evaluateRank, generateHint } from "./scoring";
 export {
   STORAGE_KEYS,
-  getGuestSessionKey,
   getGameSubmissionKey,
   getCurrentSessionKey,
   saveMidRoundProgress,

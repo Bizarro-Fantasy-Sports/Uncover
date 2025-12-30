@@ -7,18 +7,10 @@ import type { SportType } from "@/features/athlete-unknown/config";
 
 export const STORAGE_KEYS = {
   ACTIVE_SPORT: "activeSport",
-  GUEST_SESSION_PREFIX: "guestSession_",
   GAME_SUBMITTED_PREFIX: "submitted_",
   PLAYER_INDEX_PREFIX: "playerIndex_",
   CURRENT_SESSION_PREFIX: "currentSession_",
 } as const;
-
-/**
- * Get the guest session key for a specific sport and date
- */
-export const getGuestSessionKey = (sport: SportType, playDate: string): string => {
-  return `${STORAGE_KEYS.GUEST_SESSION_PREFIX}${sport}_${playDate}`;
-};
 
 /**
  * Get the game submission key for a specific sport and date
