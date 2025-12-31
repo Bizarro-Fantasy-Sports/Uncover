@@ -4,7 +4,7 @@
  */
 
 import type { SportType } from "@/features/athlete-unknown/config";
-import type { Result, TileTracker, UserSportStats, GuestStats } from "@/features/athlete-unknown/types";
+import type { Result, TileTracker, UserStats, UserSportStats } from "@/features/athlete-unknown/types";
 import { STORAGE_KEYS } from "./storage";
 
 /**
@@ -47,18 +47,28 @@ const createInitialSportStats = (sport: SportType): UserSportStats => ({
 /**
  * Load all guest stats from localStorage
  */
-export const loadGuestStats = (): GuestStats => {
+export const loadGuestStats = (): UserStats => {
   try {
     const data = localStorage.getItem(STORAGE_KEYS.GUEST_STATS_KEY);
     if (data) {
-      return JSON.parse(data) as GuestStats;
+      return JSON.parse(data) as UserStats;
     }
     return {
+      userId: "",
+      userName: "",
+      userCreated: "",
+      currentDailyStreak: 0,
+      lastDayPlayed: "",
       sports: [createInitialSportStats("baseball"), createInitialSportStats("basketball"), createInitialSportStats("football")]
     };
   } catch (error) {
     console.error("[GuestStats] Error loading guest stats:", error);
     return {
+      userId: "",
+      userName: "",
+      userCreated: "",
+      currentDailyStreak: 0,
+      lastDayPlayed: "",
       sports: [createInitialSportStats("baseball"), createInitialSportStats("basketball"), createInitialSportStats("football")]
     };
   }
@@ -67,7 +77,7 @@ export const loadGuestStats = (): GuestStats => {
 /**
  * Save guest stats to localStorage
  */
-const saveGuestStats = (stats: GuestStats): void => {
+const saveGuestStats = (stats: UserStats): void => {
   try {
     localStorage.setItem(STORAGE_KEYS.GUEST_STATS_KEY, JSON.stringify(stats));
     console.log("[GuestStats] Saved guest stats to localStorage");

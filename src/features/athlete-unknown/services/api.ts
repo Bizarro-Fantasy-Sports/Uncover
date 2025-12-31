@@ -81,7 +81,7 @@ class AthleteUnknownApiService {
    * userId passed via bearer token
    */
   async getUserStats(): Promise<UserStats> {
-    const endpoint = `/v1/stats/user`;
+    const endpoint = "/v1/stats/user";
 
     try {
       return await this.httpClient.get<any>(endpoint);

@@ -8,5 +8,4 @@ export type {
   UserSportStats,
   RoundHistory,
   Result,
-  GuestStats,
 } from "./api";

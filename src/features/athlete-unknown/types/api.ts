@@ -78,11 +78,6 @@ export interface UserSportStats {
   history: RoundHistory[];
 }
 
-// other fields that are missing compared to UserStats will be filled in by BE API upon conversion to Player, not Guest
-export interface GuestStats {
-  sports: UserSportStats[];
-}
-
 export interface RoundHistory extends Result {
   playDate: string;
 }

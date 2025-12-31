@@ -15,6 +15,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-40]
+
+### Fixed
+
+- Use UserStats model instead of new GuestStats model since the point of guest stats is that they will eventually be migrated to being a user anyways
+
 ## [PR-39]
 
 ### Added
