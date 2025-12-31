@@ -15,6 +15,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-41]
+
+### Added
+
+- Create automated deployment scripts for S3 + CloudFront setup
+- Add infrastructure setup script with OAI and security policies
+- Implement private access options (Basic Auth Lambda@Edge and WAF)
+- Create comprehensive deployment documentation
+- Add environment configuration examples (.env.dev.example, .env.prod.example)
+
+
 ## [PR-40]
 
 ### Fixed

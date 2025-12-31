@@ -14,6 +14,8 @@
 # misc
 .DS_Store
 .env.local
+.env.dev
+.env.prod
 .env.development.local
 .env.test.local
 .env.production.local
@@ -30,3 +32,6 @@ test-round-data-dynamodb.json
 setup-local-db.js
 setup-dynamodb-docker.sh
 LOCAL_TESTING_SETUP.md
+
+# AWS deployment cache
+aws/.cache/
