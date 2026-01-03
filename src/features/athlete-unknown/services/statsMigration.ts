@@ -85,11 +85,3 @@ export const migrateUserStats = async (
     return false;
   }
 };
-
-/**
- * Check if a migration is needed for this user
- * Call this after user authentication is confirmed
- */
-export const shouldAttemptMigration = (): boolean => {
-  return hasGuestStats();
-};
