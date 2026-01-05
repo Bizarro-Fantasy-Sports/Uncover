@@ -15,6 +15,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-43]
+
+### Added
+
+- New template.yaml file to be run by sam to deploy infrastructure stack to AWS
+
+### Changed
+
+- Centralized and refactored environment variable usage
+
 ## [PR-40]
 
 ### Fixed
