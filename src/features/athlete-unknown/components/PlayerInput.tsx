@@ -3,8 +3,7 @@ import React from "react";
 interface PlayerInputProps {
   playerName: string;
   score: number;
-  finalRank: string;
-  gaveUp: boolean;
+  isCompleted: boolean;
   onPlayerNameChange: (name: string) => void;
   onSubmit: () => void;
   onGiveUp: () => void;
@@ -14,8 +13,7 @@ interface PlayerInputProps {
 export function PlayerInput({
   playerName,
   score,
-  finalRank,
-  gaveUp,
+  isCompleted,
   onPlayerNameChange,
   onSubmit,
   onGiveUp,
@@ -27,17 +25,20 @@ export function PlayerInput({
         type="text"
         placeholder="Enter player name..."
         value={playerName}
+        disabled={isCompleted}
         onChange={(e) => onPlayerNameChange(e.target.value)}
       />
-      <button onClick={onSubmit} disabled={!playerName.trim()}>
-        Submit
-      </button>
-      {score < 80 && !finalRank && !gaveUp && (
+      {!isCompleted && (
+        <button onClick={onSubmit} disabled={!playerName.trim()}>
+          Submit
+        </button>
+      )}
+      {score < 80 && !isCompleted && (
         <button onClick={onGiveUp} className="give-up-button">
           Give Up
         </button>
       )}
-      {(gaveUp || finalRank) && (
+      {isCompleted && (
         <button onClick={onViewResults} className="view-results-button">
           View Results
         </button>

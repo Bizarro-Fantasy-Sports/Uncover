@@ -1,4 +1,4 @@
-export { calculateNewScore, evaluateRank, generateHint } from "./scoring";
+export { calculateNewScore, generateHint } from "./scoring";
 export {
   STORAGE_KEYS,
   getGameSubmissionKey,

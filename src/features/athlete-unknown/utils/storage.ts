@@ -39,7 +39,7 @@ export const getCurrentSessionKey = (
 export interface MidRoundProgress {
   sport: string;
   playDate: string;
-  finalRank: string;
+  isCompleted: boolean;
   firstTileFlipped: string | null;
   flippedTiles: boolean[];
   hint: string;

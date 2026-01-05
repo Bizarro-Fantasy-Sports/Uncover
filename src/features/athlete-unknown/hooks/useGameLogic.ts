@@ -6,7 +6,6 @@
 import { useCallback } from "react";
 import type { GameState } from "./useGameState";
 import {
-  evaluateRank,
   generateHint,
   calculateNewScore,
   normalize,
@@ -34,7 +33,7 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
     );
 
     // If game is already won, only allow reopening modal with correct answer
-    if (state.finalRank) {
+    if (state.isCompleted) {
       if (normalizedGuess === normalizedAnswer) {
         updateState({ showResultsModal: true });
       }
@@ -52,12 +51,11 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
 
     // Correct answer - player wins!
     if (normalizedGuess === normalizedAnswer) {
-      const rank = evaluateRank(state.score);
       updateState({
         message: "You guessed it right!",
         messageType: "success",
         previousCloseGuess: "",
-        finalRank: rank,
+        isCompleted: true,
         hint: "",
         showResultsModal: true,
         lastSubmittedGuess: normalizedGuess,
@@ -80,7 +78,6 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
         state.previousCloseGuess &&
         state.previousCloseGuess !== normalizedGuess
       ) {
-        const rank = evaluateRank(newScore);
         updateState({
           message: `Correct, you were close! Player's name: ${state.round?.player.name || ""}`,
           messageType: "close",
@@ -88,7 +85,7 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
           score: newScore,
           hint: newHint,
           lastSubmittedGuess: normalizedGuess,
-          finalRank: rank,
+          isCompleted: true,
           showResultsModal: true,
         });
       } else {
@@ -116,16 +113,15 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
     });
   }, [state, updateState]);
 
-  const handleGiveUp = useCallback(() => {
+  const handleCompleteRound = useCallback(() => {
     updateState({
-      gaveUp: true,
-      finalRank: "",
+      isCompleted: true,
       showResultsModal: true,
     });
   }, [updateState]);
 
   return {
     handleNameSubmit,
-    handleGiveUp,
+    handleCompleteRound,
   };
 };

@@ -112,9 +112,9 @@ export function AthleteUnknown(): React.ReactElement {
 
   // Game logic
   // updates the following fields in state:
-  // message, messageType, previousCloseGuess, finalRank, hint, showResultsModal, lastSubmittedGuess
+  // message, messageType, previousCloseGuess, isCompleted, hint, showResultsModal, lastSubmittedGuess
   // TODO: rename to useUserSubmission
-  const { handleNameSubmit, handleGiveUp } = useGameLogic({
+  const { handleNameSubmit, handleCompleteRound } = useGameLogic({
     state,
     updateState,
   });
@@ -144,14 +144,10 @@ export function AthleteUnknown(): React.ReactElement {
 
   // Clear localStorage when round is completed
   useEffect(() => {
-    if (
-      state.showResultsModal &&
-      (state.finalRank || state.gaveUp) &&
-      state.round
-    ) {
+    if (state.showResultsModal && state.isCompleted && state.round) {
       clearProgress();
     }
-  }, [state.showResultsModal, state.finalRank, state.gaveUp, state.round, clearProgress]);
+  }, [state.showResultsModal, state.isCompleted, state.round, clearProgress]);
 
   // Show loading state
   if (state.isLoading) {
@@ -234,7 +230,7 @@ export function AthleteUnknown(): React.ReactElement {
         message={state.message}
         messageType={state.messageType}
         hint={state.hint}
-        finalRank={state.finalRank}
+        isCompleted={state.isCompleted}
         tilesFlipped={state.tilesFlippedCount}
         incorrectGuesses={state.incorrectGuesses}
       />
@@ -242,11 +238,10 @@ export function AthleteUnknown(): React.ReactElement {
       <PlayerInput
         playerName={state.playerName}
         score={state.score}
-        finalRank={state.finalRank}
-        gaveUp={state.gaveUp}
+        isCompleted={state.isCompleted}
         onPlayerNameChange={(name) => updateState({ playerName: name })}
         onSubmit={handleNameSubmit}
-        onGiveUp={handleGiveUp}
+        onGiveUp={handleCompleteRound}
         onViewResults={() => updateState({ showResultsModal: true })}
       />
 
@@ -260,7 +255,6 @@ export function AthleteUnknown(): React.ReactElement {
 
       <ResultsModal
         isOpen={state.showResultsModal}
-        gaveUp={state.gaveUp}
         score={state.score}
         flippedTiles={state.flippedTiles}
         copiedText={state.copiedText}
@@ -283,10 +277,9 @@ export function AthleteUnknown(): React.ReactElement {
           onClose={() => setIsRoundStatsModalOpen(false)}
           roundStats={{
             ...state.round.stats,
-            name:
-              state.finalRank || state.gaveUp
-                ? state.round.player?.name || "Unknown Player"
-                : "???",
+            name: state.isCompleted
+              ? state.round.player?.name || "Unknown Player"
+              : "???",
           }}
         />
       )}

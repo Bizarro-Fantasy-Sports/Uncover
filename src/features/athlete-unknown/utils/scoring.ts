@@ -3,7 +3,7 @@
  * Handles score calculation, rank evaluation, and hint generation
  */
 
-import { SCORING, RANKS } from "@/features/athlete-unknown/config";
+import { SCORING } from "@/features/athlete-unknown/config";
 
 export type ScoreAction = "incorrectGuess" | "regularTile" | "photoTile";
 
@@ -24,22 +24,6 @@ export const calculateNewScore = (
     default:
       return currentScore;
   }
-};
-
-/**
- * Evaluate player rank based on final score
- */
-export const evaluateRank = (points: number): string => {
-  if (points >= RANKS.AMAZING.threshold) {
-    return RANKS.AMAZING.label;
-  }
-  if (points >= RANKS.ELITE.threshold) {
-    return RANKS.ELITE.label;
-  }
-  if (points >= RANKS.SOLID.threshold) {
-    return RANKS.SOLID.label;
-  }
-  return "";
 };
 
 /**

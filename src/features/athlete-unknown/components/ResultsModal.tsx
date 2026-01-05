@@ -3,7 +3,6 @@ import { TILE_NAMES } from "@/features/athlete-unknown/config";
 import type { RoundStats, PlayerData } from "@/features/athlete-unknown/types";
 interface ResultsModalProps {
   isOpen: boolean;
-  gaveUp: boolean;
   score: number;
   flippedTiles: boolean[];
   copiedText: string;
@@ -15,7 +14,6 @@ interface ResultsModalProps {
 
 export function ResultsModal({
   isOpen,
-  gaveUp,
   score,
   flippedTiles,
   copiedText,
@@ -38,9 +36,11 @@ export function ResultsModal({
           ✕
         </button>
         <h2 className="results-title">
-          {gaveUp ? "Try Again Tomorrow!" : `Correct! Your score is ${score}!`}
+          Player Identified!
+          <br />
+          {`Your score is ${score}!`}
         </h2>
-        {!gaveUp && roundStats && (
+        {roundStats && (
           <p className="average-score">
             The average score today is {roundStats.averageCorrectScore}
           </p>

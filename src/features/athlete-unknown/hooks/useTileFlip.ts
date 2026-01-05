@@ -51,7 +51,7 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
       // If Photo tile is clicked for the first time, reveal the full segmented photo
       if (TILE_NAMES[index] === "photo") {
         // Only update score/counters if game is not won or gave up
-        if (!state.finalRank && !state.gaveUp) {
+        if (!state.isCompleted) {
           const newScore = calculateNewScore(state.score, "photoTile");
           const newHint = generateHint(
             newScore,
@@ -82,7 +82,7 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
 
       // Regular tile flip
       // Only update score/counters if game is not won or gave up
-      if (!state.finalRank && !state.gaveUp) {
+      if (!state.isCompleted) {
         const newScore = calculateNewScore(state.score, "regularTile");
         const newHint = generateHint(
           newScore,

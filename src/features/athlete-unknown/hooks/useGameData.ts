@@ -65,7 +65,7 @@ export const useGameData = ({
   useEffect(() => {
     const submitResults = async () => {
       // Only submit if game is won and we haven't submitted yet
-      if (!state.finalRank || !state.round) {
+      if (!state.isCompleted || !state.round) {
         return;
       }
       // Get current date in local timezone
@@ -111,7 +111,11 @@ export const useGameData = ({
         }
 
         console.log("[Athlete Unknown] Submitting game results:", gameResult);
-        const response = await gameDataService.submitGameResults(activeSport, roundPlayDate, gameResult);
+        const response = await gameDataService.submitGameResults(
+          activeSport,
+          roundPlayDate,
+          gameResult
+        );
         if (response?.success) {
           console.log("[Athlete Unknown] Results submitted successfully");
           localStorage.setItem(submissionKey, "true");
@@ -124,7 +128,7 @@ export const useGameData = ({
     submitResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    state.finalRank,
+    state.isCompleted,
     state.score,
     state.tilesFlippedCount,
     state.incorrectGuesses,

@@ -33,7 +33,7 @@ export interface GameState {
   returningFromPhoto: boolean;
   score: number;
   hint: string;
-  finalRank: string;
+  isCompleted: boolean;
   incorrectGuesses: number;
   showResultsModal: boolean;
   copiedText: string;
@@ -43,7 +43,6 @@ export interface GameState {
   firstTileFlipped: string | null;
   lastTileFlipped: string | null;
   currentPlayerIndex?: number;
-  gaveUp: boolean;
 }
 
 const createInitialState = (): GameState => ({
@@ -60,7 +59,7 @@ const createInitialState = (): GameState => ({
   returningFromPhoto: false,
   score: SCORING.INITIAL_SCORE,
   hint: "",
-  finalRank: "",
+  isCompleted: false,
   incorrectGuesses: 0,
   showResultsModal: false,
   copiedText: "",
@@ -69,7 +68,6 @@ const createInitialState = (): GameState => ({
   error: null,
   firstTileFlipped: null,
   lastTileFlipped: null,
-  gaveUp: false,
 });
 
 /**
@@ -82,7 +80,7 @@ const gameStateToProgress = (
 ): MidRoundProgress => ({
   sport,
   playDate,
-  finalRank: state.finalRank,
+  isCompleted: state.isCompleted,
   firstTileFlipped: state.firstTileFlipped,
   flippedTiles: state.flippedTiles,
   hint: state.hint,
@@ -101,8 +99,10 @@ const gameStateToProgress = (
 /**
  * Convert MidRoundProgress to partial GameState for loading
  */
-const progressToGameState = (progress: MidRoundProgress): Partial<GameState> => ({
-  finalRank: progress.finalRank,
+const progressToGameState = (
+  progress: MidRoundProgress
+): Partial<GameState> => ({
+  isCompleted: progress.isCompleted,
   firstTileFlipped: progress.firstTileFlipped,
   flippedTiles: progress.flippedTiles,
   hint: progress.hint,

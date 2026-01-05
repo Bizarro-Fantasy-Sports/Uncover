@@ -5,7 +5,7 @@ interface ScoreDisplayProps {
   message?: string;
   messageType?: string;
   hint?: string;
-  finalRank?: string;
+  isCompleted: boolean;
   tilesFlipped: number;
   incorrectGuesses: number;
 }
@@ -15,7 +15,7 @@ export function ScoreDisplay({
   message,
   messageType,
   hint,
-  finalRank,
+  isCompleted,
   tilesFlipped,
   incorrectGuesses,
 }: ScoreDisplayProps): React.ReactElement {
@@ -31,10 +31,9 @@ export function ScoreDisplay({
           {message && (
             <p className={`guess-message ${messageType}`}>{message}</p>
           )}
-          {hint && !finalRank && (
+          {hint && !isCompleted && (
             <p className="guess-message hint">Hint: Player Initials — {hint}</p>
           )}
-          {finalRank && <p className="final-rank">Your Rank: {finalRank}</p>}
         </div>
       </div>
       <div className="stats-container">
