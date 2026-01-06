@@ -275,29 +275,11 @@ export function AthleteUnknown(): React.ReactElement {
         onClose={() => setIsRulesModalOpen(false)}
       />
 
-      {isUserStatsModalOpen && (
-        <div
-          className="user-stats-modal"
-          onClick={() => setIsUserStatsModalOpen(false)}
-        >
-          <div
-            className="user-stats-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="close-user-stats"
-              onClick={() => setIsUserStatsModalOpen(false)}
-            >
-              ×
-            </button>
-            <UserStatsModal
-              isOpen={isUserStatsModalOpen}
-              onClose={() => setIsUserStatsModalOpen(false)}
-              userStats={state.userStats}
-            />
-          </div>
-        </div>
-      )}
+      <UserStatsModal
+        isOpen={isUserStatsModalOpen}
+        onClose={() => setIsUserStatsModalOpen(false)}
+        userStats={state.userStats}
+      />
     </div>
   );
 }
