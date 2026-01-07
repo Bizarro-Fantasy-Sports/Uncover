@@ -26,6 +26,80 @@ export const SPORT_LIST: SportType[] = [
 export const DEFAULT_SPORT: SportType = SPORTS.BASEBALL;
 
 // ============================================================================
+// SCORING CONFIGURATION
+// ============================================================================
+
+export const SCORING = {
+  // Initial score when game starts
+  INITIAL_SCORE: 100,
+
+  // Points deducted
+  INCORRECT_GUESS_PENALTY: 2,
+  REGULAR_TILE_PENALTY: 3,
+  PHOTO_TILE_PENALTY: 6,
+  INITIALS_HINT_PENALTY: 6,
+  NICKNAMES_HINT_PENALTY: 8,
+} as const;
+
+export type ScoreAction =
+  | "incorrectGuess"
+  | "regularTile"
+  | "photoTile"
+  | "initials"
+  | "nicknames";
+
+// ============================================================================
+// TILE NAMES
+// ============================================================================
+
+export type TileType =
+  | "bio"
+  | "playerInformation"
+  | "draftInformation"
+  | "yearsActive"
+  | "photo"
+  | "teamsPlayedOn"
+  | "jerseyNumbers"
+  | "careerStats"
+  | "personalAchievements";
+
+// Tile names mapping (index 0-8 maps to backend tile names)
+export const TILE_NAMES = [
+  "bio" as TileType,
+  "playerInformation" as TileType,
+  "draftInformation" as TileType,
+  "yearsActive" as TileType,
+  "photo" as TileType,
+  "teamsPlayedOn" as TileType,
+  "jerseyNumbers" as TileType,
+  "careerStats" as TileType,
+  "personalAchievements" as TileType,
+] as const;
+
+// Total number of tiles in the game
+export const TOTAL_TILES = TILE_NAMES.length;
+
+// ============================================================================
+// HINT CONFIGURATION
+// ============================================================================
+
+// Hint names mapping
+export const HINTS = {
+  initials: {
+    label: `Initials (-${SCORING.INITIALS_HINT_PENALTY})`,
+    penalty: SCORING.INITIALS_HINT_PENALTY,
+  },
+  nicknames: {
+    label: `Nicknames (-${SCORING.NICKNAMES_HINT_PENALTY})`,
+    penalty: SCORING.NICKNAMES_HINT_PENALTY,
+  },
+} as const;
+
+export type HintType = keyof typeof HINTS;
+
+export const HINT_KEYS = ["initials" as HintType, "nicknames" as HintType];
+
+// ============================================================================
 // EXTERNAL REFERENCE URLS
 // ============================================================================
 
@@ -34,27 +108,6 @@ export const REFERENCE_URLS = {
   BASKETBALL_BPM: "https://www.basketball-reference.com/about/bpm2.html",
   FOOTBALL_AV:
     "https://www.pro-football-reference.com/about/approximate_value.htm",
-} as const;
-
-// ============================================================================
-// SCORING CONFIGURATION
-// ============================================================================
-
-export const SCORING = {
-  // Initial score when game starts
-  INITIAL_SCORE: 100,
-
-  // Points deducted for an incorrect guess
-  INCORRECT_GUESS_PENALTY: 2,
-
-  // Points deducted for flipping a regular tile
-  REGULAR_TILE_PENALTY: 3,
-
-  // Points deducted for flipping the photo tile
-  PHOTO_TILE_PENALTY: 6,
-
-  // Score threshold below which a hint (player initials) is shown
-  HINT_THRESHOLD: 70,
 } as const;
 
 // ============================================================================
@@ -91,26 +144,6 @@ export const PHOTO_GRID = {
   TILE_WIDTH: 150,
   TILE_HEIGHT: 150,
 } as const;
-
-// ============================================================================
-// TILE NAMES
-// ============================================================================
-
-// Tile names mapping (index 0-8 maps to backend tile names)
-export const TILE_NAMES = [
-  "bio",
-  "playerInformation",
-  "draftInformation",
-  "yearsActive",
-  "photo",
-  "teamsPlayedOn",
-  "jerseyNumbers",
-  "careerStats",
-  "personalAchievements",
-] as const;
-
-// Total number of tiles in the game
-export const TOTAL_TILES = TILE_NAMES.length;
 
 // ============================================================================
 // DEFAULT VALUES

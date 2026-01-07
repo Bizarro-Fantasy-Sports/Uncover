@@ -25,6 +25,8 @@ export interface PlayerData {
   personalAchievements: string;
   photo: string;
   [key: string]: string | number | undefined;
+  initials?: string;
+  nicknames?: string;
 }
 
 // what is actually sent and returned from BE API

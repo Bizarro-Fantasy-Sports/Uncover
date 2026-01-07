@@ -6,7 +6,6 @@
 import { useCallback } from "react";
 import type { GameState } from "./useGameState";
 import {
-  generateHint,
   calculateNewScore,
   normalize,
   calculateLevenshteinDistance,
@@ -48,7 +47,6 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
         messageType: "success",
         previousCloseGuess: "",
         isCompleted: true,
-        hint: "",
         lastSubmittedGuess: normalizedGuess,
       });
       return;
@@ -56,11 +54,6 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
 
     // Incorrect guess - deduct points
     const newScore = calculateNewScore(state.score, "incorrectGuess");
-    const newHint = generateHint(
-      newScore,
-      state.hint,
-      state.round?.player.name || ""
-    );
 
     // Check if guess was very close
     if (distance <= GUESS_ACCURACY.VERY_CLOSE_DISTANCE) {
@@ -74,7 +67,6 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
           messageType: "close",
           previousCloseGuess: "",
           score: newScore,
-          hint: newHint,
           lastSubmittedGuess: normalizedGuess,
           isCompleted: true,
         });
@@ -85,7 +77,6 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
           messageType: "almost",
           previousCloseGuess: normalizedGuess,
           score: newScore,
-          hint: newHint,
           lastSubmittedGuess: normalizedGuess,
         });
       }
@@ -97,7 +88,6 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
       message: `Wrong guess: "${state.playerName}"`,
       messageType: "error",
       score: newScore,
-      hint: newHint,
       incorrectGuesses: state.incorrectGuesses + 1,
       lastSubmittedGuess: normalizedGuess,
     });

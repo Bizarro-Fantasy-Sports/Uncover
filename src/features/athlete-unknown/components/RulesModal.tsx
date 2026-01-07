@@ -76,7 +76,10 @@ const acronymDefinitions: Record<string, { full: string; link?: string }> = {
   "SB MVP": { full: "Super Bowl MVP" },
 };
 
-function RulesModal({ isOpen, onClose }: RulesModalProps): React.ReactElement | null {
+function RulesModal({
+  isOpen,
+  onClose,
+}: RulesModalProps): React.ReactElement | null {
   const [hoveredTile, setHoveredTile] = useState<string | null>(null);
   const [hoveredAcronym, setHoveredAcronym] = useState<string | null>(null);
 
@@ -184,13 +187,13 @@ function RulesModal({ isOpen, onClose }: RulesModalProps): React.ReactElement | 
           <div className="rules-section">
             <h3>Hints & Help</h3>
             <ul>
-              <li>
+              {/* <li>
                 Close spelling = hint / auto-correct after multiple close
                 attempts
               </li>
               <li>
                 Stuck & &lt;{SCORING.HINT_THRESHOLD} pts = initials revealed
-              </li>
+              </li> */}
               <li>Difficulty increases Mon → Sat; Sundays are themed</li>
             </ul>
           </div>

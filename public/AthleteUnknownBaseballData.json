@@ -18,7 +18,9 @@
       "jerseyNumbers": "17",
       "careerStats": ".282 BA, 280 HR, 165 SB, 51.5 WAR",
       "personalAchievements": "3x MVP, Rookie of the Year, 5x All-Star, 1x World Series, 3x Silver Slugger",
-      "photo": "https://images.unsplash.com/photo-1502685104226-ee32379fefbe"
+      "photo": "https://images.unsplash.com/photo-1502685104226-ee32379fefbe",
+      "initials": "S.O.",
+      "nicknames": "Shotime"
     },
     "stats": {
       "playDate": "2025-11-19",
@@ -87,7 +89,9 @@
       "jerseyNumbers": "28",
       "careerStats": ".302 BA, 158 HR, 23 SB, 45.0 WAR",
       "personalAchievements": "1x MVP, Rookie of the Year, 7x All-Star, 3x World Series, 1x Gold Glove, 5x Silver Slugger",
-      "photo": "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
+      "photo": "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
+      "initials": "B.P.",
+      "nicknames": "Hum Buss"
     },
     "stats": {
       "playDate": "2025-11-20",
@@ -156,7 +160,9 @@
       "jerseyNumbers": "30, 9, 6, 2, 8",
       "careerStats": ".250 BA, 250 HR, 42 SB, 13.0 WAR",
       "personalAchievements": "2x All-Star, 1x Silver Slugger",
-      "photo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+      "photo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
+      "initials": "N.C.",
+      "nicknames": ""
     },
     "stats": {
       "playDate": "2025-11-21",
@@ -225,7 +231,9 @@
       "jerseyNumbers": "30, 16, 26, 8, 26, 22",
       "careerStats": ".266 BA, 339 HR, 20 SB, 39.1 WAR",
       "personalAchievements": "1x MVP, 4x All-Star, 2x World Series",
-      "photo": "https://images.unsplash.com/photo-1534777401752-71d2a490f3e6"
+      "photo": "https://images.unsplash.com/photo-1534777401752-71d2a490f3e6",
+      "initials": "B.P.",
+      "nicknames": ""
     },
     "stats": {
       "playDate": "2025-11-22",
@@ -294,7 +302,9 @@
       "jerseyNumbers": "2, 18, 36, 44, 18, 2, 20, 43, 6",
       "careerStats": ".272 BA, 123 HR, 216 SB, 21.3 WAR",
       "personalAchievements": "2x Gold Glove, 1x World Series",
-      "photo": "https://images.unsplash.com/photo-1552058544-f2b08422138a"
+      "photo": "https://images.unsplash.com/photo-1552058544-f2b08422138a",
+      "initials": "",
+      "nicknames": "O-C"
     },
     "stats": {
       "playDate": "2025-11-23",

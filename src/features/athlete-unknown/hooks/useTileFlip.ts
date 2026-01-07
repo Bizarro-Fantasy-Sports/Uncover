@@ -5,10 +5,7 @@
 
 import { useCallback } from "react";
 import type { GameState } from "./useGameState";
-import {
-  generateHint,
-  calculateNewScore,
-} from "@/features/athlete-unknown/utils";
+import { calculateNewScore } from "@/features/athlete-unknown/utils";
 import { TILE_NAMES, TIMING } from "@/features/athlete-unknown/config";
 
 interface UseTileFlipProps {
@@ -53,17 +50,11 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
         // Only update score/counters if game is not won or gave up
         if (!state.isCompleted) {
           const newScore = calculateNewScore(state.score, "photoTile");
-          const newHint = generateHint(
-            newScore,
-            state.hint,
-            state.round?.player.name!
-          );
 
           updateState({
             flippedTiles: updated,
             tilesFlippedCount: state.tilesFlippedCount + 1,
             score: newScore,
-            hint: newHint,
             photoRevealed: true,
             returningFromPhoto: false,
             firstTileFlipped: firstTile,
@@ -84,17 +75,11 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
       // Only update score/counters if game is not won or gave up
       if (!state.isCompleted) {
         const newScore = calculateNewScore(state.score, "regularTile");
-        const newHint = generateHint(
-          newScore,
-          state.hint,
-          state.round?.player.name!
-        );
 
         updateState({
           flippedTiles: updated,
           tilesFlippedCount: state.tilesFlippedCount + 1,
           score: newScore,
-          hint: newHint,
           firstTileFlipped: firstTile,
           lastTileFlipped: tileName,
         });

@@ -29,8 +29,10 @@ import {
   RulesModal,
   SportsReferenceCredit,
   UserStatsModal,
+  HintTiles,
 } from "@/features/athlete-unknown/components";
 import { athleteUnknownApiService } from "@/features";
+import { useHintSelection } from "@/features/athlete-unknown/hooks/useHintSelection";
 
 export function AthleteUnknown(): React.ReactElement {
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
@@ -111,7 +113,7 @@ export function AthleteUnknown(): React.ReactElement {
 
   // Game logic
   // updates the following fields in state:
-  // message, messageType, previousCloseGuess, isCompleted, hint, lastSubmittedGuess
+  // message, messageType, previousCloseGuess, isCompleted, lastSubmittedGuess
   // TODO: rename to useUserSubmission
   const { handleNameSubmit, handleCompleteRound } = useGameLogic({
     state,
@@ -120,8 +122,13 @@ export function AthleteUnknown(): React.ReactElement {
 
   // Tile interactions
   // updates the following fields in state:
-  // photoRevealed, returningFromPhoto, flippedTiles, tilesFlippedCount, score, hint, firstTileFlipped, lastTileFlipped
+  // photoRevealed, returningFromPhoto, flippedTiles, tilesFlippedCount, score, firstTileFlipped, lastTileFlipped
   const { handleTileClick } = useTileFlip({ state, updateState });
+
+  // Hint interactions
+  // updates the following fields in state:
+  // score, hintsUsed
+  const { handleHintClick } = useHintSelection({ state, updateState });
 
   // Share functionality
   // updates the following fields in state:
@@ -207,6 +214,8 @@ export function AthleteUnknown(): React.ReactElement {
     }
   };
 
+  // console.log("STATE AU", state);
+
   return (
     <div className="athlete-unknown-game">
       <SportsReferenceAttribution activeSport={activeSport} />
@@ -234,10 +243,14 @@ export function AthleteUnknown(): React.ReactElement {
         score={state.score}
         message={state.message}
         messageType={state.messageType}
-        hint={state.hint}
-        isCompleted={state.isCompleted}
-        tilesFlipped={state.tilesFlippedCount}
+        tilesFlippedCount={state.tilesFlippedCount}
         incorrectGuesses={state.incorrectGuesses}
+      />
+
+      <HintTiles
+        playerData={state.round.player}
+        hintsUsed={state.hintsUsed}
+        onHintClick={handleHintClick}
       />
 
       <PlayerInput
