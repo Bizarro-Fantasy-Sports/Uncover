@@ -6,11 +6,11 @@
 import { useCallback } from "react";
 import type { GameState } from "./useGameState";
 import {
-  TOTAL_TILES,
   PHOTO_GRID,
   TIMING,
+  TILES,
+  ALL_TILES,
 } from "@/features/athlete-unknown/config";
-import { extractRoundNumber } from "@/features/athlete-unknown/utils";
 
 interface UseShareResultsProps {
   state: GameState;
@@ -23,23 +23,35 @@ export const useShareResults = ({
 }: UseShareResultsProps) => {
   const handleShare = useCallback(() => {
     // Get daily number from playerData or default to 1
-    const roundNumber = extractRoundNumber(state.round?.roundId!);
+    const roundId = state.round?.roundId ?? "";
+    const [sport, roundNumber] = roundId.split("#");
 
     // Build the share text
-    let shareText = `Athlete Unknown ${state.round?.sport} #${roundNumber}\n`;
+    // TODO. Nicer title
+    let shareText = `Athlete Unknown ${sport} #${roundNumber}\n`;
 
-    // Create a 3x3 grid using emojis
-    for (let i = 0; i < TOTAL_TILES; i++) {
-      // Yellow emoji for flipped, blue emoji for unflipped
-      shareText += state.flippedTiles[i] ? "🟨" : "🟦";
-      // Add newline after every 3 tiles (end of row)
-      if ((i + 1) % PHOTO_GRID.COLS === 0) {
+    // first tile is whether round is won or given up
+    const isRoundWon = state.score > 0;
+    const correctOrIncorrectEmoji = isRoundWon ? "✅" : "❌";
+    shareText += correctOrIncorrectEmoji;
+
+    for (let i = 0; i < ALL_TILES.length; i++) {
+      const tileName = ALL_TILES[i];
+      const tile = TILES[tileName];
+      const isFlipped = state.flippedTiles.includes(tileName);
+      const emoji = isFlipped ? tile.flippedEmoji : "🟦";
+      shareText += emoji;
+
+      const shareIndex = i + 2; // +1 for first inserted tile, +1 for starting at 0 before modulus
+      if (shareIndex % PHOTO_GRID.COLS === 0) {
         shareText += "\n";
       }
     }
 
-    // Add score at the end
-    shareText += `Score: ${state.score}`;
+    // Add score at the end if won round
+    if (isRoundWon) {
+      shareText += `Score: ${state.score}`;
+    }
 
     // Copy to clipboard
     navigator.clipboard

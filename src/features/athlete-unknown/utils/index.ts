@@ -8,11 +8,7 @@ export {
   clearMidRoundProgress,
   type MidRoundProgress,
 } from "./storage";
-export {
-  calculateLevenshteinDistance,
-  normalize,
-  extractRoundNumber,
-} from "./stringMatching";
+export { calculateLevenshteinDistance, normalize } from "./stringMatching";
 export {
   loadGuestStats,
   updateGuestStats,

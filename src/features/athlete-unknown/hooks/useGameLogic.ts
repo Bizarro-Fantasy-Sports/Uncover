@@ -10,7 +10,10 @@ import {
   normalize,
   calculateLevenshteinDistance,
 } from "@/features/athlete-unknown/utils";
-import { GUESS_ACCURACY } from "@/features/athlete-unknown/config";
+import {
+  GUESS_ACCURACY,
+  INCORRECT_GUESS,
+} from "@/features/athlete-unknown/config";
 
 interface UseGameLogicProps {
   state: GameState;
@@ -53,8 +56,9 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
     }
 
     // Incorrect guess - deduct points
-    const newScore = calculateNewScore(state.score, "incorrectGuess");
+    const newScore = calculateNewScore(state.score, INCORRECT_GUESS);
 
+    // TODO: only accept if the distance is less than previous. Specify distance away
     // Check if guess was very close
     if (distance <= GUESS_ACCURACY.VERY_CLOSE_DISTANCE) {
       // If second close guess, reveal answer
@@ -93,14 +97,15 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
     });
   }, [state, updateState]);
 
-  const handleCompleteRound = useCallback(() => {
+  const handleGiveUp = useCallback(() => {
     updateState({
       isCompleted: true,
+      score: 0,
     });
   }, [updateState]);
 
   return {
     handleNameSubmit,
-    handleCompleteRound,
+    handleGiveUp,
   };
 };

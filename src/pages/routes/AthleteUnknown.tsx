@@ -7,10 +7,7 @@ import {
   DEFAULT_SPORT,
   SPORTS,
 } from "@/features/athlete-unknown/config";
-import {
-  STORAGE_KEYS,
-  extractRoundNumber,
-} from "@/features/athlete-unknown/utils";
+import { STORAGE_KEYS } from "@/features/athlete-unknown/utils";
 import {
   useGameState,
   useGameLogic,
@@ -29,10 +26,9 @@ import {
   RulesModal,
   SportsReferenceCredit,
   UserStatsModal,
-  HintTiles,
+  // HintTiles,
 } from "@/features/athlete-unknown/components";
 import { athleteUnknownApiService } from "@/features";
-import { useHintSelection } from "@/features/athlete-unknown/hooks/useHintSelection";
 
 export function AthleteUnknown(): React.ReactElement {
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
@@ -102,7 +98,6 @@ export function AthleteUnknown(): React.ReactElement {
   // Data fetching & submission
   // updates the following fields in state
   // isLoading, error, round
-  // TODO: rename to useRoundData
   useGameData({
     activeSport,
     state,
@@ -115,20 +110,15 @@ export function AthleteUnknown(): React.ReactElement {
   // updates the following fields in state:
   // message, messageType, previousCloseGuess, isCompleted, lastSubmittedGuess
   // TODO: rename to useUserSubmission
-  const { handleNameSubmit, handleCompleteRound } = useGameLogic({
+  const { handleNameSubmit, handleGiveUp } = useGameLogic({
     state,
     updateState,
   });
 
   // Tile interactions
   // updates the following fields in state:
-  // photoRevealed, returningFromPhoto, flippedTiles, tilesFlippedCount, score, firstTileFlipped, lastTileFlipped
+  // photoRevealed, returningFromPhoto, flippedTiles, score
   const { handleTileClick } = useTileFlip({ state, updateState });
-
-  // Hint interactions
-  // updates the following fields in state:
-  // score, hintsUsed
-  const { handleHintClick } = useHintSelection({ state, updateState });
 
   // Share functionality
   // updates the following fields in state:
@@ -192,7 +182,7 @@ export function AthleteUnknown(): React.ReactElement {
   }
 
   const playDate = state.round?.playDate as string | undefined;
-  const roundNumber = extractRoundNumber(state.round.roundId);
+  const [, roundNumber] = state.round.roundId.split("#");
 
   // Handler for date selection in playtesting mode
   const handleDateSelect = (date: string) => {
@@ -243,22 +233,23 @@ export function AthleteUnknown(): React.ReactElement {
         score={state.score}
         message={state.message}
         messageType={state.messageType}
-        tilesFlippedCount={state.tilesFlippedCount}
+        tilesFlippedCount={state.flippedTiles.length}
         incorrectGuesses={state.incorrectGuesses}
       />
 
+      {/* TODO: delete this gracefully
       <HintTiles
         playerData={state.round.player}
         hintsUsed={state.hintsUsed}
         onHintClick={handleHintClick}
-      />
+      /> */}
 
       <PlayerInput
         playerName={state.playerName}
         isCompleted={state.isCompleted}
         onPlayerNameChange={(name) => updateState({ playerName: name })}
         onSubmit={handleNameSubmit}
-        onGiveUp={handleCompleteRound}
+        onGiveUp={handleGiveUp}
       />
 
       <TileGrid

@@ -17,87 +17,133 @@ export const SPORTS = {
   FOOTBALL: "football" as SportType,
 } as const;
 
+// TODO make environment variable. Order matters
 export const SPORT_LIST: SportType[] = [
   SPORTS.BASEBALL,
   SPORTS.BASKETBALL,
   SPORTS.FOOTBALL,
 ];
 
+// TODO default sport is first in SPORT_LIST
 export const DEFAULT_SPORT: SportType = SPORTS.BASEBALL;
 
 // ============================================================================
-// SCORING CONFIGURATION
+// SCORING & TILES CONFIGURATION
 // ============================================================================
 
-export const SCORING = {
-  // Initial score when game starts
-  INITIAL_SCORE: 100,
+export const INITIAL_SCORE = 100;
+export const INCORRECT_GUESS = "incorrectGuess";
+export const INCORRECT_GUESS_PENALTY = 1;
 
-  // Points deducted
-  INCORRECT_GUESS_PENALTY: 2,
-  REGULAR_TILE_PENALTY: 3,
-  PHOTO_TILE_PENALTY: 6,
-  INITIALS_HINT_PENALTY: 6,
-  NICKNAMES_HINT_PENALTY: 8,
+export const TILE_NAMES = {
+  INITIALS: "initials",
+  NICKNAMES: "nicknames",
+  BIO: "bio",
+  PLAYER_INFORMATION: "playerInformation",
+  DRAFT_INFORMATION: "draftInformation",
+  YEARS_ACTIVE: "yearsActive",
+  PHOTO: "photo",
+  TEAMS_PLAYED_ON: "teamsPlayedOn",
+  JERSEY_NUMBERS: "jerseyNumbers",
+  CAREER_STATS: "careerStats",
+  PERSONAL_ACHIEVEMENTS: "personalAchievements",
 } as const;
 
-export type ScoreAction =
-  | "incorrectGuess"
-  | "regularTile"
-  | "photoTile"
-  | "initials"
-  | "nicknames";
+export const TILE_PENALTIES = {
+  [TILE_NAMES.INITIALS]: 6,
+  [TILE_NAMES.NICKNAMES]: 6,
+  [TILE_NAMES.BIO]: 3,
+  [TILE_NAMES.PLAYER_INFORMATION]: 3,
+  [TILE_NAMES.DRAFT_INFORMATION]: 3,
+  [TILE_NAMES.YEARS_ACTIVE]: 3,
+  [TILE_NAMES.PHOTO]: 6,
+  [TILE_NAMES.TEAMS_PLAYED_ON]: 3,
+  [TILE_NAMES.JERSEY_NUMBERS]: 3,
+  [TILE_NAMES.CAREER_STATS]: 3,
+  [TILE_NAMES.PERSONAL_ACHIEVEMENTS]: 3,
+} as const;
 
-// ============================================================================
-// TILE NAMES
-// ============================================================================
+export type ScoreDeduction = typeof INCORRECT_GUESS | TileType;
 
-export type TileType =
-  | "bio"
-  | "playerInformation"
-  | "draftInformation"
-  | "yearsActive"
-  | "photo"
-  | "teamsPlayedOn"
-  | "jerseyNumbers"
-  | "careerStats"
-  | "personalAchievements";
+export const TILES = {
+  [TILE_NAMES.INITIALS]: {
+    label: `Initials \n(-${TILE_PENALTIES[TILE_NAMES.INITIALS]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.INITIALS],
+    flippedEmoji: "💡",
+  },
+  [TILE_NAMES.NICKNAMES]: {
+    label: `Nicknames \n(-${TILE_PENALTIES[TILE_NAMES.NICKNAMES]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.NICKNAMES],
+    flippedEmoji: "💡",
+  },
+  [TILE_NAMES.BIO]: {
+    label: `Bio \n(-${TILE_PENALTIES[TILE_NAMES.BIO]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.BIO],
+    flippedEmoji: "🟨",
+  },
+  [TILE_NAMES.PLAYER_INFORMATION]: {
+    label: `Player Information \n(-${TILE_PENALTIES[TILE_NAMES.PLAYER_INFORMATION]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.PLAYER_INFORMATION],
+    flippedEmoji: "🟨",
+  },
+  [TILE_NAMES.DRAFT_INFORMATION]: {
+    label: `Draft Information \n(-${TILE_PENALTIES[TILE_NAMES.DRAFT_INFORMATION]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.DRAFT_INFORMATION],
+    flippedEmoji: "🟨",
+  },
+  [TILE_NAMES.YEARS_ACTIVE]: {
+    label: `Years Active \n(-${TILE_PENALTIES[TILE_NAMES.YEARS_ACTIVE]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.YEARS_ACTIVE],
+    flippedEmoji: "🟨",
+  },
+  [TILE_NAMES.PHOTO]: {
+    label: `Photo \n(-${TILE_PENALTIES[TILE_NAMES.PHOTO]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.PHOTO],
+    flippedEmoji: "📷",
+  },
+  [TILE_NAMES.TEAMS_PLAYED_ON]: {
+    label: `Teams Played On \n(-${TILE_PENALTIES[TILE_NAMES.TEAMS_PLAYED_ON]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.TEAMS_PLAYED_ON],
+    flippedEmoji: "🟨",
+  },
+  [TILE_NAMES.JERSEY_NUMBERS]: {
+    label: `Jersey Numbers \n(-${TILE_PENALTIES[TILE_NAMES.JERSEY_NUMBERS]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.JERSEY_NUMBERS],
+    flippedEmoji: "🟨",
+  },
+  [TILE_NAMES.CAREER_STATS]: {
+    label: `Career Stats \n(-${TILE_PENALTIES[TILE_NAMES.CAREER_STATS]} Points)`,
+    penalty: TILE_PENALTIES[TILE_NAMES.CAREER_STATS],
+    flippedEmoji: "🟨",
+  },
+  [TILE_NAMES.PERSONAL_ACHIEVEMENTS]: {
+    label: `Personal Achievements \n(-${TILE_PENALTIES[TILE_NAMES.PERSONAL_ACHIEVEMENTS]}) Points`,
+    penalty: TILE_PENALTIES[TILE_NAMES.PERSONAL_ACHIEVEMENTS],
+    flippedEmoji: "🟨",
+  },
+};
 
-// Tile names mapping (index 0-8 maps to backend tile names)
-export const TILE_NAMES = [
-  "bio" as TileType,
-  "playerInformation" as TileType,
-  "draftInformation" as TileType,
-  "yearsActive" as TileType,
-  "photo" as TileType,
-  "teamsPlayedOn" as TileType,
-  "jerseyNumbers" as TileType,
-  "careerStats" as TileType,
-  "personalAchievements" as TileType,
+export type TileType = keyof typeof TILES;
+
+// Tiles in the 3x3 grid. Order matters for grid arrangement
+export const GRID_TILES = [
+  TILE_NAMES.BIO as TileType,
+  TILE_NAMES.PLAYER_INFORMATION as TileType,
+  TILE_NAMES.DRAFT_INFORMATION as TileType,
+  TILE_NAMES.YEARS_ACTIVE as TileType,
+  TILE_NAMES.PHOTO as TileType,
+  TILE_NAMES.TEAMS_PLAYED_ON as TileType,
+  TILE_NAMES.JERSEY_NUMBERS as TileType,
+  TILE_NAMES.CAREER_STATS as TileType,
+  TILE_NAMES.PERSONAL_ACHIEVEMENTS as TileType,
 ] as const;
 
-// Total number of tiles in the game
-export const TOTAL_TILES = TILE_NAMES.length;
-
-// ============================================================================
-// HINT CONFIGURATION
-// ============================================================================
-
-// Hint names mapping
-export const HINTS = {
-  initials: {
-    label: `Initials (-${SCORING.INITIALS_HINT_PENALTY})`,
-    penalty: SCORING.INITIALS_HINT_PENALTY,
-  },
-  nicknames: {
-    label: `Nicknames (-${SCORING.NICKNAMES_HINT_PENALTY})`,
-    penalty: SCORING.NICKNAMES_HINT_PENALTY,
-  },
-} as const;
-
-export type HintType = keyof typeof HINTS;
-
-export const HINT_KEYS = ["initials" as HintType, "nicknames" as HintType];
+// All tiles available for clues. Order matters for share text
+export const ALL_TILES = [
+  TILE_NAMES.INITIALS as TileType,
+  TILE_NAMES.NICKNAMES as TileType,
+  ...GRID_TILES,
+] as const;
 
 // ============================================================================
 // EXTERNAL REFERENCE URLS

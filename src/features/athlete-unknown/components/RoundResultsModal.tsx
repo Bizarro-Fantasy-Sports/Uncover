@@ -1,6 +1,9 @@
 import React from "react";
-import { TILE_NAMES } from "@/features/athlete-unknown/config";
+import { ALL_TILES, TILES } from "@/features/athlete-unknown/config";
+import type { TileType } from "@/features/athlete-unknown/config";
 import type { RoundStats, PlayerData } from "@/features/athlete-unknown/types";
+
+const WIN_OR_LOSE = "winOrLose";
 
 const formatTileName = (tileName: string): string => {
   if (!tileName) {
@@ -15,7 +18,7 @@ const formatTileName = (tileName: string): string => {
 interface ResultsModalProps {
   isOpen: boolean;
   score: number;
-  flippedTiles: boolean[];
+  flippedTiles: TileType[];
   copiedText: string;
   roundStats: RoundStats | null;
   playerData: PlayerData;
@@ -38,6 +41,8 @@ export function RoundResultsModal({
   if (!isOpen) {
     return null;
   }
+
+  const allTilesResults = [WIN_OR_LOSE as typeof WIN_OR_LOSE, ...ALL_TILES];
 
   return (
     <div className="results-modal" onClick={onClose}>
@@ -88,18 +93,19 @@ export function RoundResultsModal({
               <h2 className="results-title">{`Your Score: ${score}`}</h2>
 
               <div className="results-grid">
-                {TILE_NAMES.map((tileName, index) => (
-                  <div
-                    key={index}
-                    className={`results-tile ${flippedTiles[index] ? "flipped" : "unflipped"}`}
-                  >
-                    {flippedTiles[index]
-                      ? tileName === "photo"
-                        ? "📷"
-                        : "↻"
-                      : ""}
-                  </div>
-                ))}
+                {allTilesResults.map(
+                  (tileName: typeof WIN_OR_LOSE | TileType, index: number) => {
+                    let emoji;
+                    if (tileName === WIN_OR_LOSE) {
+                      emoji = score > 0 ? "✅" : "❌";
+                    } else {
+                      const tile = TILES[tileName];
+                      const isFlipped = flippedTiles.includes(tileName);
+                      emoji = isFlipped ? tile.flippedEmoji : "🟦";
+                    }
+                    return <div key={index}>{emoji}</div>;
+                  }
+                )}
               </div>
 
               <button className="share-button" onClick={onShare}>

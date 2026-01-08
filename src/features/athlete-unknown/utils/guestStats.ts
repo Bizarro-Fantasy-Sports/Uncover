@@ -4,7 +4,12 @@
  */
 
 import type { SportType } from "@/features/athlete-unknown/config";
-import type { Result, TileTracker, UserStats, UserSportStats } from "@/features/athlete-unknown/types";
+import type {
+  Result,
+  TileTracker,
+  UserStats,
+  UserSportStats,
+} from "@/features/athlete-unknown/types";
 import { STORAGE_KEYS } from "./storage";
 
 /**
@@ -59,7 +64,11 @@ export const loadGuestStats = (): UserStats => {
       userCreated: "",
       currentDailyStreak: 0,
       lastDayPlayed: "",
-      sports: [createInitialSportStats("baseball"), createInitialSportStats("basketball"), createInitialSportStats("football")]
+      sports: [
+        createInitialSportStats("baseball"),
+        createInitialSportStats("basketball"),
+        createInitialSportStats("football"),
+      ],
     };
   } catch (error) {
     console.error("[GuestStats] Error loading guest stats:", error);
@@ -69,7 +78,11 @@ export const loadGuestStats = (): UserStats => {
       userCreated: "",
       currentDailyStreak: 0,
       lastDayPlayed: "",
-      sports: [createInitialSportStats("baseball"), createInitialSportStats("basketball"), createInitialSportStats("football")]
+      sports: [
+        createInitialSportStats("baseball"),
+        createInitialSportStats("basketball"),
+        createInitialSportStats("football"),
+      ],
     };
   }
 };
@@ -89,10 +102,7 @@ const saveGuestStats = (stats: UserStats): void => {
 /**
  * Increment a tile in the tracker
  */
-const incrementTileTracker = (
-  tracker: TileTracker,
-  tileName: string
-): void => {
+const incrementTileTracker = (tracker: TileTracker, tileName: string): void => {
   const key = tileName as keyof TileTracker;
   if (key in tracker) {
     tracker[key]++;
@@ -155,8 +165,11 @@ export const updateGuestStats = (sport: SportType, result: Result): void => {
     // Update score-related stats
     if (result.isCorrect) {
       // Update average correct score
-      const oldTotalCorrectGames =
-        Math.round(((sportStats.stats.totalPlays - 1) * sportStats.stats.percentageCorrect) / 100);
+      const oldTotalCorrectGames = Math.round(
+        ((sportStats.stats.totalPlays - 1) *
+          sportStats.stats.percentageCorrect) /
+          100
+      );
       const newTotalCorrectGames = oldTotalCorrectGames + 1;
       const oldTotalCorrectScore =
         sportStats.stats.averageCorrectScore * oldTotalCorrectGames;
@@ -175,22 +188,24 @@ export const updateGuestStats = (sport: SportType, result: Result): void => {
 
     // Update average number of tile flips
     const oldTotalTileFlips =
-      sportStats.stats.averageNumberOfTileFlips * (sportStats.stats.totalPlays - 1);
+      sportStats.stats.averageNumberOfTileFlips *
+      (sportStats.stats.totalPlays - 1);
     sportStats.stats.averageNumberOfTileFlips =
-      (oldTotalTileFlips + result.tilesFlipped.length) / sportStats.stats.totalPlays;
+      (oldTotalTileFlips + result.flippedTiles.length) /
+      sportStats.stats.totalPlays;
 
     // Update tile trackers
-    if (result.tilesFlipped.length > 0) {
+    if (result.flippedTiles.length > 0) {
       // First tile flipped
-      const firstTile = result.tilesFlipped[0];
+      const firstTile = result.flippedTiles[0];
       incrementTileTracker(sportStats.stats.firstTileFlippedTracker, firstTile);
 
       // Last tile flipped
-      const lastTile = result.tilesFlipped[result.tilesFlipped.length - 1];
+      const lastTile = result.flippedTiles[result.flippedTiles.length - 1];
       incrementTileTracker(sportStats.stats.lastTileFlippedTracker, lastTile);
 
       // All tiles flipped (most flipped tracker)
-      for (const tile of result.tilesFlipped) {
+      for (const tile of result.flippedTiles) {
         incrementTileTracker(sportStats.stats.mostTileFlippedTracker, tile);
       }
 

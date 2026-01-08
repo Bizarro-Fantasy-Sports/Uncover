@@ -3,30 +3,26 @@
  * Handles score calculation, rank evaluation, and generating player initials
  */
 
-import { SCORING } from "@/features/athlete-unknown/config";
-import type { HintType, ScoreAction } from "@/features/athlete-unknown/config";
+import {
+  INCORRECT_GUESS,
+  INCORRECT_GUESS_PENALTY,
+  TILES,
+} from "@/features/athlete-unknown/config";
+import type { ScoreDeduction } from "@/features/athlete-unknown/config";
 
 /**
  * Calculate new score based on action taken
  */
 export const calculateNewScore = (
   currentScore: number,
-  action: ScoreAction | HintType
+  deduction: ScoreDeduction
 ): number => {
-  switch (action) {
-    case "incorrectGuess":
-      return currentScore - SCORING.INCORRECT_GUESS_PENALTY;
-    case "regularTile":
-      return currentScore - SCORING.REGULAR_TILE_PENALTY;
-    case "photoTile":
-      return currentScore - SCORING.PHOTO_TILE_PENALTY;
-    case "initials":
-      return currentScore - SCORING.INITIALS_HINT_PENALTY;
-    case "nicknames":
-      return currentScore - SCORING.NICKNAMES_HINT_PENALTY;
-    default:
-      return currentScore;
-  }
+  const pointPenalty =
+    deduction === INCORRECT_GUESS
+      ? INCORRECT_GUESS_PENALTY
+      : TILES[deduction].penalty;
+
+  return currentScore - pointPenalty;
 };
 
 /**

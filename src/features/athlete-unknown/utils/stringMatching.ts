@@ -36,13 +36,3 @@ export const calculateLevenshteinDistance = (a: string, b: string): number => {
  */
 export const normalize = (str = ""): string =>
   str.toLowerCase().replace(/\s/g, "");
-
-/**
- * Extract the round number from a roundId
- * @param roundId - The round identifier (e.g., "baseball223")
- * @returns The round number (e.g., 223)
- */
-export const extractRoundNumber = (roundId: string): number => {
-  const match = roundId.match(/\d+$/);
-  return match ? parseInt(match[0], 10) : 1;
-};

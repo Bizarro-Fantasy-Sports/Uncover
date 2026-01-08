@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import "./RulesModal.css";
-import { REFERENCE_URLS, SCORING } from "@/features/athlete-unknown/config";
+import {
+  INITIAL_SCORE,
+  REFERENCE_URLS,
+  INCORRECT_GUESS_PENALTY,
+} from "@/features/athlete-unknown/config";
 
 interface RulesModalProps {
   isOpen: boolean;
@@ -171,15 +175,14 @@ function RulesModal({
             <h3>Scoring</h3>
             <ul>
               <li>
-                <strong>Start:</strong> {SCORING.INITIAL_SCORE} points
+                <strong>Start:</strong> {INITIAL_SCORE} points
               </li>
               <li>
-                <strong>Tile flip:</strong> −{SCORING.REGULAR_TILE_PENALTY} pts
-                (Photo: −{SCORING.PHOTO_TILE_PENALTY} pts)
+                <strong>Tile flip:</strong>Each tile has its own point deduction
+                amount
               </li>
               <li>
-                <strong>Wrong guess:</strong> −{SCORING.INCORRECT_GUESS_PENALTY}{" "}
-                pts
+                <strong>Wrong guess:</strong> −{INCORRECT_GUESS_PENALTY} pts
               </li>
             </ul>
           </div>

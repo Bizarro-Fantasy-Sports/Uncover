@@ -13,7 +13,6 @@ import {
   getGameSubmissionKey,
   updateGuestStats,
 } from "@/features/athlete-unknown/utils";
-import { TILE_NAMES } from "@/features/athlete-unknown/config";
 
 interface UseGameDataProps {
   activeSport: SportType;
@@ -88,15 +87,10 @@ export const useGameData = ({
         return; // Already submitted
       }
       try {
-        // Convert flippedTilesPattern to tile names array
-        const tilesFlipped = state.flippedTiles
-          .map((flipped, index) => (flipped ? TILE_NAMES[index] : null))
-          .filter((tile) => tile !== null) as string[];
-
         const gameResult: Result = {
           score: state.score,
           isCorrect: state.score > 0,
-          tilesFlipped,
+          flippedTiles: state.flippedTiles,
           incorrectGuesses: state.incorrectGuesses,
         };
 
@@ -130,11 +124,8 @@ export const useGameData = ({
   }, [
     state.isCompleted,
     state.score,
-    state.tilesFlippedCount,
     state.incorrectGuesses,
     state.flippedTiles,
-    state.firstTileFlipped,
-    state.lastTileFlipped,
     activeSport,
   ]);
 

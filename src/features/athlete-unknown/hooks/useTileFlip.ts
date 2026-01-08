@@ -6,7 +6,11 @@
 import { useCallback } from "react";
 import type { GameState } from "./useGameState";
 import { calculateNewScore } from "@/features/athlete-unknown/utils";
-import { TILE_NAMES, TIMING } from "@/features/athlete-unknown/config";
+import {
+  TILE_NAMES,
+  TileType,
+  TIMING,
+} from "@/features/athlete-unknown/config";
 
 interface UseTileFlipProps {
   state: GameState;
@@ -15,7 +19,7 @@ interface UseTileFlipProps {
 
 export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
   const handleTileClick = useCallback(
-    (index: number) => {
+    (tileName: TileType) => {
       // If photo is already revealed, toggle back to tiles
       if (state.photoRevealed) {
         updateState({ photoRevealed: false, returningFromPhoto: true });
@@ -27,43 +31,39 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
       }
 
       // If clicking an already-flipped Photo tile, reveal photo again
-      if (state.flippedTiles[index] && TILE_NAMES[index] === "photo") {
+      if (
+        state.flippedTiles.includes(tileName) &&
+        tileName === TILE_NAMES.PHOTO
+      ) {
         updateState({ photoRevealed: true, returningFromPhoto: false });
         return;
       }
 
       // If tile is already flipped, do nothing
-      if (state.flippedTiles[index]) {
+      if (state.flippedTiles.includes(tileName)) {
         return;
       }
 
       // Track first and last tiles flipped
-      const tileName = TILE_NAMES[index];
-      const isFirstTile = state.tilesFlippedCount === 0;
-      const firstTile = isFirstTile ? tileName : state.firstTileFlipped;
-
-      const updated = [...state.flippedTiles];
-      updated[index] = true;
+      const updatedFlippedTiles = [...state.flippedTiles, tileName];
 
       // If Photo tile is clicked for the first time, reveal the full segmented photo
-      if (TILE_NAMES[index] === "photo") {
+      if (tileName === TILE_NAMES.PHOTO) {
         // Only update score/counters if game is not won or gave up
         if (!state.isCompleted) {
-          const newScore = calculateNewScore(state.score, "photoTile");
+          const newScore = calculateNewScore(state.score, tileName);
 
           updateState({
-            flippedTiles: updated,
-            tilesFlippedCount: state.tilesFlippedCount + 1,
+            flippedTiles: updatedFlippedTiles,
             score: newScore,
             photoRevealed: true,
             returningFromPhoto: false,
-            firstTileFlipped: firstTile,
-            lastTileFlipped: tileName,
           });
         } else {
           // Game won or gave up - just update visual state
+          // TODO: need to test!!!!!
           updateState({
-            flippedTiles: updated,
+            flippedTiles: updatedFlippedTiles,
             photoRevealed: true,
             returningFromPhoto: false,
           });
@@ -74,19 +74,17 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
       // Regular tile flip
       // Only update score/counters if game is not won or gave up
       if (!state.isCompleted) {
-        const newScore = calculateNewScore(state.score, "regularTile");
+        const newScore = calculateNewScore(state.score, tileName);
 
         updateState({
-          flippedTiles: updated,
-          tilesFlippedCount: state.tilesFlippedCount + 1,
+          flippedTiles: updatedFlippedTiles,
           score: newScore,
-          firstTileFlipped: firstTile,
-          lastTileFlipped: tileName,
         });
       } else {
         // Game won or gave up - just update visual state
+        // TODO: need to test
         updateState({
-          flippedTiles: updated,
+          flippedTiles: updatedFlippedTiles,
         });
       }
     },

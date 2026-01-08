@@ -9,8 +9,8 @@ import type {
   Round,
   UserStats,
 } from "@/features/athlete-unknown/types";
-import type { HintType, SportType } from "@/features/athlete-unknown/config";
-import { TOTAL_TILES, SCORING } from "@/features/athlete-unknown/config";
+import type { SportType, TileType } from "@/features/athlete-unknown/config";
+import { INITIAL_SCORE } from "@/features/athlete-unknown/config";
 import {
   loadMidRoundProgress,
   saveMidRoundProgress,
@@ -27,20 +27,16 @@ export interface GameState {
   message: string;
   messageType: string;
   previousCloseGuess: string;
-  flippedTiles: boolean[];
-  tilesFlippedCount: number;
+  flippedTiles: TileType[];
   photoRevealed: boolean;
   returningFromPhoto: boolean;
   score: number;
-  hintsUsed: HintType[];
   isCompleted: boolean;
   incorrectGuesses: number;
   copiedText: string;
   lastSubmittedGuess: string;
   isLoading: boolean;
   error: string | null;
-  firstTileFlipped: string | null;
-  lastTileFlipped: string | null;
   currentPlayerIndex?: number;
 }
 
@@ -52,20 +48,16 @@ const createInitialState = (): GameState => ({
   message: "",
   messageType: "",
   previousCloseGuess: "",
-  flippedTiles: Array(TOTAL_TILES).fill(false),
-  tilesFlippedCount: 0,
+  flippedTiles: [],
   photoRevealed: false,
   returningFromPhoto: false,
-  score: SCORING.INITIAL_SCORE,
-  hintsUsed: [],
+  score: INITIAL_SCORE,
   isCompleted: false,
   incorrectGuesses: 0,
   copiedText: "",
   lastSubmittedGuess: "",
   isLoading: true,
   error: null,
-  firstTileFlipped: null,
-  lastTileFlipped: null,
 });
 
 /**
@@ -79,19 +71,15 @@ const gameStateToProgress = (
   sport,
   playDate,
   isCompleted: state.isCompleted,
-  firstTileFlipped: state.firstTileFlipped,
   flippedTiles: state.flippedTiles,
-  hintsUsed: state.hintsUsed,
   incorrectGuesses: state.incorrectGuesses,
   lastSubmittedGuess: state.lastSubmittedGuess,
-  lastTileFlipped: state.lastTileFlipped,
   message: state.message,
   messageType: state.messageType,
   playerName: state.playerName,
   playerName_saved: state.round?.player?.name || "",
   previousCloseGuess: state.previousCloseGuess,
   score: state.score,
-  tilesFlippedCount: state.tilesFlippedCount,
 });
 
 /**
@@ -101,18 +89,14 @@ const progressToGameState = (
   progress: MidRoundProgress
 ): Partial<GameState> => ({
   isCompleted: progress.isCompleted,
-  firstTileFlipped: progress.firstTileFlipped,
   flippedTiles: progress.flippedTiles,
-  hintsUsed: progress.hintsUsed,
   incorrectGuesses: progress.incorrectGuesses,
   lastSubmittedGuess: progress.lastSubmittedGuess,
-  lastTileFlipped: progress.lastTileFlipped,
   message: progress.message,
   messageType: progress.messageType,
   playerName: progress.playerName,
   previousCloseGuess: progress.previousCloseGuess,
   score: progress.score,
-  tilesFlippedCount: progress.tilesFlippedCount,
 });
 
 export const useGameState = (activeSport: SportType, playDate?: string) => {

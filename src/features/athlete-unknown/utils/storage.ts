@@ -3,7 +3,7 @@
  * Centralized location for all localStorage keys used in the application
  */
 
-import type { HintType, SportType } from "@/features/athlete-unknown/config";
+import type { SportType, TileType } from "@/features/athlete-unknown/config";
 
 export const STORAGE_KEYS = {
   ACTIVE_SPORT: "activeSport",
@@ -40,19 +40,15 @@ export interface MidRoundProgress {
   sport: string;
   playDate: string;
   isCompleted: boolean;
-  firstTileFlipped: string | null;
-  flippedTiles: boolean[];
-  hintsUsed: HintType[];
+  flippedTiles: TileType[];
   incorrectGuesses: number;
   lastSubmittedGuess: string;
-  lastTileFlipped: string | null;
   message: string;
   messageType: string;
   playerName: string;
   playerName_saved: string;
   previousCloseGuess: string;
   score: number;
-  tilesFlippedCount: number;
 }
 
 /**

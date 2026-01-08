@@ -2,7 +2,7 @@ import React from "react";
 import { formatDate } from "@/utils";
 
 interface RoundInfoProps {
-  roundNumber: number;
+  roundNumber: string;
   playDate?: string;
   theme?: string;
   onRoundResultsClick: () => void;

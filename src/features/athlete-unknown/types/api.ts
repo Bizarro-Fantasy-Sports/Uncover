@@ -33,7 +33,7 @@ export interface PlayerData {
 export interface Result {
   score: number;
   isCorrect: boolean;
-  tilesFlipped: string[];
+  flippedTiles: string[];
   incorrectGuesses: number;
 }
 
