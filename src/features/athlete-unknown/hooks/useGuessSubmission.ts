@@ -1,5 +1,5 @@
 /**
- * Game logic hook
+ * Guess submission hook
  * Handles name submission validation, guess checking, and give up functionality
  */
 
@@ -15,12 +15,12 @@ import {
   INCORRECT_GUESS,
 } from "@/features/athlete-unknown/config";
 
-interface UseGameLogicProps {
+interface UseGuessSubmissionProps {
   state: GameState;
   updateState: (patch: Partial<GameState>) => void;
 }
 
-export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
+export const useGuessSubmission = ({ state, updateState }: UseGuessSubmissionProps) => {
   const handleNameSubmit = useCallback(() => {
     // Don't allow empty guesses
     if (!state.playerName.trim()) {

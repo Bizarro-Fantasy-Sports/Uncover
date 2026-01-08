@@ -1,5 +1,5 @@
 export { useGameData } from "./useGameData";
-export { useGameLogic } from "./useGameLogic";
+export { useGuessSubmission } from "./useGuessSubmission";
 export { useGameState } from "./useGameState";
 export type { GameState } from "./useGameState";
 export { useShareResults } from "./useShareResults";

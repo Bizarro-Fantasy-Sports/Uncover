@@ -61,7 +61,6 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
           });
         } else {
           // Game won or gave up - just update visual state
-          // TODO: need to test!!!!!
           updateState({
             flippedTiles: updatedFlippedTiles,
             photoRevealed: true,
@@ -82,7 +81,6 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
         });
       } else {
         // Game won or gave up - just update visual state
-        // TODO: need to test
         updateState({
           flippedTiles: updatedFlippedTiles,
         });

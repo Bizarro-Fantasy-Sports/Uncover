@@ -6,7 +6,7 @@ import type { SportType } from "@/features/athlete-unknown/config";
 import { STORAGE_KEYS } from "@/features/athlete-unknown/utils";
 import {
   useGameState,
-  useGameLogic,
+  useGuessSubmission,
   useTileFlip,
   useGameData,
   useShareResults,
@@ -95,8 +95,7 @@ export function AthleteUnknown(): React.ReactElement {
   // Game logic
   // updates the following fields in state:
   // message, messageType, previousCloseGuess, isCompleted, lastSubmittedGuess
-  // TODO: rename to useUserSubmission
-  const { handleNameSubmit, handleGiveUp } = useGameLogic({
+  const { handleNameSubmit, handleGiveUp } = useGuessSubmission({
     state,
     updateState,
   });
