@@ -151,8 +151,8 @@ export const REFERENCE_URLS = {
 // ============================================================================
 
 export const GUESS_ACCURACY = {
-  // Maximum edit distance for "close" guess (requires second close guess to reveal player name)
-  VERY_CLOSE_DISTANCE: 3,
+  // Maximum edit distance for "close" guess (requires second closer guess to reveal player name)
+  VERY_CLOSE_DISTANCE: 2,
 } as const;
 
 // ============================================================================

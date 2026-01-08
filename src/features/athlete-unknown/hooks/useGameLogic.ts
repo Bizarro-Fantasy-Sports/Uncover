@@ -29,10 +29,6 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
 
     const normalizedGuess = normalize(state.playerName);
     const normalizedAnswer = normalize(state.round?.player.name);
-    const distance = calculateLevenshteinDistance(
-      normalizedGuess,
-      normalizedAnswer
-    );
 
     // Prevent submitting the same incorrect guess consecutively
     if (
@@ -57,39 +53,46 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
 
     // Incorrect guess - deduct points
     const newScore = calculateNewScore(state.score, INCORRECT_GUESS);
+    const distance = calculateLevenshteinDistance(
+      normalizedGuess,
+      normalizedAnswer
+    );
 
-    // TODO: only accept if the distance is less than previous. Specify distance away
     // Check if guess was very close
     if (distance <= GUESS_ACCURACY.VERY_CLOSE_DISTANCE) {
-      // If second close guess, reveal answer
-      if (
-        state.previousCloseGuess &&
-        state.previousCloseGuess !== normalizedGuess
-      ) {
+      if (!state.previousCloseGuess) {
+        // First close guess
         updateState({
-          message: `Correct, you were close! Player's name: ${state.round?.player.name || ""}`,
+          message: `You're close! Spelling is off by a ${distance} letter${distance === 1 ? "" : "s"}.`,
+          messageType: "almost",
+          previousCloseGuess: normalizedGuess,
+          score: newScore,
+          lastSubmittedGuess: normalizedGuess,
+        });
+        return;
+      }
+
+      const previousDistance = calculateLevenshteinDistance(
+        state.previousCloseGuess,
+        normalizedAnswer
+      );
+      // If second closer guess, reveal answer
+      if (distance < previousDistance) {
+        updateState({
+          message: "Close enough to ID the player! Spelling is hard",
           messageType: "close",
           previousCloseGuess: "",
           score: newScore,
           lastSubmittedGuess: normalizedGuess,
           isCompleted: true,
         });
-      } else {
-        // First close guess
-        updateState({
-          message: "You're close! Off by a few letters.",
-          messageType: "almost",
-          previousCloseGuess: normalizedGuess,
-          score: newScore,
-          lastSubmittedGuess: normalizedGuess,
-        });
+        return;
       }
-      return;
     }
 
     // Wrong guess - not close
     updateState({
-      message: `Wrong guess: "${state.playerName}"`,
+      message: `Incorrect: "${state.playerName}"`,
       messageType: "error",
       score: newScore,
       incorrectGuesses: state.incorrectGuesses + 1,
