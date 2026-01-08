@@ -3,12 +3,15 @@
  * All environment variables are loaded and validated here
  */
 
-import {
-  SPORT_BASEBALL,
-  SPORT_BASKETBALL,
-  SPORT_FOOTBALL,
-  SportType,
-} from "@/features";
+// Sport type definitions (kept here to avoid circular dependencies)
+export const SPORT_BASEBALL = "baseball";
+export const SPORT_BASKETBALL = "basketball";
+export const SPORT_FOOTBALL = "football";
+
+export type SportType =
+  | typeof SPORT_BASEBALL
+  | typeof SPORT_BASKETBALL
+  | typeof SPORT_FOOTBALL;
 
 const FALLBACK_SPORTS_LIST = [
   SPORT_FOOTBALL as SportType,

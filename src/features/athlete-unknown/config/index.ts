@@ -9,14 +9,13 @@
 // SPORT CONFIGURATION
 // ============================================================================
 
-export const SPORT_BASEBALL = "baseball";
-export const SPORT_BASKETBALL = "basketball";
-export const SPORT_FOOTBALL = "football";
-
-export type SportType =
-  | typeof SPORT_BASEBALL
-  | typeof SPORT_BASKETBALL
-  | typeof SPORT_FOOTBALL;
+// Re-export sport types from config to avoid circular dependencies
+export {
+  SPORT_BASEBALL,
+  SPORT_BASKETBALL,
+  SPORT_FOOTBALL,
+  type SportType,
+} from "@/config";
 
 // ============================================================================
 // SCORING & TILES CONFIGURATION
@@ -198,7 +197,7 @@ export const DEFAULTS = {
 // LEGACY DATA FILES (for backwards compatibility)
 // ============================================================================
 
-export const LEGACY_SPORT_FILES: Record<SportType, string> = {
+export const LEGACY_SPORT_FILES: Record<string, string> = {
   baseball: "/AthleteUnknownBaseballData.json",
   basketball: "/AthleteUnknownBasketballData.json",
   football: "/AthleteUnknownFootballData.json",
