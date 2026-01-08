@@ -44,7 +44,9 @@
         "photo": 151,
         "playerInformation": 145,
         "teamsPlayedOn": 118,
-        "yearsActive": 67
+        "yearsActive": 67,
+        "initials": 96,
+        "nicknames": 45
       },
       "firstTileFlippedTracker": {
         "bio": 8,
@@ -55,7 +57,9 @@
         "photo": 3,
         "playerInformation": 52,
         "teamsPlayedOn": 19,
-        "yearsActive": 14
+        "yearsActive": 14,
+        "initials": 31,
+        "nicknames": 12
       },
       "lastTileFlippedTracker": {
         "bio": 12,
@@ -66,7 +70,9 @@
         "photo": 79,
         "playerInformation": 7,
         "teamsPlayedOn": 16,
-        "yearsActive": 18
+        "yearsActive": 18,
+        "initials": 24,
+        "nicknames": 9
       }
     }
   },
@@ -115,7 +121,9 @@
         "photo": 267,
         "playerInformation": 198,
         "teamsPlayedOn": 176,
-        "yearsActive": 98
+        "yearsActive": 98,
+        "initials": 178,
+        "nicknames": 201
       },
       "firstTileFlippedTracker": {
         "bio": 17,
@@ -126,7 +134,9 @@
         "photo": 6,
         "playerInformation": 56,
         "teamsPlayedOn": 34,
-        "yearsActive": 21
+        "yearsActive": 21,
+        "initials": 52,
+        "nicknames": 67
       },
       "lastTileFlippedTracker": {
         "bio": 21,
@@ -137,7 +147,9 @@
         "photo": 124,
         "playerInformation": 11,
         "teamsPlayedOn": 27,
-        "yearsActive": 25
+        "yearsActive": 25,
+        "initials": 38,
+        "nicknames": 45
       }
     }
   },
@@ -186,7 +198,9 @@
         "photo": 136,
         "playerInformation": 118,
         "teamsPlayedOn": 139,
-        "yearsActive": 81
+        "yearsActive": 81,
+        "initials": 89,
+        "nicknames": 52
       },
       "firstTileFlippedTracker": {
         "bio": 9,
@@ -197,7 +211,9 @@
         "photo": 4,
         "playerInformation": 31,
         "teamsPlayedOn": 48,
-        "yearsActive": 16
+        "yearsActive": 16,
+        "initials": 28,
+        "nicknames": 14
       },
       "lastTileFlippedTracker": {
         "bio": 13,
@@ -208,7 +224,9 @@
         "photo": 68,
         "playerInformation": 8,
         "teamsPlayedOn": 14,
-        "yearsActive": 17
+        "yearsActive": 17,
+        "initials": 21,
+        "nicknames": 11
       }
     }
   },
@@ -257,7 +275,9 @@
         "photo": 298,
         "playerInformation": 223,
         "teamsPlayedOn": 187,
-        "yearsActive": 112
+        "yearsActive": 112,
+        "initials": 198,
+        "nicknames": 234
       },
       "firstTileFlippedTracker": {
         "bio": 19,
@@ -268,7 +288,9 @@
         "photo": 7,
         "playerInformation": 64,
         "teamsPlayedOn": 38,
-        "yearsActive": 24
+        "yearsActive": 24,
+        "initials": 59,
+        "nicknames": 78
       },
       "lastTileFlippedTracker": {
         "bio": 24,
@@ -279,7 +301,9 @@
         "photo": 141,
         "playerInformation": 13,
         "teamsPlayedOn": 29,
-        "yearsActive": 28
+        "yearsActive": 28,
+        "initials": 42,
+        "nicknames": 51
       }
     }
   },
@@ -328,7 +352,9 @@
         "photo": 192,
         "playerInformation": 178,
         "teamsPlayedOn": 198,
-        "yearsActive": 89
+        "yearsActive": 89,
+        "initials": 134,
+        "nicknames": 156
       },
       "firstTileFlippedTracker": {
         "bio": 13,
@@ -339,7 +365,9 @@
         "photo": 5,
         "playerInformation": 42,
         "teamsPlayedOn": 71,
-        "yearsActive": 22
+        "yearsActive": 22,
+        "initials": 38,
+        "nicknames": 44
       },
       "lastTileFlippedTracker": {
         "bio": 17,
@@ -350,7 +378,9 @@
         "photo": 96,
         "playerInformation": 9,
         "teamsPlayedOn": 15,
-        "yearsActive": 20
+        "yearsActive": 20,
+        "initials": 29,
+        "nicknames": 33
       }
     }
   }

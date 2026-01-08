@@ -94,4 +94,6 @@ export interface TileTracker {
   careerStats: number;
   personalAchievements: number;
   photo: number;
+  initials: number;
+  nicknames: number;
 }

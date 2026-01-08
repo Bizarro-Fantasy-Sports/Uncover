@@ -153,7 +153,7 @@ export function RoundResultsModal({
                   Average # of Tiles Flipped
                 </div>
                 <div className="round-stat-value">
-                  {roundStats.averageNumberOfTileFlips}%
+                  {roundStats.averageNumberOfTileFlips}
                 </div>
               </div>
             </div>

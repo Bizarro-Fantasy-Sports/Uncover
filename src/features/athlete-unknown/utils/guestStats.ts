@@ -25,6 +25,8 @@ const createEmptyTileTracker = (): TileTracker => ({
   personalAchievements: 0,
   photo: 0,
   yearsActive: 0,
+  initials: 0,
+  nicknames: 0,
 });
 
 /**
