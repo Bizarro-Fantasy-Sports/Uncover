@@ -10,6 +10,9 @@ import {
   TIMING,
   TILES,
   ALL_TILES,
+  SPORT_BASEBALL,
+  SPORT_BASKETBALL,
+  SPORT_FOOTBALL,
 } from "@/features/athlete-unknown/config";
 
 interface UseShareResultsProps {
@@ -25,24 +28,35 @@ export const useShareResults = ({
     // Get daily number from playerData or default to 1
     const roundId = state.round?.roundId ?? "";
     const [sport, roundNumber] = roundId.split("#");
+    const flippedTilesToUse = state.isCompleted
+      ? state.flippedTilesUponCompletion
+      : state.flippedTiles;
 
     // Build the share text
-    // TODO. Nicer title
-    let shareText = `Athlete Unknown ${sport} #${roundNumber}\n`;
+    const sportEmoji =
+      sport === SPORT_BASEBALL
+        ? "⚾"
+        : sport === SPORT_BASKETBALL
+          ? "🏀"
+          : sport === SPORT_FOOTBALL
+            ? "🏈"
+            : "";
+    let shareText = `Athlete Unknown \nCase #${sportEmoji}${roundNumber}\n`;
 
     // first tile is whether round is won or given up
     const isRoundWon = state.score > 0;
     const correctOrIncorrectEmoji = isRoundWon ? "✅" : "❌";
     shareText += correctOrIncorrectEmoji;
 
+    // loop through all other tiles
     for (let i = 0; i < ALL_TILES.length; i++) {
       const tileName = ALL_TILES[i];
       const tile = TILES[tileName];
-      const isFlipped = state.flippedTiles.includes(tileName);
+      const isFlipped = flippedTilesToUse.includes(tileName);
       const emoji = isFlipped ? tile.flippedEmoji : "🟦";
       shareText += emoji;
 
-      const shareIndex = i + 2; // +1 for first inserted tile, +1 for starting at 0 before modulus
+      const shareIndex = i + 2; // +1 for first inserted tile, +1 for starting at index 0
       if (shareIndex % PHOTO_GRID.COLS === 0) {
         shareText += "\n";
       }

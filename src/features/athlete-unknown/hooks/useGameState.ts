@@ -28,6 +28,7 @@ export interface GameState {
   messageType: string;
   previousCloseGuess: string;
   flippedTiles: TileType[];
+  flippedTilesUponCompletion: TileType[];
   photoRevealed: boolean;
   returningFromPhoto: boolean;
   score: number;
@@ -49,6 +50,7 @@ const createInitialState = (): GameState => ({
   messageType: "",
   previousCloseGuess: "",
   flippedTiles: [],
+  flippedTilesUponCompletion: [],
   photoRevealed: false,
   returningFromPhoto: false,
   score: INITIAL_SCORE,

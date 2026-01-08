@@ -46,6 +46,7 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
         messageType: "success",
         previousCloseGuess: "",
         isCompleted: true,
+        flippedTilesUponCompletion: [...state.flippedTiles],
         lastSubmittedGuess: normalizedGuess,
       });
       return;
@@ -85,6 +86,7 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
           score: newScore,
           lastSubmittedGuess: normalizedGuess,
           isCompleted: true,
+          flippedTilesUponCompletion: [...state.flippedTiles],
         });
         return;
       }
@@ -104,8 +106,9 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
     updateState({
       isCompleted: true,
       score: 0,
+      flippedTilesUponCompletion: [...state.flippedTiles],
     });
-  }, [updateState]);
+  }, [state, updateState]);
 
   return {
     handleNameSubmit,

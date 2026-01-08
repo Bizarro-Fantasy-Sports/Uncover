@@ -249,7 +249,11 @@ export function AthleteUnknown(): React.ReactElement {
       <RoundResultsModal
         isOpen={isRoundResultsModalOpen}
         score={state.score}
-        flippedTiles={state.flippedTiles}
+        flippedTiles={
+          state.isCompleted
+            ? state.flippedTilesUponCompletion
+            : state.flippedTiles
+        }
         copiedText={state.copiedText}
         roundStats={state.round.stats}
         playerData={state.round.player}
