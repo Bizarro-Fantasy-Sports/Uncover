@@ -73,7 +73,11 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
       // Regular tile flip
       // Only update score/counters if game is not won or gave up
       if (!state.isCompleted) {
-        const newScore = calculateNewScore(state.score, tileName);
+        const tileValue = state.round?.player[tileName] ?? "";
+        const newScore =
+          tileValue === "N/A" || tileValue === ""
+            ? state.score
+            : calculateNewScore(state.score, tileName);
 
         updateState({
           flippedTiles: updatedFlippedTiles,
