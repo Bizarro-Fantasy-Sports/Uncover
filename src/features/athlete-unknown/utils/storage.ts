@@ -7,21 +7,10 @@ import type { SportType, TileType } from "@/features/athlete-unknown/config";
 
 export const STORAGE_KEYS = {
   ACTIVE_SPORT: "activeSport",
-  GAME_SUBMITTED_PREFIX: "submitted_",
   PLAYER_INDEX_PREFIX: "playerIndex_",
   CURRENT_SESSION_PREFIX: "currentSession_",
   GUEST_STATS_KEY: "guestStats",
 } as const;
-
-/**
- * Get the game submission key for a specific sport and date
- */
-export const getGameSubmissionKey = (
-  sport: SportType,
-  playDate: string
-): string => {
-  return `${STORAGE_KEYS.GAME_SUBMITTED_PREFIX}${sport}_${playDate}`;
-};
 
 /**
  * Get the current session key for a specific sport and date

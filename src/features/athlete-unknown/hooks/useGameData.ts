@@ -9,10 +9,7 @@ import type { GameState } from "./useGameState";
 import { gameDataService } from "@/features/athlete-unknown/services";
 import { userStatsService } from "@/features/athlete-unknown/services";
 import type { Result } from "@/features/athlete-unknown/types";
-import {
-  getGameSubmissionKey,
-  updateGuestStats,
-} from "@/features/athlete-unknown/utils";
+import { updateGuestStats } from "@/features/athlete-unknown/utils";
 
 interface UseGameDataProps {
   activeSport: SportType;
@@ -79,13 +76,6 @@ export const useGameData = ({
         );
         return;
       }
-      const submissionKey = getGameSubmissionKey(activeSport, roundPlayDate);
-      if (localStorage.getItem(submissionKey)) {
-        console.log(
-          "[Athlete Unknown] Skipping stats submission - results already submitted"
-        );
-        return; // Already submitted
-      }
       try {
         const gameResult: Result = {
           score: state.score,
@@ -115,10 +105,10 @@ export const useGameData = ({
           roundPlayDate,
           gameResult
         );
-        if (response?.success) {
-          console.log("[Athlete Unknown] Results submitted successfully");
-          localStorage.setItem(submissionKey, "true");
-        }
+        console.log(
+          "[Athlete Unknown] Successfully submitted results: ",
+          response
+        );
       } catch (error) {
         console.error("[Athlete Unknown] Failed to submit results:", error);
         // Don't block the user experience if submission fails
