@@ -25,6 +25,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Centralized and refactored environment variable usage
 
+## [PR-42]
+
+### Added
+
+- Implement automatic user stats migration after first login
+
 ## [PR-40]
 
 ### Fixed

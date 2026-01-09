@@ -100,7 +100,8 @@ export const useGameData = ({
           incorrectGuesses: state.incorrectGuesses,
         };
 
-        // Update guest stats if user is not authenticated
+        // Update guest stats ONLY if user is not authenticated
+        // For authenticated users, stats are managed by the backend
         if (isGuest) {
           console.log(
             "[Athlete Unknown] Updating guest stats for",
@@ -108,6 +109,10 @@ export const useGameData = ({
           );
 
           updateGuestStats(activeSport, gameResult);
+        } else {
+          console.log(
+            "[Athlete Unknown] Skipping guest stats update - user is authenticated"
+          );
         }
 
         console.log("[Athlete Unknown] Submitting game results:", gameResult);

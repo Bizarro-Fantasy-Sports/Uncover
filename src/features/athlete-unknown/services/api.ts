@@ -97,6 +97,30 @@ class AthleteUnknownApiService {
       );
     }
   }
+
+  /**
+   * Migrate user statistics from localStorage to backend
+   * @param userStats - The user stats data from localStorage to migrate
+   */
+  async migrateUserStats(userStats: UserStats): Promise<UserStats> {
+    const endpoint = "/v1/stats/user/migrate";
+
+    try {
+      console.log("[API] Migrating user stats to backend");
+      return await this.httpClient.post<any>(endpoint, userStats);
+    } catch (error: any) {
+      // Handle 409 Conflict (user already migrated) as a special case
+      if (error?.response?.status === 409) {
+        console.log("[API] User stats already migrated (409 Conflict)");
+        throw new Error("USER_ALREADY_MIGRATED");
+      }
+      console.error("Error migrating user stats:", error);
+      throw this.httpClient.formatError(
+        error,
+        "Failed to migrate user statistics"
+      );
+    }
+  }
 }
 
 // Export singleton instance
