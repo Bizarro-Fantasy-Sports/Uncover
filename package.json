@@ -15,7 +15,7 @@
     "start": "craco start",
     "build": "craco build",
     "build:dev": "env-cmd -f .env.dev craco build",
-    "build:prod": "emv-cmd -f .env.prod craco build",
+    "build:prod": "env-cmd -f .env.prod craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
