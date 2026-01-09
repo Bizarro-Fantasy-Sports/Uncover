@@ -10,6 +10,7 @@ import {
   useTileFlip,
   useGameData,
   useShareResults,
+  useRoundHistory,
 } from "@/features/athlete-unknown/hooks";
 import {
   SportsReferenceAttribution,
@@ -23,6 +24,7 @@ import {
   SportsReferenceCredit,
   UserStatsModal,
   HintTiles,
+  RoundHistoryModal,
 } from "@/features/athlete-unknown/components";
 import { athleteUnknownApiService, migrateUserStats } from "@/features";
 import { getValidSport } from "@/features/athlete-unknown/utils/stringMatching";
@@ -98,10 +100,10 @@ export function AthleteUnknown(): React.ReactElement {
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
   const [isRoundResultsModalOpen, setIsRoundResultsModalOpen] = useState(false);
   const [isUserStatsModalOpen, setIsUserStatsModalOpen] = useState(false);
+  const [isRoundHistoryModalOpen, setIsRoundHistoryModalOpen] = useState(false);
   const [selectedPlayDate, setSelectedPlayDate] = useState<string | undefined>(
     undefined
   );
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   // Check if user is a playtester
   const isPlaytester = userRoles.includes("Playtester");
@@ -136,11 +138,17 @@ export function AthleteUnknown(): React.ReactElement {
   // photoRevealed, returningFromPhoto, flippedTiles, score
   const { handleTileClick } = useTileFlip({ state, updateState });
 
+  // Round History
+  // updates the following fields in state
+  // roundHistory
+  const { handleFetchRoundHistory } = useRoundHistory({ updateState });
+
   // Share functionality
   // updates the following fields in state:
   // copiedText
   const { handleShare } = useShareResults({ state, updateState });
 
+  // TODO are the following 2 blocks needed???
   // Save active sport to localStorage when it changes
   useEffect(() => {
     try {
@@ -165,6 +173,18 @@ export function AthleteUnknown(): React.ReactElement {
     state.round,
     clearProgress,
     setIsRoundResultsModalOpen,
+  ]);
+
+  // Fetch roundHistory when the modal is opened
+  useEffect(() => {
+    if (isRoundHistoryModalOpen) {
+      handleFetchRoundHistory(activeSport, isPlaytester);
+    }
+  }, [
+    activeSport,
+    isPlaytester,
+    isRoundHistoryModalOpen,
+    handleFetchRoundHistory,
   ]);
 
   // Show loading state
@@ -200,26 +220,6 @@ export function AthleteUnknown(): React.ReactElement {
   const playDate = state.round?.playDate as string | undefined;
   const [, roundNumber] = state.round.roundId.split("#");
 
-  // Handler for date selection in playtesting mode
-  const handleDateSelect = (date: string) => {
-    setSelectedPlayDate(date);
-    setShowDatePicker(false);
-  };
-
-  // Handler for toggling date picker
-  const handleTitleClick = () => {
-    console.log("[AthleteUnknown] Title clicked! isPlaytester:", isPlaytester);
-    if (isPlaytester) {
-      console.log(
-        "[AthleteUnknown] Toggling date picker. Current state:",
-        showDatePicker
-      );
-      setShowDatePicker(!showDatePicker);
-    } else {
-      console.log("[AthleteUnknown] User is not a playtester, ignoring click");
-    }
-  };
-
   // console.log("STATE AU", state);
 
   return (
@@ -238,11 +238,7 @@ export function AthleteUnknown(): React.ReactElement {
         theme={state.round.theme}
         onRoundResultsClick={() => setIsRoundResultsModalOpen(true)}
         onRulesClick={() => setIsRulesModalOpen(true)}
-        isPlaytester={isPlaytester}
-        showDatePicker={showDatePicker}
-        selectedPlayDate={selectedPlayDate}
-        onTitleClick={handleTitleClick}
-        onDateSelect={handleDateSelect}
+        onRoundHistoryClick={() => setIsRoundHistoryModalOpen(true)}
       />
 
       <ScoreDisplay
@@ -302,6 +298,15 @@ export function AthleteUnknown(): React.ReactElement {
         isOpen={isUserStatsModalOpen}
         onClose={() => setIsUserStatsModalOpen(false)}
         userStats={state.userStats}
+      />
+
+      <RoundHistoryModal
+        isOpen={isRoundHistoryModalOpen}
+        onClose={() => setIsRoundHistoryModalOpen(false)}
+        isLoading={state.isLoading}
+        error={state.error}
+        roundHistory={state.roundHistory}
+        onRoundSelect={(playDate) => setSelectedPlayDate(playDate)}
       />
     </div>
   );

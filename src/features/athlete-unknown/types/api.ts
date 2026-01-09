@@ -11,6 +11,12 @@ export interface Round {
   stats: RoundStats;
 }
 
+export interface RoundSummary {
+  roundId: string;
+  sport: string;
+  playDate: string;
+}
+
 export interface PlayerData {
   sport: string;
   sportsReferenceURL: string;

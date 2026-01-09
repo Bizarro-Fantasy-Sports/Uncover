@@ -5,8 +5,8 @@
 
 import { useState, useCallback, useEffect } from "react";
 import type {
-  PlayerData,
   Round,
+  RoundSummary,
   UserStats,
 } from "@/features/athlete-unknown/types";
 import type { SportType, TileType } from "@/features/athlete-unknown/config";
@@ -38,6 +38,7 @@ export interface GameState {
   isLoading: boolean;
   error: string | null;
   currentPlayerIndex?: number;
+  roundHistory: RoundSummary[];
 }
 
 const createInitialState = (): GameState => ({
@@ -58,6 +59,7 @@ const createInitialState = (): GameState => ({
   lastSubmittedGuess: "",
   isLoading: true,
   error: null,
+  roundHistory: [],
 });
 
 /**

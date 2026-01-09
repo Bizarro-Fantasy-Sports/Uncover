@@ -15,3 +15,4 @@ export { RulesModal } from "./RulesModal";
 export { SportsReferenceCredit } from "./SportsReferenceCredit";
 export { UserStatsModal } from "./UserStatsModal";
 export { HintTiles } from "./HintTiles";
+export { RoundHistoryModal } from "./RoundHistoryModal";

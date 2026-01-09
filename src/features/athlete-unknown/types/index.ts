@@ -8,4 +8,5 @@ export type {
   UserSportStats,
   RoundHistory,
   Result,
+  RoundSummary,
 } from "./api";

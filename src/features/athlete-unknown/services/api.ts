@@ -1,5 +1,5 @@
 import { HttpClient } from "@/services";
-import { config } from "@/config";
+import { config, SportType } from "@/config";
 import type {
   GameResultResponse,
   Result,
@@ -118,6 +118,37 @@ class AthleteUnknownApiService {
       throw this.httpClient.formatError(
         error,
         "Failed to migrate user statistics"
+      );
+    }
+  }
+
+  /**
+   * Get all rounds (for regular users)
+   */
+  async getRounds(sport: SportType): Promise<Round[]> {
+    const endpoint = `/v1/rounds?sport=${sport}`;
+
+    try {
+      return await this.httpClient.get<any>(endpoint);
+    } catch (error) {
+      console.error("Error fetching rounds:", error);
+      throw this.httpClient.formatError(error, "Failed to load rounds");
+    }
+  }
+
+  /**
+   * Get upcoming rounds (for playtesters)
+   */
+  async getUpcomingRounds(sport: SportType): Promise<Round[]> {
+    const endpoint = `/v1/upcoming-rounds?sport=${sport}`;
+
+    try {
+      return await this.httpClient.get<any>(endpoint);
+    } catch (error) {
+      console.error("Error fetching upcoming rounds:", error);
+      throw this.httpClient.formatError(
+        error,
+        "Failed to load upcoming rounds"
       );
     }
   }
