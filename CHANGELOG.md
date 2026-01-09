@@ -15,6 +15,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-44]
+
+### Added
+
+- Added 2 more tiles that aren't part of the grid, Initials and Nicknames
+- Order of sports in header (and default sport) handled by environment variables
+
+### Changed
+
+- Changed models to reflect new tiles
+- Consolidated ResultsModal and RoundStatsModal into RoundResultsModal
+- Changed way tiles are displayed (no more boolean[] to keep track of flips)
+- Changed roundId separator to "#"
+- Removed unnecessary pieces of GameState
+- Now to get the round correct after a close guess, the next guess has to be closer than the previous to be accepted
+
 ## [PR-43]
 
 ### Added

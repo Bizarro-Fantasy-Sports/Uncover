@@ -1,25 +1,26 @@
 /**
- * Game logic hook
+ * Guess submission hook
  * Handles name submission validation, guess checking, and give up functionality
  */
 
 import { useCallback } from "react";
 import type { GameState } from "./useGameState";
 import {
-  evaluateRank,
-  generateHint,
   calculateNewScore,
   normalize,
   calculateLevenshteinDistance,
 } from "@/features/athlete-unknown/utils";
-import { GUESS_ACCURACY } from "@/features/athlete-unknown/config";
+import {
+  GUESS_ACCURACY,
+  INCORRECT_GUESS,
+} from "@/features/athlete-unknown/config";
 
-interface UseGameLogicProps {
+interface UseGuessSubmissionProps {
   state: GameState;
   updateState: (patch: Partial<GameState>) => void;
 }
 
-export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
+export const useGuessSubmission = ({ state, updateState }: UseGuessSubmissionProps) => {
   const handleNameSubmit = useCallback(() => {
     // Don't allow empty guesses
     if (!state.playerName.trim()) {
@@ -28,18 +29,6 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
 
     const normalizedGuess = normalize(state.playerName);
     const normalizedAnswer = normalize(state.round?.player.name);
-    const distance = calculateLevenshteinDistance(
-      normalizedGuess,
-      normalizedAnswer
-    );
-
-    // If game is already won, only allow reopening modal with correct answer
-    if (state.finalRank) {
-      if (normalizedGuess === normalizedAnswer) {
-        updateState({ showResultsModal: true });
-      }
-      return;
-    }
 
     // Prevent submitting the same incorrect guess consecutively
     if (
@@ -52,65 +41,62 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
 
     // Correct answer - player wins!
     if (normalizedGuess === normalizedAnswer) {
-      const rank = evaluateRank(state.score);
       updateState({
         message: "You guessed it right!",
         messageType: "success",
         previousCloseGuess: "",
-        finalRank: rank,
-        hint: "",
-        showResultsModal: true,
+        isCompleted: true,
+        flippedTilesUponCompletion: [...state.flippedTiles],
         lastSubmittedGuess: normalizedGuess,
       });
       return;
     }
 
     // Incorrect guess - deduct points
-    const newScore = calculateNewScore(state.score, "incorrectGuess");
-    const newHint = generateHint(
-      newScore,
-      state.hint,
-      state.round?.player.name || ""
+    const newScore = calculateNewScore(state.score, INCORRECT_GUESS);
+    const distance = calculateLevenshteinDistance(
+      normalizedGuess,
+      normalizedAnswer
     );
 
     // Check if guess was very close
     if (distance <= GUESS_ACCURACY.VERY_CLOSE_DISTANCE) {
-      // If second close guess, reveal answer
-      if (
-        state.previousCloseGuess &&
-        state.previousCloseGuess !== normalizedGuess
-      ) {
-        const rank = evaluateRank(newScore);
-        updateState({
-          message: `Correct, you were close! Player's name: ${state.round?.player.name || ""}`,
-          messageType: "close",
-          previousCloseGuess: "",
-          score: newScore,
-          hint: newHint,
-          lastSubmittedGuess: normalizedGuess,
-          finalRank: rank,
-          showResultsModal: true,
-        });
-      } else {
+      if (!state.previousCloseGuess) {
         // First close guess
         updateState({
-          message: "You're close! Off by a few letters.",
+          message: `You're close! Spelling is off by a ${distance} letter${distance === 1 ? "" : "s"}.`,
           messageType: "almost",
           previousCloseGuess: normalizedGuess,
           score: newScore,
-          hint: newHint,
           lastSubmittedGuess: normalizedGuess,
         });
+        return;
       }
-      return;
+
+      const previousDistance = calculateLevenshteinDistance(
+        state.previousCloseGuess,
+        normalizedAnswer
+      );
+      // If second closer guess, reveal answer
+      if (distance < previousDistance) {
+        updateState({
+          message: "Close enough to ID the player! Spelling is hard",
+          messageType: "close",
+          previousCloseGuess: "",
+          score: newScore,
+          lastSubmittedGuess: normalizedGuess,
+          isCompleted: true,
+          flippedTilesUponCompletion: [...state.flippedTiles],
+        });
+        return;
+      }
     }
 
     // Wrong guess - not close
     updateState({
-      message: `Wrong guess: "${state.playerName}"`,
+      message: `Incorrect: "${state.playerName}"`,
       messageType: "error",
       score: newScore,
-      hint: newHint,
       incorrectGuesses: state.incorrectGuesses + 1,
       lastSubmittedGuess: normalizedGuess,
     });
@@ -118,11 +104,11 @@ export const useGameLogic = ({ state, updateState }: UseGameLogicProps) => {
 
   const handleGiveUp = useCallback(() => {
     updateState({
-      gaveUp: true,
-      finalRank: "",
-      showResultsModal: true,
+      isCompleted: true,
+      score: 0,
+      flippedTilesUponCompletion: [...state.flippedTiles],
     });
-  }, [updateState]);
+  }, [state, updateState]);
 
   return {
     handleNameSubmit,

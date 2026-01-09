@@ -2,18 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from "react-router";
 import "./AthleteUnknown.css";
-import {
-  type SportType,
-  DEFAULT_SPORT,
-  SPORTS,
-} from "@/features/athlete-unknown/config";
-import {
-  STORAGE_KEYS,
-  extractRoundNumber,
-} from "@/features/athlete-unknown/utils";
+import type { SportType } from "@/features/athlete-unknown/config";
+import { STORAGE_KEYS } from "@/features/athlete-unknown/utils";
 import {
   useGameState,
-  useGameLogic,
+  useGuessSubmission,
   useTileFlip,
   useGameData,
   useShareResults,
@@ -25,13 +18,15 @@ import {
   ScoreDisplay,
   PlayerInput,
   TileGrid,
-  ResultsModal,
-  RoundStatsModal,
+  RoundResultsModal,
   RulesModal,
   SportsReferenceCredit,
   UserStatsModal,
+  HintTiles,
 } from "@/features/athlete-unknown/components";
 import { athleteUnknownApiService, migrateUserStats } from "@/features";
+import { getValidSport } from "@/features/athlete-unknown/utils/stringMatching";
+import { config } from "@/config";
 
 export function AthleteUnknown(): React.ReactElement {
   const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
@@ -97,23 +92,11 @@ export function AthleteUnknown(): React.ReactElement {
     attemptMigration();
   }, [isAuthenticated, migrationAttempted, user?.sub, user?.nickname]);
 
-  // Validate and set the active sport from URL params, falling back to DEFAULT_SPORT
-  const getValidSport = (sportParam: string | undefined): SportType => {
-    if (
-      sportParam === SPORTS.BASEBALL ||
-      sportParam === SPORTS.BASKETBALL ||
-      sportParam === SPORTS.FOOTBALL
-    ) {
-      return sportParam as SportType;
-    }
-    return DEFAULT_SPORT;
-  };
-
   const [activeSport, setActiveSport] = useState<SportType>(
-    getValidSport(sport)
+    getValidSport(sport, config.athleteUnknown.sportsList[0])
   );
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
-  const [isRoundStatsModalOpen, setIsRoundStatsModalOpen] = useState(false);
+  const [isRoundResultsModalOpen, setIsRoundResultsModalOpen] = useState(false);
   const [isUserStatsModalOpen, setIsUserStatsModalOpen] = useState(false);
   const [selectedPlayDate, setSelectedPlayDate] = useState<string | undefined>(
     undefined
@@ -132,7 +115,6 @@ export function AthleteUnknown(): React.ReactElement {
   // Data fetching & submission
   // updates the following fields in state
   // isLoading, error, round
-  // TODO: rename to useRoundData
   useGameData({
     activeSport,
     state,
@@ -143,16 +125,15 @@ export function AthleteUnknown(): React.ReactElement {
 
   // Game logic
   // updates the following fields in state:
-  // message, messageType, previousCloseGuess, finalRank, hint, showResultsModal, lastSubmittedGuess
-  // TODO: rename to useUserSubmission
-  const { handleNameSubmit, handleGiveUp } = useGameLogic({
+  // message, messageType, previousCloseGuess, isCompleted, lastSubmittedGuess
+  const { handleNameSubmit, handleGiveUp } = useGuessSubmission({
     state,
     updateState,
   });
 
   // Tile interactions
   // updates the following fields in state:
-  // photoRevealed, returningFromPhoto, flippedTiles, tilesFlippedCount, score, hint, firstTileFlipped, lastTileFlipped
+  // photoRevealed, returningFromPhoto, flippedTiles, score
   const { handleTileClick } = useTileFlip({ state, updateState });
 
   // Share functionality
@@ -175,19 +156,15 @@ export function AthleteUnknown(): React.ReactElement {
 
   // Clear localStorage when round is completed
   useEffect(() => {
-    if (
-      state.showResultsModal &&
-      (state.finalRank || state.gaveUp) &&
-      state.round
-    ) {
+    if (state.isCompleted && state.round) {
+      setIsRoundResultsModalOpen(true);
       clearProgress();
     }
   }, [
-    state.showResultsModal,
-    state.finalRank,
-    state.gaveUp,
+    state.isCompleted,
     state.round,
     clearProgress,
+    setIsRoundResultsModalOpen,
   ]);
 
   // Show loading state
@@ -221,7 +198,7 @@ export function AthleteUnknown(): React.ReactElement {
   }
 
   const playDate = state.round?.playDate as string | undefined;
-  const roundNumber = extractRoundNumber(state.round.roundId);
+  const [, roundNumber] = state.round.roundId.split("#");
 
   // Handler for date selection in playtesting mode
   const handleDateSelect = (date: string) => {
@@ -243,6 +220,8 @@ export function AthleteUnknown(): React.ReactElement {
     }
   };
 
+  // console.log("STATE AU", state);
+
   return (
     <div className="athlete-unknown-game">
       <SportsReferenceAttribution activeSport={activeSport} />
@@ -257,7 +236,7 @@ export function AthleteUnknown(): React.ReactElement {
         roundNumber={roundNumber}
         playDate={playDate}
         theme={state.round.theme}
-        onRoundStatsClick={() => setIsRoundStatsModalOpen(true)}
+        onRoundResultsClick={() => setIsRoundResultsModalOpen(true)}
         onRulesClick={() => setIsRulesModalOpen(true)}
         isPlaytester={isPlaytester}
         showDatePicker={showDatePicker}
@@ -270,21 +249,22 @@ export function AthleteUnknown(): React.ReactElement {
         score={state.score}
         message={state.message}
         messageType={state.messageType}
-        hint={state.hint}
-        finalRank={state.finalRank}
-        tilesFlipped={state.tilesFlippedCount}
+        tilesFlippedCount={state.flippedTiles.length}
         incorrectGuesses={state.incorrectGuesses}
       />
 
       <PlayerInput
         playerName={state.playerName}
-        score={state.score}
-        finalRank={state.finalRank}
-        gaveUp={state.gaveUp}
+        isCompleted={state.isCompleted}
         onPlayerNameChange={(name) => updateState({ playerName: name })}
         onSubmit={handleNameSubmit}
         onGiveUp={handleGiveUp}
-        onViewResults={() => updateState({ showResultsModal: true })}
+      />
+
+      <HintTiles
+        flippedTiles={state.flippedTiles}
+        playerData={state.round.player}
+        onTileClick={handleTileClick}
       />
 
       <TileGrid
@@ -295,16 +275,20 @@ export function AthleteUnknown(): React.ReactElement {
         onTileClick={handleTileClick}
       />
 
-      <ResultsModal
-        isOpen={state.showResultsModal}
-        gaveUp={state.gaveUp}
+      <RoundResultsModal
+        isOpen={isRoundResultsModalOpen}
         score={state.score}
-        flippedTiles={state.flippedTiles}
+        flippedTiles={
+          state.isCompleted
+            ? state.flippedTilesUponCompletion
+            : state.flippedTiles
+        }
         copiedText={state.copiedText}
         roundStats={state.round.stats}
         playerData={state.round.player}
-        onClose={() => updateState({ showResultsModal: false })}
+        onClose={() => setIsRoundResultsModalOpen(false)}
         onShare={handleShare}
+        isCompleted={state.isCompleted}
       />
 
       <SportsReferenceCredit />
@@ -314,43 +298,11 @@ export function AthleteUnknown(): React.ReactElement {
         onClose={() => setIsRulesModalOpen(false)}
       />
 
-      {state.round.stats && (
-        <RoundStatsModal
-          isOpen={isRoundStatsModalOpen}
-          onClose={() => setIsRoundStatsModalOpen(false)}
-          roundStats={{
-            ...state.round.stats,
-            name:
-              state.finalRank || state.gaveUp
-                ? state.round.player?.name || "Unknown Player"
-                : "???",
-          }}
-        />
-      )}
-
-      {isUserStatsModalOpen && (
-        <div
-          className="user-stats-modal"
-          onClick={() => setIsUserStatsModalOpen(false)}
-        >
-          <div
-            className="user-stats-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="close-user-stats"
-              onClick={() => setIsUserStatsModalOpen(false)}
-            >
-              ×
-            </button>
-            <UserStatsModal
-              isOpen={isUserStatsModalOpen}
-              onClose={() => setIsUserStatsModalOpen(false)}
-              userStats={state.userStats}
-            />
-          </div>
-        </div>
-      )}
+      <UserStatsModal
+        isOpen={isUserStatsModalOpen}
+        onClose={() => setIsUserStatsModalOpen(false)}
+        userStats={state.userStats}
+      />
     </div>
   );
 }

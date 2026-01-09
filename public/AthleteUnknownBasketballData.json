@@ -2,7 +2,7 @@
   {
     "playDate": "2025-11-19",
     "sport": "basketball",
-    "roundId": "basketball001",
+    "roundId": "basketball#1",
     "created": "2025-11-11T10:00:00Z",
     "lastUpdated": "2025-11-12T00:00:00Z",
     "theme": "",
@@ -18,7 +18,9 @@
       "jerseyNumbers": "31, 30, 18",
       "careerStats": "5.2 PTS, 5.6 REB, 1.1 AST, 38.3 WS",
       "personalAchievements": "4x NBA Champ",
-      "photo": "https://images.unsplash.com/photo-1517649763962-0c623066013b"
+      "photo": "https://images.unsplash.com/photo-1517649763962-0c623066013b",
+      "initials": "K.R.",
+      "nicknames": ""
     },
     "stats": {
       "playDate": "2025-11-19",
@@ -42,7 +44,9 @@
         "photo": 151,
         "playerInformation": 145,
         "teamsPlayedOn": 118,
-        "yearsActive": 67
+        "yearsActive": 67,
+        "initials": 96,
+        "nicknames": 45
       },
       "firstTileFlippedTracker": {
         "bio": 8,
@@ -53,7 +57,9 @@
         "photo": 3,
         "playerInformation": 52,
         "teamsPlayedOn": 19,
-        "yearsActive": 14
+        "yearsActive": 14,
+        "initials": 31,
+        "nicknames": 12
       },
       "lastTileFlippedTracker": {
         "bio": 12,
@@ -64,14 +70,16 @@
         "photo": 79,
         "playerInformation": 7,
         "teamsPlayedOn": 16,
-        "yearsActive": 18
+        "yearsActive": 18,
+        "initials": 24,
+        "nicknames": 9
       }
     }
   },
   {
     "playDate": "2025-11-20",
     "sport": "basketball",
-    "roundId": "basketball002",
+    "roundId": "basketball#2",
     "created": "2025-11-12T10:00:00Z",
     "lastUpdated": "2025-11-13T00:00:00Z",
     "theme": "",
@@ -87,7 +95,9 @@
       "jerseyNumbers": "15, 7, 00, 7",
       "careerStats": "22.5 PTS, 6.2 REB, 2.7 AST, 108.5 WS",
       "personalAchievements": "HOF, 10x All-Star, 6x All-NBA",
-      "photo": "https://images.unsplash.com/photo-1521412644187-c49fa049e84d"
+      "photo": "https://images.unsplash.com/photo-1521412644187-c49fa049e84d",
+      "initials": "C.A.",
+      "nicknames": "Melo, Hoodie Melo, Sweet Melon, Mel"
     },
     "stats": {
       "playDate": "2025-11-20",
@@ -111,7 +121,9 @@
         "photo": 267,
         "playerInformation": 198,
         "teamsPlayedOn": 176,
-        "yearsActive": 98
+        "yearsActive": 98,
+        "initials": 178,
+        "nicknames": 201
       },
       "firstTileFlippedTracker": {
         "bio": 17,
@@ -122,7 +134,9 @@
         "photo": 6,
         "playerInformation": 56,
         "teamsPlayedOn": 34,
-        "yearsActive": 21
+        "yearsActive": 21,
+        "initials": 52,
+        "nicknames": 67
       },
       "lastTileFlippedTracker": {
         "bio": 21,
@@ -133,14 +147,16 @@
         "photo": 124,
         "playerInformation": 11,
         "teamsPlayedOn": 27,
-        "yearsActive": 25
+        "yearsActive": 25,
+        "initials": 38,
+        "nicknames": 45
       }
     }
   },
   {
     "playDate": "2025-11-21",
     "sport": "basketball",
-    "roundId": "basketball003",
+    "roundId": "basketball#3",
     "created": "2025-11-13T10:00:00Z",
     "lastUpdated": "2025-11-14T00:00:00Z",
     "theme": "",
@@ -156,7 +172,9 @@
       "jerseyNumbers": "21, 14, 21, 32",
       "careerStats": "4.7 PTS, 3.7 REB, 1.3 AST, 19.2 WS",
       "personalAchievements": "1x NBA Champ",
-      "photo": "https://images.unsplash.com/photo-1538688525198-9b88f6f53126"
+      "photo": "https://images.unsplash.com/photo-1538688525198-9b88f6f53126",
+      "initials": "R.T.",
+      "nicknames": ""
     },
     "stats": {
       "playDate": "2025-11-21",
@@ -180,7 +198,9 @@
         "photo": 136,
         "playerInformation": 118,
         "teamsPlayedOn": 139,
-        "yearsActive": 81
+        "yearsActive": 81,
+        "initials": 89,
+        "nicknames": 52
       },
       "firstTileFlippedTracker": {
         "bio": 9,
@@ -191,7 +211,9 @@
         "photo": 4,
         "playerInformation": 31,
         "teamsPlayedOn": 48,
-        "yearsActive": 16
+        "yearsActive": 16,
+        "initials": 28,
+        "nicknames": 14
       },
       "lastTileFlippedTracker": {
         "bio": 13,
@@ -202,14 +224,16 @@
         "photo": 68,
         "playerInformation": 8,
         "teamsPlayedOn": 14,
-        "yearsActive": 17
+        "yearsActive": 17,
+        "initials": 21,
+        "nicknames": 11
       }
     }
   },
   {
     "playDate": "2025-11-22",
     "sport": "basketball",
-    "roundId": "basketball004",
+    "roundId": "basketball#4",
     "created": "2025-11-14T10:00:00Z",
     "lastUpdated": "2025-11-15T00:00:00Z",
     "theme": "",
@@ -225,7 +249,9 @@
       "jerseyNumbers": "13, 1",
       "careerStats": "24.0 PTS, 5.6 REB, 7.2 AST, 175.2 WS",
       "personalAchievements": "11x All-Star, 8x All-NBA, 1x Sixth Man, 1x MVP",
-      "photo": "https://images.unsplash.com/photo-1518609878373-06d740f60d8b"
+      "photo": "https://images.unsplash.com/photo-1518609878373-06d740f60d8b",
+      "initials": "J.H.",
+      "nicknames": "The Beard"
     },
     "stats": {
       "playDate": "2025-11-22",
@@ -249,7 +275,9 @@
         "photo": 298,
         "playerInformation": 223,
         "teamsPlayedOn": 187,
-        "yearsActive": 112
+        "yearsActive": 112,
+        "initials": 198,
+        "nicknames": 234
       },
       "firstTileFlippedTracker": {
         "bio": 19,
@@ -260,7 +288,9 @@
         "photo": 7,
         "playerInformation": 64,
         "teamsPlayedOn": 38,
-        "yearsActive": 24
+        "yearsActive": 24,
+        "initials": 59,
+        "nicknames": 78
       },
       "lastTileFlippedTracker": {
         "bio": 24,
@@ -271,14 +301,16 @@
         "photo": 141,
         "playerInformation": 13,
         "teamsPlayedOn": 29,
-        "yearsActive": 28
+        "yearsActive": 28,
+        "initials": 42,
+        "nicknames": 51
       }
     }
   },
   {
     "playDate": "2025-11-23",
     "sport": "basketball",
-    "roundId": "basketball005",
+    "roundId": "basketball#5",
     "created": "2025-11-15T10:00:00Z",
     "lastUpdated": "2025-11-16T00:00:00Z",
     "theme": "",
@@ -294,7 +326,9 @@
       "jerseyNumbers": "26",
       "careerStats": "9.7 PTS, 3.0 REB, 1.7 AST, 73.4 WS",
       "personalAchievements": "1x All-Star",
-      "photo": "https://images.unsplash.com/photo-1509223197845-458d87318791"
+      "photo": "https://images.unsplash.com/photo-1509223197845-458d87318791",
+      "initials": "K.K.",
+      "nicknames": "Threezus"
     },
     "stats": {
       "playDate": "2025-11-23",
@@ -318,7 +352,9 @@
         "photo": 192,
         "playerInformation": 178,
         "teamsPlayedOn": 198,
-        "yearsActive": 89
+        "yearsActive": 89,
+        "initials": 134,
+        "nicknames": 156
       },
       "firstTileFlippedTracker": {
         "bio": 13,
@@ -329,7 +365,9 @@
         "photo": 5,
         "playerInformation": 42,
         "teamsPlayedOn": 71,
-        "yearsActive": 22
+        "yearsActive": 22,
+        "initials": 38,
+        "nicknames": 44
       },
       "lastTileFlippedTracker": {
         "bio": 17,
@@ -340,7 +378,9 @@
         "photo": 96,
         "playerInformation": 9,
         "teamsPlayedOn": 15,
-        "yearsActive": 20
+        "yearsActive": 20,
+        "initials": 29,
+        "nicknames": 33
       }
     }
   }

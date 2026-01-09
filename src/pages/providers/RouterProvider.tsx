@@ -5,6 +5,7 @@ import {
   Navigate,
 } from "react-router";
 import { RootLayout, Home, AthleteUnknown, ContactForm } from "@/pages/routes";
+import { config } from "@/config";
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,12 @@ const router = createBrowserRouter([
       },
       {
         path: "/athlete-unknown",
-        Component: () => <Navigate to="/athlete-unknown/baseball" replace />,
+        Component: () => (
+          <Navigate
+            to={`/athlete-unknown/${config.athleteUnknown.sportsList[0]}`}
+            replace
+          />
+        ),
       },
       {
         path: "/athlete-unknown/:sport",

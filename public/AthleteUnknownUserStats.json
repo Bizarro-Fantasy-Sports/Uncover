@@ -56,7 +56,7 @@
           "playDate": "2025-12-02",
           "score": 99,
           "isCorrect": true,
-          "tilesFlipped": ["bio", "photo"],
+          "flippedTiles": ["bio", "photo"],
           "incorrectGuesses": 0
         }
       ]
@@ -112,7 +112,7 @@
           "playDate": "2025-12-02",
           "score": 89,
           "isCorrect": true,
-          "tilesFlipped": ["bio", "photo"],
+          "flippedTiles": ["bio", "photo"],
           "incorrectGuesses": 1
         }
       ]
@@ -168,7 +168,7 @@
           "playDate": "2025-12-02",
           "score": 0,
           "isCorrect": false,
-          "tilesFlipped": ["bio", "photo", "draftInformation"],
+          "flippedTiles": ["bio", "photo", "draftInformation"],
           "incorrectGuesses": 10
         }
       ]
