@@ -31,11 +31,12 @@ import {
   SportsReferenceCredit,
   UserStatsModal,
 } from "@/features/athlete-unknown/components";
-import { athleteUnknownApiService } from "@/features";
+import { athleteUnknownApiService, migrateUserStats } from "@/features";
 
 export function AthleteUnknown(): React.ReactElement {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
   const [userRoles, setUserRoles] = useState<string[]>([]);
+  const [migrationAttempted, setMigrationAttempted] = useState(false);
   const { sport } = useParams();
 
   // Extract roles from access token
@@ -65,6 +66,36 @@ export function AthleteUnknown(): React.ReactElement {
   useEffect(() => {
     athleteUnknownApiService.setGetAccessToken(getAccessTokenSilently);
   }, [getAccessTokenSilently]);
+
+  // Migrate user stats from localStorage to backend after first login
+  useEffect(() => {
+    const attemptMigration = async () => {
+      // Only attempt migration once per session and only for authenticated users
+      if (!isAuthenticated || migrationAttempted) {
+        return;
+      }
+
+      setMigrationAttempted(true);
+
+      try {
+        const success = await migrateUserStats(user?.sub, user?.nickname);
+
+        if (success) {
+          console.log(
+            "[AthleteUnknown] Stats migration completed successfully"
+          );
+        } else {
+          console.warn(
+            "[AthleteUnknown] Stats migration failed, will retry on next login"
+          );
+        }
+      } catch (error) {
+        console.error("[AthleteUnknown] Error during stats migration:", error);
+      }
+    };
+
+    attemptMigration();
+  }, [isAuthenticated, migrationAttempted, user?.sub, user?.nickname]);
 
   // Validate and set the active sport from URL params, falling back to DEFAULT_SPORT
   const getValidSport = (sportParam: string | undefined): SportType => {
@@ -151,7 +182,13 @@ export function AthleteUnknown(): React.ReactElement {
     ) {
       clearProgress();
     }
-  }, [state.showResultsModal, state.finalRank, state.gaveUp, state.round, clearProgress]);
+  }, [
+    state.showResultsModal,
+    state.finalRank,
+    state.gaveUp,
+    state.round,
+    clearProgress,
+  ]);
 
   // Show loading state
   if (state.isLoading) {
