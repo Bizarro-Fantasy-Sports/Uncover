@@ -20,7 +20,6 @@ import {
 } from "@/features/athlete-unknown/utils";
 
 export interface GameState {
-  playersList: PlayerData[] | null;
   round: Round | null;
   userStats: UserStats | null;
   playerName: string;
@@ -42,7 +41,6 @@ export interface GameState {
 }
 
 const createInitialState = (): GameState => ({
-  playersList: null,
   round: null,
   userStats: null,
   playerName: "",
@@ -79,7 +77,6 @@ const gameStateToProgress = (
   message: state.message,
   messageType: state.messageType,
   playerName: state.playerName,
-  playerName_saved: state.round?.player?.name || "",
   previousCloseGuess: state.previousCloseGuess,
   score: state.score,
 });
