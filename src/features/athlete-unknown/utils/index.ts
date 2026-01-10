@@ -16,5 +16,6 @@ export {
   loadGuestStats,
   updateGuestStats,
   clearGuestStats,
+  createInitialUserStats,
 } from "./guestStats";
 export { getCurrentDateString } from "./date";

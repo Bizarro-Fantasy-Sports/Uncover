@@ -1,6 +1,6 @@
 import React from "react";
 import "./RulesModal.css";
-import { RoundHistory, RoundSummary } from "../types";
+import { RoundHistory, RoundSummary } from "@/features/athlete-unknown/types";
 
 interface RoundHistoryModalProps {
   isOpen: boolean;

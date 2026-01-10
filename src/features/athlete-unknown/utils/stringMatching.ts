@@ -3,7 +3,7 @@ import {
   SPORT_BASKETBALL,
   SPORT_FOOTBALL,
   SportType,
-} from "../config";
+} from "@/features/athlete-unknown/config";
 
 /**
  * String matching utilities for game logic

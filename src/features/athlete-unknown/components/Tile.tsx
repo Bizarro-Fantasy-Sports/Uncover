@@ -1,7 +1,7 @@
 import React from "react";
 import { camelCaseToTitleCase } from "@/utils";
 import { PlayerData } from "@/features/athlete-unknown/types";
-import { TILES, TileType } from "../config";
+import { TILES, TileType } from "@/features/athlete-unknown/config";
 
 interface TileProps {
   tileName: TileType;

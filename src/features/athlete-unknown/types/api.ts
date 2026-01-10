@@ -1,6 +1,6 @@
 // Athlete Unknown API Types
 
-import { TileType } from "../config";
+import { TileType } from "@/features/athlete-unknown/config";
 
 export interface Round {
   roundId: string;

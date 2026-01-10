@@ -1,7 +1,10 @@
 import { config } from "@/config";
 import { athleteUnknownApiService } from "./api";
 import { MockDataService } from "./mockData";
-import { createInitialUserStats, loadGuestStats } from "../utils/guestStats";
+import {
+  createInitialUserStats,
+  loadGuestStats,
+} from "@/features/athlete-unknown/utils";
 import { hasGuestStats } from "./statsMigration";
 
 /**
