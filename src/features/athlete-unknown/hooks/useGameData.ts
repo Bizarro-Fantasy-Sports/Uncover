@@ -97,12 +97,10 @@ export const useGameData = ({
         return;
       }
       // Get current date in local timezone
-      const now = new Date();
-      const currentDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      const currentDate = getCurrentDateString();
       const roundPlayDate = state.round.playDate || currentDate;
-      // Only submit stats if current date matches the round's playDate
-      // This prevents stat submission for playtesting future rounds
-      if (currentDate !== roundPlayDate) {
+      // Prevent stat submission for playtesting future rounds
+      if (roundPlayDate > currentDate) {
         console.log(
           "[Athlete Unknown] Skipping stats submission - playtesting future round"
         );

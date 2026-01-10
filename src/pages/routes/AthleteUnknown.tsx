@@ -308,7 +308,7 @@ export function AthleteUnknown(): React.ReactElement {
         isLoading={state.isLoading}
         error={state.error}
         roundHistory={state.roundHistory}
-        userRoundHistory={userRoundHistoryArray?.[0].history ?? []}
+        userRoundHistory={userRoundHistoryArray?.[0]?.history ?? []}
         onRoundSelect={(playDate) => setSelectedPlayDate(playDate)}
       />
     </div>

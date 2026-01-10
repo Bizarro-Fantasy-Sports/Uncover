@@ -67,7 +67,11 @@ class AthleteUnknownApiService {
     const endpoint = `/v1/results?sport=${sport}&playDate=${dateParam}`;
 
     try {
-      const result = await this.httpClient.post<any>(endpoint, gameResult);
+      // Detect user's timezone
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const result = await this.httpClient.post<any>(endpoint, gameResult, {
+        "X-User-Timezone": timezone,
+      });
 
       return {
         success: true,
