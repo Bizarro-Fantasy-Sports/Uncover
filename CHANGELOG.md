@@ -15,6 +15,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [PR-45]
+
+### Added
+
+- Lots of refactoring and bug fixes
+- Round History to play rounds in the past (and in the future for playtester role)
+- Use history from userStats to autocomplete already finished rounds. If not found, use localStorage for guest users
+- For 401 Unauthorized failures for userStats, use localStorage for guest users' user stats
+- Pass timezone to POST /results for BE to accurately calculate currentDailyStreak
+
 ## [PR-44]
 
 ### Added
