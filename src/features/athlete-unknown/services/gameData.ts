@@ -1,4 +1,4 @@
-import { API_CONFIG } from "@/config";
+import { config } from "@/config";
 import { athleteUnknownApiService } from "./api";
 import { MockDataService } from "./mockData";
 import type {
@@ -15,7 +15,7 @@ class GameDataService {
   private useMockData: boolean;
 
   constructor() {
-    this.useMockData = API_CONFIG.useMockData;
+    this.useMockData = config.api.useMockData;
     console.log(
       `GameDataService initialized - Using ${this.useMockData ? "MOCK" : "API"} data`
     );
@@ -64,8 +64,11 @@ class GameDataService {
 
     try {
       console.log("[API] Submitting game results:", gameResult);
-      const response =
-        await athleteUnknownApiService.submitGameResults(sport, playDate, gameResult);
+      const response = await athleteUnknownApiService.submitGameResults(
+        sport,
+        playDate,
+        gameResult
+      );
       console.log("[API] Game results submitted successfully:", response);
       return response;
     } catch (error) {

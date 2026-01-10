@@ -1,5 +1,5 @@
 import { HttpClient } from "@/services";
-import { API_CONFIG } from "@/config";
+import { config } from "@/config";
 import type {
   GameResultResponse,
   Result,
@@ -16,7 +16,7 @@ class AthleteUnknownApiService {
   private httpClient: HttpClient;
 
   constructor() {
-    this.httpClient = new HttpClient(API_CONFIG.baseUrl, API_CONFIG.timeout);
+    this.httpClient = new HttpClient(config.api.baseUrl, config.api.timeout);
   }
 
   /**

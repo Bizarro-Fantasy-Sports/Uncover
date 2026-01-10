@@ -25,13 +25,15 @@ export interface PlayerData {
   personalAchievements: string;
   photo: string;
   [key: string]: string | number | undefined;
+  initials?: string;
+  nicknames?: string;
 }
 
 // what is actually sent and returned from BE API
 export interface Result {
   score: number;
   isCorrect: boolean;
-  tilesFlipped: string[];
+  flippedTiles: string[];
   incorrectGuesses: number;
 }
 
@@ -92,4 +94,6 @@ export interface TileTracker {
   careerStats: number;
   personalAchievements: number;
   photo: number;
+  initials: number;
+  nicknames: number;
 }

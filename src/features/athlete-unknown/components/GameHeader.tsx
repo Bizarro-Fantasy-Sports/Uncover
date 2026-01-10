@@ -1,7 +1,7 @@
 // import React from "react";
 import { useNavigate } from "react-router";
 import type { SportType } from "@/features/athlete-unknown/config";
-import { SPORT_LIST } from "@/features/athlete-unknown/config";
+import { config } from "@/config";
 
 interface GameHeaderProps {
   activeSport: SportType;
@@ -24,7 +24,7 @@ export function GameHeader({
   return (
     <div className="sports-section">
       <div className="sports-navbar">
-        {SPORT_LIST.map((sport) => (
+        {config.athleteUnknown.sportsList.map((sport) => (
           <div
             key={sport}
             className={`nav-tab ${activeSport === sport ? "active" : ""}`}

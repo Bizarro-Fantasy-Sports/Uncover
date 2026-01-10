@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import "./RulesModal.css";
-import { REFERENCE_URLS, SCORING } from "@/features/athlete-unknown/config";
+import {
+  INITIAL_SCORE,
+  REFERENCE_URLS,
+  INCORRECT_GUESS_PENALTY,
+} from "@/features/athlete-unknown/config";
 
 interface RulesModalProps {
   isOpen: boolean;
@@ -76,7 +80,10 @@ const acronymDefinitions: Record<string, { full: string; link?: string }> = {
   "SB MVP": { full: "Super Bowl MVP" },
 };
 
-function RulesModal({ isOpen, onClose }: RulesModalProps): React.ReactElement | null {
+function RulesModal({
+  isOpen,
+  onClose,
+}: RulesModalProps): React.ReactElement | null {
   const [hoveredTile, setHoveredTile] = useState<string | null>(null);
   const [hoveredAcronym, setHoveredAcronym] = useState<string | null>(null);
 
@@ -168,15 +175,14 @@ function RulesModal({ isOpen, onClose }: RulesModalProps): React.ReactElement | 
             <h3>Scoring</h3>
             <ul>
               <li>
-                <strong>Start:</strong> {SCORING.INITIAL_SCORE} points
+                <strong>Start:</strong> {INITIAL_SCORE} points
               </li>
               <li>
-                <strong>Tile flip:</strong> −{SCORING.REGULAR_TILE_PENALTY} pts
-                (Photo: −{SCORING.PHOTO_TILE_PENALTY} pts)
+                <strong>Tile flip:</strong>Each tile has its own point deduction
+                amount
               </li>
               <li>
-                <strong>Wrong guess:</strong> −{SCORING.INCORRECT_GUESS_PENALTY}{" "}
-                pts
+                <strong>Wrong guess:</strong> −{INCORRECT_GUESS_PENALTY} pts
               </li>
             </ul>
           </div>
@@ -184,13 +190,13 @@ function RulesModal({ isOpen, onClose }: RulesModalProps): React.ReactElement | 
           <div className="rules-section">
             <h3>Hints & Help</h3>
             <ul>
-              <li>
+              {/* <li>
                 Close spelling = hint / auto-correct after multiple close
                 attempts
               </li>
               <li>
                 Stuck & &lt;{SCORING.HINT_THRESHOLD} pts = initials revealed
-              </li>
+              </li> */}
               <li>Difficulty increases Mon → Sat; Sundays are themed</li>
             </ul>
           </div>

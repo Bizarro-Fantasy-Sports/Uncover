@@ -1,4 +1,5 @@
 import type { ApiError } from "@/types";
+import { config } from "@/config/env";
 
 /**
  * Generic HTTP client with auth, timeout, and error handling
@@ -49,7 +50,7 @@ class HttpClient {
         try {
           token = await this.getAccessTokenSilently({
             authorizationParams: {
-              audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+              audience: config.auth0.audience,
             },
           });
         } catch (error) {

@@ -1,4 +1,4 @@
-import { API_CONFIG } from "@/config";
+import { config } from "@/config";
 import { athleteUnknownApiService } from "./api";
 import { MockDataService } from "./mockData";
 
@@ -10,7 +10,7 @@ class UserStatsService {
   private useMockData: boolean;
 
   constructor() {
-    this.useMockData = API_CONFIG.useMockData;
+    this.useMockData = config.api.useMockData;
     console.log(
       `UserStatsService initialized - Using ${this.useMockData ? "MOCK" : "API"} data`
     );

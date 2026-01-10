@@ -242,7 +242,6 @@
   grid-gap: 7.5px;
   justify-content: center;
   margin-top: 20px;
-  padding: 50px; /* Space for tooltips on all sides */
 }
 
 .tile {
