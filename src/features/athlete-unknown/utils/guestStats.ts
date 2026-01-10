@@ -52,6 +52,22 @@ const createInitialSportStats = (sport: SportType): UserSportStats => ({
 });
 
 /**
+ * Create full initial stats object
+ */
+export const createInitialUserStats = (): UserStats => ({
+  userId: "",
+  userName: "",
+  userCreated: "",
+  currentDailyStreak: 0,
+  lastDayPlayed: "",
+  sports: [
+    createInitialSportStats("baseball"),
+    createInitialSportStats("basketball"),
+    createInitialSportStats("football"),
+  ],
+});
+
+/**
  * Load all guest stats from localStorage
  */
 export const loadGuestStats = (): UserStats => {
@@ -60,32 +76,10 @@ export const loadGuestStats = (): UserStats => {
     if (data) {
       return JSON.parse(data) as UserStats;
     }
-    return {
-      userId: "",
-      userName: "",
-      userCreated: "",
-      currentDailyStreak: 0,
-      lastDayPlayed: "",
-      sports: [
-        createInitialSportStats("baseball"),
-        createInitialSportStats("basketball"),
-        createInitialSportStats("football"),
-      ],
-    };
+    return createInitialUserStats();
   } catch (error) {
     console.error("[GuestStats] Error loading guest stats:", error);
-    return {
-      userId: "",
-      userName: "",
-      userCreated: "",
-      currentDailyStreak: 0,
-      lastDayPlayed: "",
-      sports: [
-        createInitialSportStats("baseball"),
-        createInitialSportStats("basketball"),
-        createInitialSportStats("football"),
-      ],
-    };
+    return createInitialUserStats();
   }
 };
 
@@ -148,7 +142,11 @@ const findLeastCommonTile = (tracker: TileTracker): string => {
 /**
  * Update guest stats with a new game result
  */
-export const updateGuestStats = (sport: SportType, result: Result): void => {
+export const updateGuestStats = (
+  sport: SportType,
+  playDate: string,
+  result: Result
+): void => {
   try {
     console.log("[GuestStats] Updating guest stats for", sport);
 
@@ -160,6 +158,12 @@ export const updateGuestStats = (sport: SportType, result: Result): void => {
       sportStats = createInitialSportStats(sport);
       allStats.sports.push(sportStats);
     }
+
+    // update history array
+    sportStats.history.push({
+      playDate,
+      ...result,
+    });
 
     // Update total plays
     sportStats.stats.totalPlays++;

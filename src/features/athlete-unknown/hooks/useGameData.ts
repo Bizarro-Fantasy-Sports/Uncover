@@ -124,7 +124,7 @@ export const useGameData = ({
             activeSport
           );
 
-          updateGuestStats(activeSport, gameResult);
+          updateGuestStats(activeSport, roundPlayDate, gameResult);
         } else {
           console.log(
             "[Athlete Unknown] Skipping guest stats update - user is authenticated"
