@@ -1,6 +1,6 @@
 import React from "react";
 import "./RulesModal.css";
-import { RoundSummary } from "../types";
+import { RoundHistory, RoundSummary } from "../types";
 
 interface RoundHistoryModalProps {
   isOpen: boolean;
@@ -8,6 +8,7 @@ interface RoundHistoryModalProps {
   isLoading: boolean;
   error: string | null;
   roundHistory: RoundSummary[];
+  userRoundHistory: RoundHistory[];
   onRoundSelect?: (playDate: string) => void;
 }
 
@@ -17,6 +18,7 @@ function RoundHistoryModal({
   isLoading,
   error,
   roundHistory,
+  userRoundHistory,
   onRoundSelect,
 }: RoundHistoryModalProps): React.ReactElement | null {
   const handleRowClick = (playDate: string) => {
@@ -56,34 +58,46 @@ function RoundHistoryModal({
               <thead>
                 <tr>
                   <th style={{ border: "1px solid #ddd", padding: "8px" }}>
+                    Play Date
+                  </th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
                     Round ID
                   </th>
                   <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    Sport
-                  </th>
-                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    Play Date
+                    Score
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {roundHistory.map((round: RoundSummary) => (
-                  <tr
-                    key={round.roundId}
-                    onClick={() => handleRowClick(round.playDate)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                      {round.roundId}
-                    </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                      {round.sport}
-                    </td>
-                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                      {round.playDate}
-                    </td>
-                  </tr>
-                ))}
+                {roundHistory.map((round: RoundSummary) => {
+                  const roundPlayDate = round.playDate;
+                  const hasUserPlayedThisRoundArray = userRoundHistory.filter(
+                    (userRound: RoundHistory) => {
+                      return roundPlayDate === userRound.playDate;
+                    }
+                  );
+                  const hasUserPlayedThisRound =
+                    hasUserPlayedThisRoundArray.length > 0;
+                  return (
+                    <tr
+                      key={round.roundId}
+                      onClick={() => handleRowClick(round.playDate)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {round.playDate}
+                      </td>
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {round.roundId}
+                      </td>
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {hasUserPlayedThisRound
+                          ? hasUserPlayedThisRoundArray?.[0].score
+                          : "Play Now!"}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}

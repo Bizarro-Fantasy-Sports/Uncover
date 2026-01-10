@@ -25,7 +25,11 @@ import {
   HintTiles,
   RoundHistoryModal,
 } from "@/features/athlete-unknown/components";
-import { athleteUnknownApiService, migrateUserStats } from "@/features";
+import {
+  athleteUnknownApiService,
+  migrateUserStats,
+  UserSportStats,
+} from "@/features";
 import { getValidSport } from "@/features/athlete-unknown/utils/stringMatching";
 import { config } from "@/config";
 
@@ -208,8 +212,15 @@ export function AthleteUnknown(): React.ReactElement {
     );
   }
 
+  //TODO memoize these
   const playDate = state.round?.playDate as string | undefined;
   const [, roundNumber] = state.round.roundId.split("#");
+
+  const userRoundHistoryArray = state.userStats?.sports.filter(
+    (userSport: UserSportStats) => {
+      return userSport.sport === activeSport;
+    }
+  );
 
   // console.log("STATE AU", state);
 
@@ -297,6 +308,7 @@ export function AthleteUnknown(): React.ReactElement {
         isLoading={state.isLoading}
         error={state.error}
         roundHistory={state.roundHistory}
+        userRoundHistory={userRoundHistoryArray?.[0].history ?? []}
         onRoundSelect={(playDate) => setSelectedPlayDate(playDate)}
       />
     </div>
