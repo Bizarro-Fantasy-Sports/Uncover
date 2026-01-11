@@ -33,7 +33,7 @@ jobs:
         run: |
           sam deploy \
             --template-file template.yaml \
-            --stack-name statsland-frontend-dev \
+            --stack-name statsland-website-dev \
             --capabilities CAPABILITY_IAM \
             --no-fail-on-empty-changeset \
             --parameter-overrides \
@@ -45,12 +45,12 @@ jobs:
         id: stack-outputs
         run: |
           BUCKET=$(aws cloudformation describe-stacks \
-            --stack-name statsland-frontend-dev \
+            --stack-name statsland-website-dev \
             --query 'Stacks[0].Outputs[?OutputKey==`BucketName`].OutputValue' \
             --output text)
 
           DIST_ID=$(aws cloudformation describe-stacks \
-            --stack-name statsland-frontend-dev \
+            --stack-name statsland-website-dev \
             --query 'Stacks[0].Outputs[?OutputKey==`CloudFrontDistributionId`].OutputValue' \
             --output text)
 
@@ -114,7 +114,7 @@ jobs:
         run: |
           sam deploy \
             --template-file template.yaml \
-            --stack-name statsland-frontend-prod \
+            --stack-name statsland-website-prod \
             --capabilities CAPABILITY_IAM \
             --no-fail-on-empty-changeset \
             --parameter-overrides \
@@ -126,12 +126,12 @@ jobs:
         id: stack-outputs
         run: |
           BUCKET=$(aws cloudformation describe-stacks \
-            --stack-name statsland-frontend-prod \
+            --stack-name statsland-website-prod \
             --query 'Stacks[0].Outputs[?OutputKey==`BucketName`].OutputValue' \
             --output text)
 
           DIST_ID=$(aws cloudformation describe-stacks \
-            --stack-name statsland-frontend-prod \
+            --stack-name statsland-website-prod \
             --query 'Stacks[0].Outputs[?OutputKey==`CloudFrontDistributionId`].OutputValue' \
             --output text)
 
