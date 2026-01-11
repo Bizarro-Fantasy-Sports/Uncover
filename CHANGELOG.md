@@ -19,7 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- New deploy-dev.yml file. Deployments will only be made on release/ branches
+- New deploy-frontend.yml file. Deployments will only be made on release/ branches
 
 ## [PR-45]
 
