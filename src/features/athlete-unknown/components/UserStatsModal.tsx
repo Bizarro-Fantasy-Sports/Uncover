@@ -11,12 +11,14 @@ interface UserStatsModalProps {
   isOpen: boolean;
   onClose: () => void;
   userStats: UserStats | null;
+  onEditUsername?: () => void;
 }
 
 function UserStatsModal({
   isOpen,
   onClose,
   userStats,
+  onEditUsername,
 }: UserStatsModalProps): React.ReactElement | null {
   const { sport } = useParams();
   const [selectedSport, setSelectedSport] = useState<string>(sport ?? "");
@@ -53,7 +55,18 @@ function UserStatsModal({
       <h1 className="stats-title">User Statistics</h1>
 
       <div className="user-info">
-        <p>User: {userStats.userName}</p>
+        <div className="username-row">
+          <p>User: {userStats.userName}</p>
+          {onEditUsername && (
+            <button
+              className="edit-username-button"
+              onClick={onEditUsername}
+              title="Edit username"
+            >
+              ✏️
+            </button>
+          )}
+        </div>
         <p>Member Since: {formatDate(userStats.userCreated)}</p>
         <p>Current Daily Streak: {userStats.currentDailyStreak}</p>
       </div>

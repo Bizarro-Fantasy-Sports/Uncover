@@ -121,6 +121,22 @@ class AthleteUnknownApiService {
       );
     }
   }
+
+  /**
+   * Update username for authenticated user
+   * @param userName - The new username
+   */
+  async updateUsername(userName: string): Promise<{ userId: string; userName: string; message: string }> {
+    const endpoint = "/v1/user/username";
+
+    try {
+      console.log("[API] Updating username");
+      return await this.httpClient.put<any>(endpoint, { userName });
+    } catch (error) {
+      console.error("Error updating username:", error);
+      throw this.httpClient.formatError(error, "Failed to update username");
+    }
+  }
 }
 
 // Export singleton instance

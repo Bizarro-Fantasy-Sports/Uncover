@@ -30,6 +30,7 @@ import {
   RulesModal,
   SportsReferenceCredit,
   UserStatsModal,
+  UsernameModal,
 } from "@/features/athlete-unknown/components";
 import { athleteUnknownApiService, migrateUserStats } from "@/features";
 
@@ -115,6 +116,7 @@ export function AthleteUnknown(): React.ReactElement {
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
   const [isRoundStatsModalOpen, setIsRoundStatsModalOpen] = useState(false);
   const [isUserStatsModalOpen, setIsUserStatsModalOpen] = useState(false);
+  const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
   const [selectedPlayDate, setSelectedPlayDate] = useState<string | undefined>(
     undefined
   );
@@ -243,6 +245,24 @@ export function AthleteUnknown(): React.ReactElement {
     }
   };
 
+  // Handler for opening username modal
+  const handleEditUsername = () => {
+    setIsUsernameModalOpen(true);
+  };
+
+  // Handler for username update - refresh user stats
+  const handleUsernameUpdated = (newUsername: string) => {
+    // Update the username in the current userStats state
+    if (state.userStats) {
+      updateState({
+        userStats: {
+          ...state.userStats,
+          userName: newUsername,
+        },
+      });
+    }
+  };
+
   return (
     <div className="athlete-unknown-game">
       <SportsReferenceAttribution activeSport={activeSport} />
@@ -347,9 +367,19 @@ export function AthleteUnknown(): React.ReactElement {
               isOpen={isUserStatsModalOpen}
               onClose={() => setIsUserStatsModalOpen(false)}
               userStats={state.userStats}
+              onEditUsername={isAuthenticated ? handleEditUsername : undefined}
             />
           </div>
         </div>
+      )}
+
+      {isAuthenticated && state.userStats && (
+        <UsernameModal
+          isOpen={isUsernameModalOpen}
+          onClose={() => setIsUsernameModalOpen(false)}
+          currentUsername={state.userStats.userName}
+          onUsernameUpdated={handleUsernameUpdated}
+        />
       )}
     </div>
   );
