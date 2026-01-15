@@ -10,10 +10,8 @@ import {
   TIMING,
   TILES,
   ALL_TILES,
-  SPORT_BASEBALL,
-  SPORT_BASKETBALL,
-  SPORT_FOOTBALL,
 } from "@/features/athlete-unknown/config";
+import { getSportEmoji, getValidSport } from "../utils/strings";
 
 interface UseShareResultsProps {
   state: GameState;
@@ -33,14 +31,7 @@ export const useShareResults = ({
       : state.flippedTiles;
 
     // Build the share text
-    const sportEmoji =
-      sport === SPORT_BASEBALL
-        ? "⚾"
-        : sport === SPORT_BASKETBALL
-          ? "🏀"
-          : sport === SPORT_FOOTBALL
-            ? "🏈"
-            : "";
+    const sportEmoji = getSportEmoji(getValidSport(sport));
     let shareText = `Athlete Unknown \nCase #${sportEmoji}${roundNumber}\n`;
 
     // first tile is whether round is won or given up

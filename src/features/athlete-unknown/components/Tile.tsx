@@ -94,24 +94,7 @@ export function Tile({
               }}
             />
           )}
-          {!photoRevealed && tileName !== "photo" && (
-            <div
-              style={{
-                fontSize: "0.85rem",
-                lineHeight: "1.4",
-                padding: "8px",
-                color: "#000",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              {tileContent}
-            </div>
-          )}
+          {!photoRevealed && tileName !== "photo" && <div>{tileContent}</div>}
           {photoRevealed && index === 2 && (
             <div className="flip-back-arrow">↻</div>
           )}

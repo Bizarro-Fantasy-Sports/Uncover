@@ -3,6 +3,7 @@
  * Centralized exports for all game-related UI components
  */
 
+export { Button } from "./Button";
 export { SportsReferenceAttribution } from "./SportsReferenceAttribution";
 export { GameHeader } from "./GameHeader";
 export { ScoreDisplay } from "./ScoreDisplay";
@@ -16,3 +17,4 @@ export { SportsReferenceCredit } from "./SportsReferenceCredit";
 export { UserStatsModal } from "./UserStatsModal";
 export { HintTiles } from "./HintTiles";
 export { RoundHistoryModal } from "./RoundHistoryModal";
+export { UserAndSettings } from "./UserAndSettings";

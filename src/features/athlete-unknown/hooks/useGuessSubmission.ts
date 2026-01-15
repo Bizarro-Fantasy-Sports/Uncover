@@ -20,7 +20,10 @@ interface UseGuessSubmissionProps {
   updateState: (patch: Partial<GameState>) => void;
 }
 
-export const useGuessSubmission = ({ state, updateState }: UseGuessSubmissionProps) => {
+export const useGuessSubmission = ({
+  state,
+  updateState,
+}: UseGuessSubmissionProps) => {
   const handleNameSubmit = useCallback(() => {
     // Don't allow empty guesses
     if (!state.playerName.trim()) {
@@ -80,8 +83,8 @@ export const useGuessSubmission = ({ state, updateState }: UseGuessSubmissionPro
       // If second closer guess, reveal answer
       if (distance < previousDistance) {
         updateState({
-          message: "Close enough to ID the player! Spelling is hard",
-          messageType: "close",
+          message: "Spelling accepted",
+          messageType: "success",
           previousCloseGuess: "",
           score: newScore,
           lastSubmittedGuess: normalizedGuess,

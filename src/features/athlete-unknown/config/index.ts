@@ -57,57 +57,57 @@ export type ScoreDeduction = typeof INCORRECT_GUESS | TileType;
 
 export const TILES = {
   [TILE_NAMES.INITIALS]: {
-    label: `Initials \n(-${TILE_PENALTIES[TILE_NAMES.INITIALS]} Points)`,
+    label: "Initials",
     penalty: TILE_PENALTIES[TILE_NAMES.INITIALS],
     flippedEmoji: "💡",
   },
   [TILE_NAMES.NICKNAMES]: {
-    label: `Nicknames \n(-${TILE_PENALTIES[TILE_NAMES.NICKNAMES]} Points)`,
+    label: "Nicknames",
     penalty: TILE_PENALTIES[TILE_NAMES.NICKNAMES],
     flippedEmoji: "💡",
   },
   [TILE_NAMES.BIO]: {
-    label: `Bio \n(-${TILE_PENALTIES[TILE_NAMES.BIO]} Points)`,
+    label: `Bio \n(-${TILE_PENALTIES[TILE_NAMES.BIO]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.BIO],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.PLAYER_INFORMATION]: {
-    label: `Player Information \n(-${TILE_PENALTIES[TILE_NAMES.PLAYER_INFORMATION]} Points)`,
+    label: `Player Information \n(-${TILE_PENALTIES[TILE_NAMES.PLAYER_INFORMATION]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.PLAYER_INFORMATION],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.DRAFT_INFORMATION]: {
-    label: `Draft Information \n(-${TILE_PENALTIES[TILE_NAMES.DRAFT_INFORMATION]} Points)`,
+    label: `Draft Information \n(-${TILE_PENALTIES[TILE_NAMES.DRAFT_INFORMATION]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.DRAFT_INFORMATION],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.YEARS_ACTIVE]: {
-    label: `Years Active \n(-${TILE_PENALTIES[TILE_NAMES.YEARS_ACTIVE]} Points)`,
+    label: `Years Active \n(-${TILE_PENALTIES[TILE_NAMES.YEARS_ACTIVE]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.YEARS_ACTIVE],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.PHOTO]: {
-    label: `Photo \n(-${TILE_PENALTIES[TILE_NAMES.PHOTO]} Points)`,
+    label: `Photo \n(-${TILE_PENALTIES[TILE_NAMES.PHOTO]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.PHOTO],
     flippedEmoji: "📷",
   },
   [TILE_NAMES.TEAMS_PLAYED_ON]: {
-    label: `Teams Played On \n(-${TILE_PENALTIES[TILE_NAMES.TEAMS_PLAYED_ON]} Points)`,
+    label: `Teams Played On \n(-${TILE_PENALTIES[TILE_NAMES.TEAMS_PLAYED_ON]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.TEAMS_PLAYED_ON],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.JERSEY_NUMBERS]: {
-    label: `Jersey Numbers \n(-${TILE_PENALTIES[TILE_NAMES.JERSEY_NUMBERS]} Points)`,
+    label: `Jersey Numbers \n(-${TILE_PENALTIES[TILE_NAMES.JERSEY_NUMBERS]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.JERSEY_NUMBERS],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.CAREER_STATS]: {
-    label: `Career Stats \n(-${TILE_PENALTIES[TILE_NAMES.CAREER_STATS]} Points)`,
+    label: `Career Stats \n(-${TILE_PENALTIES[TILE_NAMES.CAREER_STATS]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.CAREER_STATS],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.PERSONAL_ACHIEVEMENTS]: {
-    label: `Personal Achievements \n(-${TILE_PENALTIES[TILE_NAMES.PERSONAL_ACHIEVEMENTS]}) Points`,
+    label: `Personal Achievements \n(-${TILE_PENALTIES[TILE_NAMES.PERSONAL_ACHIEVEMENTS]}) PTS`,
     penalty: TILE_PENALTIES[TILE_NAMES.PERSONAL_ACHIEVEMENTS],
     flippedEmoji: "🟨",
   },
@@ -178,8 +178,8 @@ export const PHOTO_GRID = {
   COLS: 3,
 
   // Width and height of each photo tile segment in pixels
-  TILE_WIDTH: 150,
-  TILE_HEIGHT: 150,
+  TILE_WIDTH: 125,
+  TILE_HEIGHT: 125,
 } as const;
 
 // ============================================================================

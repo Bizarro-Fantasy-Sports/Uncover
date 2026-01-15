@@ -11,7 +11,7 @@ export {
   clearMockDataPlayerIndex,
   type MidRoundProgress,
 } from "./storage";
-export { calculateLevenshteinDistance, normalize } from "./stringMatching";
+export { calculateLevenshteinDistance, normalize } from "./strings";
 export {
   loadGuestStats,
   updateGuestStats,

@@ -25,14 +25,18 @@ import {
   UserStatsModal,
   HintTiles,
   RoundHistoryModal,
+  UserAndSettings,
+  Button,
 } from "@/features/athlete-unknown/components";
 import {
   athleteUnknownApiService,
   migrateUserStats,
   UserSportStats,
 } from "@/features";
-import { getValidSport } from "@/features/athlete-unknown/utils/stringMatching";
+import { getValidSport } from "@/features/athlete-unknown/utils/strings";
 import { config } from "@/config";
+import { Navbar } from "@/components";
+import PlaceholderLogo from "@/features/athlete-unknown/assets/placeholder-logo.png";
 
 export function AthleteUnknown(): React.ReactElement {
   const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
@@ -140,7 +144,10 @@ export function AthleteUnknown(): React.ReactElement {
   // Tile interactions
   // updates the following fields in state:
   // photoRevealed, returningFromPhoto, flippedTiles, score
-  const { handleTileClick } = useTileFlip({ state, updateState });
+  const { handleTileClick, handleHintTileClick } = useTileFlip({
+    state,
+    updateState,
+  });
 
   // User Stats
   // updates the following fields in state:
@@ -226,7 +233,7 @@ export function AthleteUnknown(): React.ReactElement {
   }
 
   //TODO memoize these
-  const playDate = state.round?.playDate as string | undefined;
+  const playDate = state.round.playDate;
   const [, roundNumber] = state.round.roundId.split("#");
 
   const userRoundHistoryArray = state.userStats?.sports.filter(
@@ -238,94 +245,88 @@ export function AthleteUnknown(): React.ReactElement {
   // console.log("STATE AU", state);
 
   return (
-    <div className="athlete-unknown-game">
-      <SportsReferenceAttribution activeSport={activeSport} />
-
-      <GameHeader
-        activeSport={activeSport}
-        onSportChange={setActiveSport}
-        onStatsClick={() => setIsUserStatsModalOpen(true)}
-      />
-
-      <RoundInfo
-        roundNumber={roundNumber}
-        playDate={playDate}
-        theme={state.round.theme}
-        onRoundResultsClick={() => setIsRoundResultsModalOpen(true)}
-        onRulesClick={() => setIsRulesModalOpen(true)}
-        onRoundHistoryClick={() => setIsRoundHistoryModalOpen(true)}
-      />
-
-      <ScoreDisplay
-        score={state.score}
-        message={state.message}
-        messageType={state.messageType}
-        tilesFlippedCount={state.flippedTiles.length}
-        incorrectGuesses={state.incorrectGuesses}
-      />
-
-      <PlayerInput
-        playerName={state.playerName}
-        isCompleted={state.isCompleted}
-        onPlayerNameChange={(name) => updateState({ playerName: name })}
-        onSubmit={handleNameSubmit}
-        onGiveUp={handleGiveUp}
-      />
-
-      <HintTiles
-        flippedTiles={state.flippedTiles}
-        playerData={state.round.player}
-        onTileClick={handleTileClick}
-      />
-
-      <TileGrid
-        flippedTiles={state.flippedTiles}
-        photoRevealed={state.photoRevealed}
-        returningFromPhoto={state.returningFromPhoto}
-        playerData={state.round.player}
-        onTileClick={handleTileClick}
-      />
-
-      <RoundResultsModal
-        isOpen={isRoundResultsModalOpen}
-        score={state.score}
-        flippedTiles={
-          state.isCompleted
-            ? state.flippedTilesUponCompletion
-            : state.flippedTiles
-        }
-        copiedText={state.copiedText}
-        roundStats={state.round.stats}
-        playerData={state.round.player}
-        onClose={() => setIsRoundResultsModalOpen(false)}
-        onShare={handleShare}
-        isCompleted={state.isCompleted}
-      />
-
-      <SportsReferenceCredit />
-
-      <RulesModal
-        isOpen={isRulesModalOpen}
-        onClose={() => setIsRulesModalOpen(false)}
-      />
-
-      <UserStatsModal
-        isOpen={isUserStatsModalOpen}
-        onClose={() => setIsUserStatsModalOpen(false)}
-        userStats={state.userStats}
-        isLoading={state.isLoading}
-        error={state.error}
-      />
-
-      <RoundHistoryModal
-        isOpen={isRoundHistoryModalOpen}
-        onClose={() => setIsRoundHistoryModalOpen(false)}
-        isLoading={state.isLoading}
-        error={state.error}
-        roundHistory={state.roundHistory}
-        userRoundHistory={userRoundHistoryArray?.[0]?.history ?? []}
-        onRoundSelect={(playDate) => setSelectedPlayDate(playDate)}
-      />
+    <div className="au-container">
+      <div className="au-header-container">
+        <Navbar />
+        <img
+          src={PlaceholderLogo}
+          alt="Athlete Unknown Logo"
+          className="au-placeholder-logo"
+        />
+        <div>
+          <UserAndSettings
+            onStatsClick={() => setIsUserStatsModalOpen(false)}
+          />
+        </div>
+      </div>
+      <div className="au-body-container">
+        <div className="au-information-container">
+          <GameHeader
+            activeSport={activeSport}
+            onSportChange={setActiveSport}
+          />
+          <RoundInfo
+            roundNumber={roundNumber}
+            playDate={playDate}
+            theme={state.round.theme}
+            sport={activeSport}
+            onRoundResultsClick={() => setIsRoundResultsModalOpen(true)}
+            onRulesClick={() => setIsRulesModalOpen(true)}
+            onRoundHistoryClick={() => setIsRoundHistoryModalOpen(true)}
+          />
+        </div>
+        <div className="au-game-container au-bulletin-board">
+          <div className="au-scoring-container">
+            <Button
+              onClick={handleNameSubmit}
+              size="lg"
+              variant={state.isCompleted ? "ghost" : "primary"}
+              disabled={state.isCompleted || state.playerName === ""}
+            >
+              Submit
+            </Button>
+            <ScoreDisplay score={state.score} />
+            <Button
+              onClick={handleGiveUp}
+              size="lg"
+              variant={state.isCompleted ? "ghost" : "danger"}
+              disabled={state.isCompleted}
+            >
+              Give Up
+            </Button>
+          </div>
+          <div className="au-paper-container">
+            <div className="au-player-guess-container flex-column">
+              <PlayerInput
+                playerName={state.playerName}
+                isCompleted={state.isCompleted}
+                onPlayerNameChange={(name) => updateState({ playerName: name })}
+              />
+              <div>Previous Guesses Component</div>
+            </div>
+            <div className="au-hints-container">
+              <HintTiles
+                flippedTiles={state.flippedTiles}
+                playerData={state.round.player}
+                onHintTileClick={handleHintTileClick}
+              />
+            </div>
+          </div>
+          <div className="au-tile-grid-container">
+            <TileGrid
+              flippedTiles={state.flippedTiles}
+              photoRevealed={state.photoRevealed}
+              returningFromPhoto={state.returningFromPhoto}
+              playerData={state.round.player}
+              onTileClick={handleTileClick}
+            />
+          </div>
+        </div>
+      </div>
+      {/* <div className="au-footer-container">
+        <div>Sports Reference Credit Component</div>
+        <div>Credits Link Component</div>
+      </div> */}
     </div>
   );
 }

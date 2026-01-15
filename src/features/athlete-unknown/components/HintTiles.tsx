@@ -3,31 +3,29 @@ import type { TileType } from "@/features/athlete-unknown/config";
 import { TOP_TILES } from "@/features/athlete-unknown/config";
 import { PlayerData } from "@/features/athlete-unknown/types";
 import { Tile } from "./Tile";
+import { HintTile } from "./HintTile";
 
 interface HintTilesProps {
   flippedTiles: TileType[];
   playerData: PlayerData;
-  onTileClick: (tileName: TileType) => void;
+  onHintTileClick: (tileName: TileType) => void;
 }
 
 export function HintTiles({
   flippedTiles,
   playerData,
-  onTileClick,
+  onHintTileClick,
 }: HintTilesProps): React.ReactElement {
   return (
-    <div className="grid">
-      <div />
+    <div className="au-hints-container">
       {TOP_TILES.map((tileName: TileType, index: number) => (
-        <Tile
+        <HintTile
           key={index}
           tileName={tileName}
           index={index}
           isFlipped={flippedTiles.includes(tileName)}
-          photoRevealed={false}
-          returningFromPhoto={false}
           playerData={playerData}
-          onClick={() => onTileClick(tileName)}
+          onClick={() => onHintTileClick(tileName)}
         />
       ))}
     </div>

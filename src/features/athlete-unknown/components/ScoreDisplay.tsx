@@ -2,36 +2,16 @@ import React from "react";
 
 interface ScoreDisplayProps {
   score: number;
-  message?: string;
-  messageType?: string;
-  tilesFlippedCount: number;
-  incorrectGuesses: number;
 }
 
-export function ScoreDisplay({
-  score,
-  message,
-  messageType,
-  tilesFlippedCount,
-  incorrectGuesses,
-}: ScoreDisplayProps): React.ReactElement {
+export function ScoreDisplay({ score }: ScoreDisplayProps): React.ReactElement {
   return (
-    <div>
-      <div className="score-and-messages">
-        <div className="score-section">
-          <p className="score-label">Score</p>
-          <div className="score-box">{score}</div>
+    <div className="au-score-container">
+      <div className="au-score">
+        <div className="au-score-box">
+          <p>{score}</p>
         </div>
-
-        <div className="messages-section">
-          {message && (
-            <p className={`guess-message ${messageType}`}>{message}</p>
-          )}
-        </div>
-      </div>
-      <div className="stats-container">
-        <h3>Tiles Flipped: {tilesFlippedCount}</h3>
-        <h3>Incorrect Guesses: {incorrectGuesses}</h3>
+        <p className="au-score-label">Score</p>
       </div>
     </div>
   );

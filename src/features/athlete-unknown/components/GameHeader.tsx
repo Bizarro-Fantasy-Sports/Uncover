@@ -6,13 +6,11 @@ import { config } from "@/config";
 interface GameHeaderProps {
   activeSport: SportType;
   onSportChange: (sport: SportType) => void;
-  onStatsClick: () => void;
 }
-
+//TODO: rename to sport selector header
 export function GameHeader({
   activeSport,
   onSportChange,
-  onStatsClick,
 }: GameHeaderProps): React.ReactElement {
   const navigate = useNavigate();
 
@@ -22,21 +20,18 @@ export function GameHeader({
   };
 
   return (
-    <div className="sports-section">
-      <div className="sports-navbar">
+    <div className="au-sports-section">
+      <div className="au-sports-navbar">
         {config.athleteUnknown.sportsList.map((sport) => (
           <div
             key={sport}
-            className={`nav-tab ${activeSport === sport ? "active" : ""}`}
+            className={`au-nav-tab ${activeSport === sport ? "active" : ""}`}
             onClick={() => handleSportClick(sport)}
           >
-            {sport.toUpperCase()}
+            <span>{sport.toUpperCase()}</span>
           </div>
         ))}
       </div>
-      <button className="stats-button" onClick={onStatsClick}>
-        User Stats
-      </button>
     </div>
   );
 }

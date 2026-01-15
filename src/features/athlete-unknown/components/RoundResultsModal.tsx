@@ -2,6 +2,7 @@ import React from "react";
 import { ALL_TILES, TILES } from "@/features/athlete-unknown/config";
 import type { TileType } from "@/features/athlete-unknown/config";
 import type { RoundStats, PlayerData } from "@/features/athlete-unknown/types";
+import TestUnknownPerson from "@/features/athlete-unknown/assets/test-unknown-person.jpg";
 
 const WIN_OR_LOSE = "winOrLose";
 
@@ -81,7 +82,7 @@ export function RoundResultsModal({
               />
             ) : (
               <img
-                src="/test-unknown-person.jpg"
+                src={TestUnknownPerson}
                 alt="unknown-player"
                 className="player-photo"
               />

@@ -93,7 +93,42 @@ export const useTileFlip = ({ state, updateState }: UseTileFlipProps) => {
     [state, updateState]
   );
 
+  // same base functionality as handleTileClick, but strip out everything related to photo revealing and flipping state
+  const handleHintTileClick = useCallback(
+    (tileName: TileType) => {
+      // If tile is already flipped, do nothing
+      if (state.flippedTiles.includes(tileName)) {
+        return;
+      }
+
+      // Track first and last tiles flipped
+      const updatedFlippedTiles = [...state.flippedTiles, tileName];
+
+      // Regular tile flip
+      // Only update score/counters if game is not won or gave up
+      if (!state.isCompleted) {
+        const tileValue = state.round?.player[tileName] ?? "";
+        const newScore =
+          tileValue === "N/A" || tileValue === ""
+            ? state.score
+            : calculateNewScore(state.score, tileName);
+
+        updateState({
+          flippedTiles: updatedFlippedTiles,
+          score: newScore,
+        });
+      } else {
+        // Game won or gave up - just update visual state
+        updateState({
+          flippedTiles: updatedFlippedTiles,
+        });
+      }
+    },
+    [state, updateState]
+  );
+
   return {
     handleTileClick,
+    handleHintTileClick,
   };
 };
