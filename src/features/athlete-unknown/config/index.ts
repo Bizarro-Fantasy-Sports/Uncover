@@ -57,7 +57,7 @@ export type ScoreDeduction = typeof INCORRECT_GUESS | TileType;
 
 export const TILES = {
   [TILE_NAMES.INITIALS]: {
-    label: "Initials",
+    label: "Initials:",
     penalty: TILE_PENALTIES[TILE_NAMES.INITIALS],
     flippedEmoji: "💡",
   },
@@ -155,6 +155,18 @@ export const GUESS_ACCURACY = {
   // Maximum edit distance for "close" guess (requires second closer guess to reveal player name)
   VERY_CLOSE_DISTANCE: 2,
 } as const;
+
+export const GUESS_MESSAGE_TYPE = {
+  SUCCESS: "success",
+  ALMOST: "almost",
+  ERROR: "error",
+};
+
+export type GuessMessageType =
+  | typeof GUESS_MESSAGE_TYPE.SUCCESS
+  | typeof GUESS_MESSAGE_TYPE.ALMOST
+  | typeof GUESS_MESSAGE_TYPE.ERROR
+  | "";
 
 // ============================================================================
 // UI/UX TIMING

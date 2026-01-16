@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "./UserStatsModal.css";
 import {
   TileTracker,
   UserSportStats,
@@ -53,34 +52,34 @@ function UserStatsModal({
   }
 
   return (
-    <div className="user-stats-modal" onClick={onClose}>
+    <div className="au-user-stats-modal" onClick={onClose}>
       <div
-        className="user-stats-modal-content"
+        className="au-user-stats-modal-content"
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="close-user-stats" onClick={onClose}>
+        <button className="au-close-user-stats" onClick={onClose}>
           ×
         </button>
-        <div className="user-stats-container">
-          <h1 className="stats-title">User Statistics</h1>
+        <div className="au-user-stats-container">
+          <h1 className="au-stats-title">User Statistics</h1>
 
           {isLoading && <p>Loading user stats...</p>}
 
           {error && (
-            <div className="error-message">
+            <div className="au-error-message">
               <p>Error: {error}</p>
             </div>
           )}
 
           {!isLoading && userStats && (
             <>
-              <div className="user-info">
+              <div className="au-user-info">
                 <p>User: {userStats.userName}</p>
                 <p>Member Since: {formatDate(userStats.userCreated)}</p>
                 <p>Current Daily Streak: {userStats.currentDailyStreak}</p>
               </div>
 
-              <div className="sport-selector">
+              <div className="au-sport-selector">
                 {userStats.sports.map((sport) => (
                   <button
                     key={sport.sport}
@@ -92,77 +91,77 @@ function UserStatsModal({
                 ))}
               </div>
 
-              <div className="stats-section">
+              <div className="au-stats-section">
                 <h2>Overview</h2>
-                <div className="stats-grid">
-                  <div className="stat-card">
-                    <div className="stat-value">
+                <div className="au-stats-grid">
+                  <div className="au-stat-card">
+                    <div className="au-stat-value">
                       {selectedSportStats.stats.totalPlays}
                     </div>
-                    <div className="stat-label">Total Plays</div>
+                    <div className="au-stat-label">Total Plays</div>
                   </div>
-                  <div className="stat-card">
-                    <div className="stat-value">
+                  <div className="au-stat-card">
+                    <div className="au-stat-value">
                       {selectedSportStats.stats.percentageCorrect.toFixed(0)}%
                     </div>
-                    <div className="stat-label">Accuracy</div>
+                    <div className="au-stat-label">Accuracy</div>
                   </div>
-                  <div className="stat-card">
-                    <div className="stat-value">
+                  <div className="au-stat-card">
+                    <div className="au-stat-value">
                       {selectedSportStats.stats.averageCorrectScore}
                     </div>
-                    <div className="stat-label">Average Score</div>
+                    <div className="au-stat-label">Average Score</div>
                   </div>
-                  <div className="stat-card">
-                    <div className="stat-value">
+                  <div className="au-stat-card">
+                    <div className="au-stat-value">
                       {selectedSportStats.stats.highestScore}
                     </div>
-                    <div className="stat-label">Highest Score</div>
+                    <div className="au-stat-label">Highest Score</div>
                   </div>
-                  <div className="stat-card highlight">
-                    <div className="stat-value">
+                  <div className="au-stat-card highlight">
+                    <div className="au-stat-value">
                       {selectedSportStats.stats.averageNumberOfTileFlips}
                     </div>
-                    <div className="stat-label">Average # of Tile Flips</div>
+                    <div className="au-stat-label">Average # of Tile Flips</div>
                   </div>
                 </div>
               </div>
 
-              <div className="stats-section">
+              <div className="au-stats-section">
                 <h2>Tile Patterns</h2>
-                <div className="tile-patterns">
-                  <div className="pattern-card">
+                <div className="au-tile-patterns">
+                  <div className="au-pattern-card">
                     <h3>Most Common</h3>
-                    <div className="pattern-item">
-                      <span className="pattern-label">First Tile:</span>
-                      <span className="pattern-value">
+                    <div className="au-pattern-item">
+                      <span className="au-pattern-label">First Tile:</span>
+                      <span className="au-pattern-value">
                         {formatTileName(
                           selectedSportStats.stats.mostCommonFirstTileFlipped
                         )}
                       </span>
                     </div>
-                    <div className="pattern-item">
-                      <span className="pattern-label">Most Flipped:</span>
-                      <span className="pattern-value">
+                    <div className="au-pattern-item">
+                      <span className="au-pattern-label">Most Flipped:</span>
+                      <span className="au-pattern-value">
                         {formatTileName(
                           selectedSportStats.stats.mostCommonTileFlipped
                         )}
                       </span>
                     </div>
-                    <div className="pattern-item">
-                      <span className="pattern-label">Last Tile:</span>
-                      <span className="pattern-value">
+                    <div className="au-pattern-item">
+                      <span className="au-pattern-label">Last Tile:</span>
+                      <span className="au-pattern-value">
                         {formatTileName(
                           selectedSportStats.stats.mostCommonLastTileFlipped
                         )}
                       </span>
                     </div>
                   </div>
-                  <div className="pattern-card">
+                  <div className="au-pattern-card">
                     <h3>Least Common</h3>
-                    <div className="pattern-item">
-                      <span className="pattern-label">Tile:</span>
-                      <span className="pattern-value">
+                    <div className="au-pattern-item">
+                      <span className="au-pattern-label">Tile:</span>
+                      <span className="au-pattern-value">
                         {formatTileName(
                           selectedSportStats.stats.leastCommonTileFlipped
                         )}
@@ -172,9 +171,9 @@ function UserStatsModal({
                 </div>
               </div>
 
-              <div className="stats-section">
+              <div className="au-stats-section">
                 <h2>Tile Flip Details</h2>
-                <div className="tile-stats-table">
+                <div className="au-tile-stats-table">
                   <table>
                     <thead>
                       <tr>
@@ -189,7 +188,9 @@ function UserStatsModal({
                         selectedSportStats.stats.firstTileFlippedTracker
                       ).map((tile) => (
                         <tr key={tile}>
-                          <td className="tile-name">{formatTileName(tile)}</td>
+                          <td className="au-tile-name">
+                            {formatTileName(tile)}
+                          </td>
                           <td>
                             {
                               selectedSportStats.stats.firstTileFlippedTracker[

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./RulesModal.css";
 import {
   INITIAL_SCORE,
   REFERENCE_URLS,
@@ -94,13 +93,13 @@ function RulesModal({
   const renderTileWithTooltip = (tileName: string) => {
     return (
       <span
-        className="tile-name-hover"
+        className="au-tile-name-hover"
         onMouseEnter={() => setHoveredTile(tileName)}
         onMouseLeave={() => setHoveredTile(null)}
       >
         {tileName}
         {hoveredTile === tileName && (
-          <span className="tooltip">{tileTooltips[tileName]}</span>
+          <span className="au-tooltip">{tileTooltips[tileName]}</span>
         )}
       </span>
     );
@@ -126,14 +125,14 @@ function RulesModal({
 
     return (
       <span
-        className="acronym-hover"
+        className="au-acronym-hover"
         onMouseEnter={() => setHoveredAcronym(hoverKey)}
         onMouseLeave={() => setHoveredAcronym(null)}
       >
         {acronym}
         {additionalText && ` ${additionalText}`}
         {hoveredAcronym === hoverKey && (
-          <span className="tooltip">
+          <span className="au-tooltip">
             {def.full}
             {def.link && (
               <>
@@ -143,7 +142,7 @@ function RulesModal({
                   href={def.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="tooltip-link"
+                  className="au-tooltip-link"
                 >
                   Explanation Article
                 </a>
@@ -157,21 +156,24 @@ function RulesModal({
   };
 
   return (
-    <div className="rules-modal-overlay" onClick={onClose}>
-      <div className="rules-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="close-rules-button" onClick={onClose}>
+    <div className="au-rules-modal-overlay" onClick={onClose}>
+      <div
+        className="au-rules-modal-content"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className="au-close-rules-button" onClick={onClose}>
           ×
         </button>
 
-        <h2 className="rules-title">How to Play — Athlete Unknown</h2>
+        <h2 className="au-rules-title">How to Play — Athlete Unknown</h2>
 
-        <div className="rules-body">
-          <p className="rules-intro">
+        <div className="au-rules-body">
+          <p className="au-rules-intro">
             Guess the mystery athlete flipping as few information tiles as
             possible.
           </p>
 
-          <div className="rules-section">
+          <div className="au-rules-section">
             <h3>Scoring</h3>
             <ul>
               <li>
@@ -187,7 +189,7 @@ function RulesModal({
             </ul>
           </div>
 
-          <div className="rules-section">
+          <div className="au-rules-section">
             <h3>Hints & Help</h3>
             <ul>
               {/* <li>
@@ -201,12 +203,12 @@ function RulesModal({
             </ul>
           </div>
 
-          <div className="rules-section">
+          <div className="au-rules-section">
             <h3>Tile Information</h3>
-            <p className="tiles-intro">
+            <p className="au-tiles-intro">
               Each tile reveals info about the athlete:
             </p>
-            <div className="tiles-list">
+            <div className="au-tiles-list">
               {renderTileWithTooltip("bio")} •{" "}
               {renderTileWithTooltip("playerInformation")} •{" "}
               {renderTileWithTooltip("draftInformation")} •{" "}
@@ -219,10 +221,10 @@ function RulesModal({
             </div>
           </div>
 
-          <div className="rules-section">
+          <div className="au-rules-section">
             <h3>Career Stats by Sport</h3>
 
-            <div className="sport-stats">
+            <div className="au-sport-stats">
               <h4>Baseball</h4>
               <ul>
                 <li>{renderAcronym("BA", undefined, "baseball-ba")}</li>
@@ -232,7 +234,7 @@ function RulesModal({
               </ul>
             </div>
 
-            <div className="sport-stats">
+            <div className="au-sport-stats">
               <h4>Basketball</h4>
               <ul>
                 <li>{renderAcronym("PTS", undefined, "basketball-pts")}</li>
@@ -242,10 +244,10 @@ function RulesModal({
               </ul>
             </div>
 
-            <div className="sport-stats">
+            <div className="au-sport-stats">
               <h4>Football</h4>
 
-              <div className="position-group">
+              <div className="au-position-group">
                 <h5>Quarterback</h5>
                 <ul>
                   <li>
@@ -267,7 +269,7 @@ function RulesModal({
                 </ul>
               </div>
 
-              <div className="position-group">
+              <div className="au-position-group">
                 <h5>Running Back</h5>
                 <ul>
                   <li>
@@ -285,7 +287,7 @@ function RulesModal({
                 </ul>
               </div>
 
-              <div className="position-group">
+              <div className="au-position-group">
                 <h5>Wide Receiver & Tight End</h5>
                 <ul>
                   <li>{renderAcronym("REC", undefined, "football-wr-rec")}</li>
@@ -299,7 +301,7 @@ function RulesModal({
                 </ul>
               </div>
 
-              <div className="position-group">
+              <div className="au-position-group">
                 <h5>Offensive Line</h5>
                 <ul>
                   <li>{renderAcronym("GS", undefined, "football-ol-gs")}</li>
@@ -307,7 +309,7 @@ function RulesModal({
                 </ul>
               </div>
 
-              <div className="position-group">
+              <div className="au-position-group">
                 <h5>Defensive Line</h5>
                 <ul>
                   <li>{renderAcronym("GS", undefined, "football-dl-gs")}</li>
@@ -325,7 +327,7 @@ function RulesModal({
                 </ul>
               </div>
 
-              <div className="position-group">
+              <div className="au-position-group">
                 <h5>Defensive Back</h5>
                 <ul>
                   <li>{renderAcronym("GS", undefined, "football-db-gs")}</li>
@@ -343,7 +345,7 @@ function RulesModal({
             </div>
           </div>
 
-          <div className="rules-section">
+          <div className="au-rules-section">
             <h3>Personal Achievements by Sport</h3>
 
             <div className="sport-stats">
@@ -364,7 +366,7 @@ function RulesModal({
               </ul>
             </div>
 
-            <div className="sport-stats">
+            <div className="au-sport-stats">
               <h4>Basketball</h4>
               <ul>
                 <li>{renderAcronym("HOF", undefined, "basketball-hof")}</li>
@@ -398,7 +400,7 @@ function RulesModal({
               </ul>
             </div>
 
-            <div className="sport-stats">
+            <div className="au-sport-stats">
               <h4>Football</h4>
               <ul>
                 <li>{renderAcronym("HOF", undefined, "football-hof")}</li>
@@ -416,7 +418,7 @@ function RulesModal({
             </div>
           </div>
 
-          <p className="rules-footer">
+          <p className="au-rules-footer">
             Share your score and play again tomorrow!
           </p>
         </div>

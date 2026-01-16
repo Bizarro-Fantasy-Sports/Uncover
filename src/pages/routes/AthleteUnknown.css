@@ -3,9 +3,7 @@
   display: flex;
   flex-direction: column;
   font-family: Arial, sans-serif;
-  background-color: green;
-  width: 100vw;
-  height: 100vh;
+  background-color: #452d85;
 }
 
 .au-header-container {
@@ -14,7 +12,6 @@
   justify-content: space-between;
   height: 4rem;
   width: 100%;
-  background-color: white;
 }
 
 .au-information-container {
@@ -24,10 +21,6 @@
 
 .au-game-container {
   flex-direction: column;
-}
-
-.au-game-container div {
-  color: black;
 }
 
 .au-scoring-container {
@@ -42,7 +35,9 @@
 }
 
 .au-footer-container {
-  flex-direction: row;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* UserAndSetttings */
@@ -69,32 +64,31 @@
 
 /* GameHeader */
 .au-sports-section {
-  background-color: white;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .au-sports-navbar {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  border-bottom: 0.25rem solid blue;
+  border-bottom: 0.25rem solid white;
 }
 
 .au-nav-tab {
   padding: 0.25rem;
   cursor: pointer;
-  color: #444;
+  color: white;
   border-bottom: 3px solid transparent;
 }
 
 .au-nav-tab:hover {
-  color: black;
+  color: red;
 }
 
 .au-nav-tab.active {
   font-weight: bold;
-  border-bottom: 3px solid black;
-  color: black;
+  border-bottom: 3px solid red;
+  color: red;
 }
 
 .au-nav-tab > span {
@@ -109,7 +103,6 @@
 }
 
 /* RoundInfo */
-
 .au-round-info-container {
   display: flex;
   flex-direction: column;
@@ -122,20 +115,21 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .au-round-info-container-top {
   justify-content: center;
+  gap: 1rem;
 }
 
 .au-round-info-container-top p {
   font-family: "Bodoni Moda", serif;
   font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
-  color: black;
+  font-weight: 800;
+  font-size: 1.75rem;
+  font-style: italic;
+  color: white;
 }
 
 .au-round-info-container-bottom {
@@ -143,15 +137,16 @@
 }
 
 .au-separator {
-  color: black;
+  color: white;
 }
 
 .au-round-info-container-bottom p {
   font-family: "Bodoni Moda", serif;
   font-optical-sizing: auto;
-  font-weight: 800;
+  font-weight: 500;
+  font-size: 1.15rem;
   font-style: normal;
-  color: black;
+  color: white;
   text-decoration: underline;
 }
 
@@ -254,6 +249,8 @@
   );
   padding: 0rem 0rem;
   margin: 0rem auto;
+  width: 100%;
+  min-height: 12rem;
 }
 
 /* Torn paper edge effect */
@@ -278,13 +275,20 @@
 .au-paper-container::after {
   content: "";
   position: relative;
-  z-index: 100;
+  z-index: 98;
   top: 0;
   left: -90%;
   bottom: 0;
   width: 0.25rem;
   background-color: #ff6b6b;
   opacity: 0.6;
+}
+
+.au-player-guess-container {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  min-height: 3.5rem; /* same as au-paper-container linear gradient */
 }
 
 .au-player-input {
@@ -297,12 +301,9 @@
 
 .au-player-input input {
   font-family: "Caveat", cursive;
-  font-size: 1.75rem;
-  font-weight: 600;
-  width: 15rem;
-  height: 3.5rem; /* same as au-paper-container linear gradient */
-  padding-top: 1.75rem; /* half of height to push to the bottom */
-  line-height: 1;
+  font-size: 2.25rem;
+  font-weight: 700;
+  padding-top: 1rem;
   border: none;
   background: transparent;
   outline: none;
@@ -326,73 +327,48 @@
   margin-top: 0.5rem;
 }
 
-/* need to style - start*/
-.au-player-input button {
-  padding: 12px 12px;
-  font-size: 1rem;
-  cursor: pointer;
-  background-color: #0077b6;
-  color: white;
-  border: 2px solid #0077b6;
-  border-radius: 8px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.au-player-input button:hover:not(:disabled) {
-  background-color: #0096c7;
-  border-color: #0096c7;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 119, 182, 0.2);
-}
-
-.au-player-input button:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.au-player-input button:disabled {
-  background-color: #ccc;
-  border-color: #ccc;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-/* need to style - stop */
-
 /* HintTiles */
 
 .au-hints-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
   gap: 0.5rem;
 }
 
 /* HintTile */
-.au-hint-tile-container {
+.au-hint-tile-container-initials {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.au-hint-tile-container-nicknames {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: auto;
 }
 
 .au-hint-tile-label {
   font-family: "Caveat", cursive;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.75rem;
+  font-weight: 800;
   text-decoration: underline;
   color: #1a1a1a;
   min-width: 5rem;
-  text-align: center;
 }
 
 .au-hint-tile-size {
   width: 7rem;
-  height: 2.25rem;
+  min-height: 2.25rem;
 }
 
 .au-hint-tile-wrapper {
   position: relative;
-  perspective: 400px;
 }
 
 .au-hint-tile-flipped {
@@ -401,6 +377,7 @@
   font-family: "Bebas Neue", sans-serif;
   font-weight: 400;
   font-style: normal;
+  font-size: 1.75rem;
   color: #1a1a1a;
   cursor: pointer;
   display: flex;
@@ -417,6 +394,8 @@
   font-family: "Bebas Neue", sans-serif;
   font-weight: 400;
   font-style: normal;
+  font-size: 1.75rem;
+  color: #1a1a1a;
   background: linear-gradient(135deg, #ffe066 0%, #ffd633 100%);
   box-shadow:
     1px 1px 2px rgba(0, 0, 0, 0.15),
@@ -430,6 +409,7 @@
   transition:
     transform 0.5s ease-out,
     opacity 0.4s ease-out 0.1s;
+  background-color: purple;
 }
 
 /* Peel-off animation when flipped */
@@ -460,11 +440,11 @@
   position: relative;
   width: 125px;
   height: 125px;
-  overflow: visible; /* Allow tooltip to show */
-  border: 2px solid #0077b6;
-  border-radius: 8px;
+  border: none;
+  border-radius: 1px;
   perspective: 1000px;
   z-index: 1;
+  /* overflow: visible;  */
 }
 
 /* Custom tooltip - base styles */
@@ -567,13 +547,13 @@
   width: 100%;
   height: 100%;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 2px;
   transform-style: preserve-3d;
 }
 
-/* Overflow hidden for non-photo-reveal to prevent tooltip clipping */
+/* Allow overflow for pinned effect */
 .tile-inner:not(.photo-reveal) {
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Transition for returning from photo reveal */
@@ -581,7 +561,7 @@
   transition: transform 0.6s ease-out;
 }
 
-/* Hide content during flip back to prevent text from showing during animation */
+/* Hide content during return from photo */
 .tile-inner.returning-from-photo .tile-back {
   color: transparent;
 }
@@ -594,16 +574,20 @@
   color: transparent;
 }
 
-/* Flip animation for regular tiles */
+/* Pin animation for regular tiles */
 .tile-inner.flipped:not(.photo-reveal) .tile-front {
-  opacity: 0;
-  transform: rotateY(180deg);
-  transition: all 0.6s ease-out;
+  /* Keep the shadow visible underneath, hide text */
+  opacity: 1;
+  color: transparent;
+  transition: color 0.1s ease-out;
 }
 
 .tile-inner.flipped:not(.photo-reveal) .tile-back {
   opacity: 1;
-  transition: opacity 0.3s ease-out 0.3s;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 0.15s ease-out,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Flip animation for photo reveal */
@@ -623,24 +607,47 @@
   padding: 10px;
   box-sizing: border-box;
   font-weight: bold;
-  border-radius: 8px;
-  overflow: hidden;
+  border-radius: 2px;
 }
 
 .tile-front {
-  background-color: #0077b6;
-  color: white;
+  /* Empty spot shadow - where post-it will go */
+  background: rgba(0, 0, 0, 0.25);
   z-index: 2;
-  transition: all 0.6s ease-out;
-  font-family: "Bodoni Moda", serif;
+  transition: all 0.3s ease-out;
+  font-family: "Special Elite", "Courier New", monospace;
   font-size: 1rem;
+  font-weight: 800;
+  color: #fffef7;
+  border-radius: 2px;
+  /* Inset shadow to look like an indentation/empty spot */
+  box-shadow:
+    inset 2px 2px 8px rgba(0, 0, 0, 0.4),
+    inset -1px -1px 4px rgba(0, 0, 0, 0.2),
+    inset 0 0 15px rgba(0, 0, 0, 0.15);
+  border: 2px solid #ffd633;
+  /* Text backing for readability */
+  text-shadow:
+    1px 1px 2px rgba(0, 0, 0, 0.8),
+    -1px -1px 2px rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Hover effect for unflipped tiles */
+.tile-inner:not(.flipped):hover .tile-front {
+  box-shadow:
+    inset 2px 2px 10px rgba(0, 0, 0, 0.5),
+    inset -1px -1px 5px rgba(0, 0, 0, 0.25),
+    inset 0 0 20px rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
 .tile-back {
-  background-color: #90e0ef;
-  color: #000;
-  overflow: hidden;
-  z-index: 1;
+  /* Yellow post-it note that fills the spot */
+  background: linear-gradient(135deg, #ffe066 0%, #ffd633 100%);
+  color: #1a1a1a;
+  overflow: visible;
+  z-index: 3;
   word-wrap: break-word;
   white-space: normal;
   text-align: center;
@@ -648,6 +655,61 @@
   font-family: "Bebas Neue", sans-serif;
   font-size: 1.2rem;
   font-weight: 400;
+  border-radius: 2px;
+  /* Pinned post-it - slight shadow */
+  box-shadow:
+    1px 1px 3px rgba(0, 0, 0, 0.15),
+    2px 2px 8px rgba(0, 0, 0, 0.1);
+  /* Start position - above and slightly smaller */
+  transform: translateY(-30px) scale(0.9);
+}
+
+/* Pushpin base state - hidden */
+.tile-back::before,
+.tile-back::after {
+  content: "";
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+
+/* Pushpin for flipped tiles */
+.tile-inner.flipped:not(.photo-reveal) .tile-back::before {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #ff6b6b 0%,
+    #cc4444 50%,
+    #992222 100%
+  );
+  border-radius: 50%;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.4),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.3);
+  z-index: 10;
+  opacity: 1;
+  transition: opacity 0.25s ease-out 0.25s;
+}
+
+/* Pin needle/shaft */
+.tile-inner.flipped:not(.photo-reveal) .tile-back::after {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 8px;
+  background: linear-gradient(180deg, #666 0%, #444 100%);
+  border-radius: 0 0 1px 1px;
+  opacity: 1;
+  transition: opacity 0.25s ease-out 0.25s;
+  z-index: 9;
 }
 
 /* Photo reveal mode - use 3D flip */
@@ -694,7 +756,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 /* ========================================
@@ -930,4 +992,752 @@
   background: gray;
   border-color: rgba(255, 255, 255, 0.3);
   color: rgba(255, 255, 255, 0.4);
+}
+
+/* ----------------------------------------
+   Previous Guesses
+   ---------------------------------------- */
+.previous-guesses {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: "Caveat", cursive;
+  font-size: 1.75rem;
+  color: #1a1a1a;
+}
+
+.previous-guess {
+  text-decoration: line-through;
+  opacity: 0.9;
+}
+
+/* Multi-column layout when more than 4 guesses */
+.previous-guesses--multi-column {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  column-gap: 1.5rem;
+  row-gap: 0.125rem;
+  font-size: 1.5rem;
+}
+
+.previous-guesses--multi-column .previous-guess {
+  width: calc(50% - 0.75rem);
+  text-align: center;
+}
+
+/* Close guess - spelling almost correct */
+.previous-guess--close {
+  text-decoration: none;
+  color: #f4c90d;
+  opacity: 1;
+  font-weight: 600;
+  position: static;
+  cursor: help;
+}
+
+/* Tooltip for close guesses */
+.previous-guess--close[data-tooltip]:not([data-tooltip=""])::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(90%);
+  left: 33%;
+  transform: translateX(-50%);
+  background-color: #f4c90d;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.previous-guess--close[data-tooltip]:not([data-tooltip=""]):hover::after {
+  opacity: 1;
+}
+
+/* Tooltip arrow */
+.previous-guess--close[data-tooltip]:not([data-tooltip=""])::before {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 0px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #b8860b;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.previous-guess--close[data-tooltip]:not([data-tooltip=""]):hover::before {
+  opacity: 1;
+}
+
+/* Sports Reference Attribution */
+.au-sports-reference-attribution {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.25rem;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 0.85rem;
+}
+
+.sports-reference-link {
+  display: inline-block;
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+  margin-left: 0.5rem;
+}
+
+.sports-reference-link:hover {
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.sports-reference-logo {
+  height: 1rem;
+  width: auto;
+  display: block;
+}
+
+/* Results Modal */
+.au-results-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.au-results-modal-content {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 16px;
+  position: relative;
+  max-width: 400px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.au-close-results {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: #666;
+  font-weight: bold;
+}
+
+.au-close-results:hover {
+  color: #000;
+}
+
+.au-results-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #0077b6;
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.au-average-score {
+  font-size: 1.3rem;
+  color: #444;
+  margin: 0 0 25px 0;
+  text-align: center;
+}
+
+.au-results-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  grid-gap: 8px;
+  justify-content: center;
+  margin: 0 auto 25px auto;
+}
+
+.au-results-tile {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.au-results-tile.flipped {
+  background-color: #ffd60a;
+  color: #333;
+}
+
+.au-results-tile.unflipped {
+  background-color: #0077b6;
+  color: white;
+}
+
+.au-share-button {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.au-share-button:hover {
+  background-color: #0096c7;
+}
+
+.au-copied-message {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.au-copied-message pre {
+  margin: 0 0 10px 0;
+  padding: 10px;
+  background-color: white;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  color: #333;
+}
+
+.au-copied-message p {
+  margin: 0;
+  font-weight: bold;
+  color: #155724;
+}
+
+/* Round Stats in Results Modal */
+.au-round-stats-section {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.au-round-stats-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 1.3rem;
+  color: #0077b6;
+  text-align: center;
+}
+
+.au-player-photo {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.au-round-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.au-round-stat-item {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.au-round-stat-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.au-round-stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #0077b6;
+}
+
+/* RulesModal */
+.au-rules-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.au-rules-modal-content {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(0, 180, 216, 0.3);
+  padding: 2.5rem;
+  color: white;
+}
+
+.au-close-rules-button {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 2rem;
+  cursor: pointer;
+  color: #fff;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.au-close-rules-button:hover {
+  background-color: rgba(0, 180, 216, 0.3);
+  border-color: #00b4d8;
+  transform: scale(1.1);
+}
+
+.au-rules-title {
+  font-size: 2.2rem;
+  margin: 0 0 1.5rem 0;
+  color: #00b4d8;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.au-rules-body {
+  line-height: 1.6;
+}
+
+.au-rules-intro {
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.au-rules-section {
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid #00b4d8;
+}
+
+.au-rules-section h3 {
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  color: #ffd60a;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.au-rules-section h4 {
+  font-size: 1.3rem;
+  margin: 1rem 0 0.75rem 0;
+  color: #00b4d8;
+}
+
+.au-rules-section h5 {
+  font-size: 1.1rem;
+  margin: 0.75rem 0 0.5rem 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+.au-rules-section ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.au-rules-section li {
+  padding: 0.4rem 0;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.au-rules-section li strong {
+  color: #ffd60a;
+}
+
+.au-tiles-intro {
+  margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.au-tiles-list {
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.au-sport-stats {
+  margin-bottom: 1.5rem;
+}
+
+.au-sport-stats ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.au-position-group {
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(0, 180, 216, 0.3);
+}
+
+.au-position-group ul {
+  display: block;
+}
+
+.au-tile-name-hover,
+.au-acronym-hover {
+  position: relative;
+  cursor: help;
+  color: #00b4d8;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.au-tile-name-hover:hover,
+.au-acronym-hover:hover {
+  color: #ffd60a;
+}
+
+.au-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.95);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  white-space: normal;
+  width: max-content;
+  max-width: 300px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 180, 216, 0.5);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.au-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.95);
+}
+
+.au-tooltip-link {
+  color: #00b4d8;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.au-tooltip-link:hover {
+  color: #ffd60a;
+}
+
+.au-rules-footer {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+  color: #ffd60a;
+  font-weight: 600;
+}
+
+/* Scrollbar Styling */
+.au-rules-modal-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.au-rules-modal-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.au-rules-modal-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 180, 216, 0.5);
+  border-radius: 10px;
+}
+
+.au-rules-modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 180, 216, 0.7);
+}
+
+/* UserStatsModal */
+.au-user-stats-container {
+  flex: 1;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  color: #fff;
+}
+
+.au-stats-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.au-user-info {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.au-user-info p {
+  margin: 0.25rem 0;
+}
+
+/* Sport Selector */
+.au-sport-selector {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.au-sport-button {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.au-sport-button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.au-sport-button.active {
+  background: rgba(255, 214, 10, 0.2);
+  border-color: #ffd60a;
+  box-shadow: 0 4px 12px rgba(255, 214, 10, 0.4);
+}
+
+/* Stats Sections */
+.au-stats-section {
+  margin: 2.5rem 0;
+}
+
+.au-stats-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+  padding-bottom: 0.5rem;
+}
+
+/* Stats Grid */
+.au-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.au-stat-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.au-stat-card:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 180, 216, 0.3);
+}
+
+.au-stat-card.highlight {
+  background: rgba(255, 214, 10, 0.15);
+  border-color: #ffd60a;
+}
+
+.au-stat-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffd60a;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.au-stat-label {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Tile Patterns */
+.au-tile-patterns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.au-pattern-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.au-pattern-card:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.au-pattern-card h3 {
+  font-size: 1.3rem;
+  color: #ffd60a;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.au-pattern-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.au-pattern-item:last-child {
+  border-bottom: none;
+}
+
+.au-pattern-label {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.au-pattern-value {
+  font-weight: bold;
+  color: #ffd60a;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Tile Stats Table */
+.au-tile-stats-table {
+  overflow-x: auto;
+  margin-top: 1.5rem;
+}
+
+.au-tile-stats-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.au-tile-stats-table thead {
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
+}
+
+.au-tile-stats-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.au-tile-stats-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.au-tile-stats-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.au-tile-stats-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.au-tile-stats-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.au-tile-name {
+  font-weight: 600;
+  color: #ffd60a;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }

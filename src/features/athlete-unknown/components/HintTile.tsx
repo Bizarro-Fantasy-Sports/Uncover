@@ -18,11 +18,22 @@ export function HintTile({
 }: HintTileProps): React.ReactElement {
   const tileContent = String(playerData[tileName] || "");
 
+  if (!tileContent) {
+    return <></>;
+  }
+
+  const tileContentCount = tileContent.split(",").length;
+
   return (
-    <div className="au-hint-tile-container" onClick={onClick}>
+    <div className={`au-hint-tile-container-${tileName}`} onClick={onClick}>
       <span className="au-hint-tile-label">{TILES[tileName].label}</span>
       <div className="au-hint-tile-size au-hint-tile-wrapper">
-        <div className="au-hint-tile-flipped">{tileContent}</div>
+        <div
+          className="au-hint-tile-flipped"
+          style={{ fontSize: tileContentCount > 1 ? "1.5rem" : "1.75rem" }}
+        >
+          {tileContent}
+        </div>
         <div
           className={`au-hint-tile-unflipped ${isFlipped ? "au-hint-tile-peeled" : ""}`}
         >

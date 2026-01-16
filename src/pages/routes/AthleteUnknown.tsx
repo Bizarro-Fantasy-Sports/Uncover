@@ -21,12 +21,12 @@ import {
   TileGrid,
   RoundResultsModal,
   RulesModal,
-  SportsReferenceCredit,
   UserStatsModal,
   HintTiles,
   RoundHistoryModal,
   UserAndSettings,
   Button,
+  PreviousGuesses,
 } from "@/features/athlete-unknown/components";
 import {
   athleteUnknownApiService,
@@ -302,7 +302,10 @@ export function AthleteUnknown(): React.ReactElement {
                 isCompleted={state.isCompleted}
                 onPlayerNameChange={(name) => updateState({ playerName: name })}
               />
-              <div>Previous Guesses Component</div>
+              <PreviousGuesses
+                guesses={state.previousGuesses}
+                correctName={state.round.player.name}
+              />
             </div>
             <div className="au-hints-container">
               <HintTiles
@@ -323,10 +326,49 @@ export function AthleteUnknown(): React.ReactElement {
           </div>
         </div>
       </div>
-      {/* <div className="au-footer-container">
-        <div>Sports Reference Credit Component</div>
-        <div>Credits Link Component</div>
-      </div> */}
+      <div className="au-footer-container">
+        <SportsReferenceAttribution activeSport={activeSport} />
+        <div>Credits</div>
+      </div>
+
+      <RoundResultsModal
+        isOpen={isRoundResultsModalOpen}
+        score={state.score}
+        flippedTiles={
+          state.isCompleted
+            ? state.flippedTilesUponCompletion
+            : state.flippedTiles
+        }
+        copiedText={state.copiedText}
+        roundStats={state.round.stats}
+        playerData={state.round.player}
+        onClose={() => setIsRoundResultsModalOpen(false)}
+        onShare={handleShare}
+        isCompleted={state.isCompleted}
+      />
+
+      <RulesModal
+        isOpen={isRulesModalOpen}
+        onClose={() => setIsRulesModalOpen(false)}
+      />
+
+      <UserStatsModal
+        isOpen={isUserStatsModalOpen}
+        onClose={() => setIsUserStatsModalOpen(false)}
+        userStats={state.userStats}
+        isLoading={state.isLoading}
+        error={state.error}
+      />
+
+      <RoundHistoryModal
+        isOpen={isRoundHistoryModalOpen}
+        onClose={() => setIsRoundHistoryModalOpen(false)}
+        isLoading={state.isLoading}
+        error={state.error}
+        roundHistory={state.roundHistory}
+        userRoundHistory={userRoundHistoryArray?.[0]?.history ?? []}
+        onRoundSelect={(playDate) => setSelectedPlayDate(playDate)}
+      />
     </div>
   );
 }

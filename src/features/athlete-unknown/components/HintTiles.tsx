@@ -17,7 +17,7 @@ export function HintTiles({
   onHintTileClick,
 }: HintTilesProps): React.ReactElement {
   return (
-    <div className="au-hints-container">
+    <>
       {TOP_TILES.map((tileName: TileType, index: number) => (
         <HintTile
           key={index}
@@ -28,6 +28,6 @@ export function HintTiles({
           onClick={() => onHintTileClick(tileName)}
         />
       ))}
-    </div>
+    </>
   );
 }

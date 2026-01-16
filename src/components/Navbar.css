@@ -11,13 +11,11 @@
 
 .mobile-navbar-container {
   display: flex;
-  background-color: red;
 }
 
 .navbar-logo-container {
   width: 4rem;
   height: 4rem;
-  background-color: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;

@@ -1,5 +1,4 @@
 import React from "react";
-import "./RulesModal.css";
 import { RoundHistory, RoundSummary } from "@/features/athlete-unknown/types";
 
 interface RoundHistoryModalProps {
@@ -32,19 +31,22 @@ function RoundHistoryModal({
   }
 
   return (
-    <div className="rules-modal-overlay" onClick={onClose}>
-      <div className="rules-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="close-rules-button" onClick={onClose}>
+    <div className="au-rules-modal-overlay" onClick={onClose}>
+      <div
+        className="au-rules-modal-content"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className="au-close-rules-button" onClick={onClose}>
           ×
         </button>
 
-        <h2 className="rules-title">Round History</h2>
+        <h2 className="au-rules-title">Round History</h2>
 
-        <div className="rules-body">
+        <div className="au-rules-body">
           {isLoading && <p>Loading rounds...</p>}
 
           {error && (
-            <div className="error-message">
+            <div className="au-error-message">
               <p>Error: {error}</p>
             </div>
           )}

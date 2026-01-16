@@ -3,7 +3,11 @@
  * Centralized location for all localStorage keys used in the application
  */
 
-import type { SportType, TileType } from "@/features/athlete-unknown/config";
+import type {
+  SportType,
+  TileType,
+  GuessMessageType,
+} from "@/features/athlete-unknown/config";
 
 export const STORAGE_KEYS = {
   MOCK_DATA_PLAYER_INDEX_PREFIX: "mockDataPlayerIndex_",
@@ -36,10 +40,11 @@ export interface MidRoundProgress {
   playDate: string;
   isCompleted: boolean;
   flippedTiles: TileType[];
+  previousGuesses: string[];
   incorrectGuesses: number;
   lastSubmittedGuess: string;
   message: string;
-  messageType: string;
+  messageType: GuessMessageType;
   playerName: string;
   previousCloseGuess: string;
   score: number;
@@ -116,10 +121,7 @@ export const getMockDataPlayerIndex = (sport: string): number | null => {
 /**
  * Save mock data player index to localStorage
  */
-export const saveMockDataPlayerIndex = (
-  sport: string,
-  index: number
-): void => {
+export const saveMockDataPlayerIndex = (sport: string, index: number): void => {
   try {
     const key = getMockDataPlayerIndexKey(sport);
     localStorage.setItem(key, index.toString());

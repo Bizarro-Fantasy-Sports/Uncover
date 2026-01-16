@@ -24,7 +24,8 @@ export function SportsReferenceAttribution({
   activeSport,
 }: SportsReferenceAttributionProps): React.ReactElement {
   return (
-    <div className="sports-reference-attribution">
+    <div className="au-sports-reference-attribution">
+      All information and images courtesy of
       <a
         href={sportsReferenceUrls[activeSport]}
         target="_blank"
