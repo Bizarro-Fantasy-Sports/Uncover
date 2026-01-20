@@ -242,9 +242,9 @@ export function AthleteUnknown(): React.ReactElement {
     <div className="au-container">
       {/* <SportsReferenceAttribution activeSport={activeSport} /> */}
 
-      <div className="au-header-container">
+      {/* <div className="au-header-container">
         <UserAndSettings onStatsClick={() => setIsUserStatsModalOpen(true)} />
-      </div>
+      </div> */}
 
       <div className="au-paper-container">
         <GameHeader activeSport={activeSport} onSportChange={setActiveSport} />

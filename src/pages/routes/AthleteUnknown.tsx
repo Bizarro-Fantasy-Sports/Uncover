@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from "react-router";
 import "./AthleteUnknown.css";
@@ -112,6 +112,22 @@ export function AthleteUnknown(): React.ReactElement {
   const [selectedPlayDate, setSelectedPlayDate] = useState<string | undefined>(
     undefined
   );
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [volume, setVolume] = useState(0);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
+
+  const onHandleVolumeClick = useCallback(() => {
+    if (volume === 0) {
+      setVolume(0.5);
+    } else {
+      setVolume(0);
+    }
+  }, [setVolume, volume]);
 
   // Check if user is a playtester
   const isPlaytester = userRoles.includes("Playtester");
@@ -254,7 +270,12 @@ export function AthleteUnknown(): React.ReactElement {
           className="au-placeholder-logo"
         />
         <div>
-          <UserAndSettings onStatsClick={() => setIsUserStatsModalOpen(true)} />
+          <UserAndSettings
+            onStatsClick={() => setIsUserStatsModalOpen(true)}
+            audioRef={audioRef}
+            onVolumeClick={onHandleVolumeClick}
+            volume={volume}
+          />
         </div>
       </div>
       <div className="au-body-container">
