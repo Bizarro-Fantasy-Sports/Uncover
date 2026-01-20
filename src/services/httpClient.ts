@@ -1,4 +1,5 @@
 import type { ApiError } from "@/types";
+import { config } from "@/config/env";
 
 /**
  * Generic HTTP client with auth, timeout, and error handling
@@ -49,7 +50,7 @@ class HttpClient {
         try {
           token = await this.getAccessTokenSilently({
             authorizationParams: {
-              audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+              audience: config.auth0.audience,
             },
           });
         } catch (error) {
@@ -111,11 +112,12 @@ class HttpClient {
   /**
    * POST request
    */
-  async post<T>(endpoint: string, body: any): Promise<T> {
+  async post<T>(endpoint: string, body: any, headers?: Record<string, string>): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     const response = await this.fetchWithTimeout(url, {
       method: "POST",
       body: JSON.stringify(body),
+      headers,
     });
     return this.handleResponse<T>(response);
   }

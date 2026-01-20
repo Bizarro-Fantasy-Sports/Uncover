@@ -1,6 +1,11 @@
-import { API_CONFIG } from "@/config";
+import { config } from "@/config";
 import { athleteUnknownApiService } from "./api";
 import { MockDataService } from "./mockData";
+import {
+  createInitialUserStats,
+  loadGuestStats,
+} from "@/features/athlete-unknown/utils";
+import { hasGuestStats } from "./statsMigration";
 
 /**
  * User Stats Service
@@ -10,7 +15,7 @@ class UserStatsService {
   private useMockData: boolean;
 
   constructor() {
-    this.useMockData = API_CONFIG.useMockData;
+    this.useMockData = config.api.useMockData;
     console.log(
       `UserStatsService initialized - Using ${this.useMockData ? "MOCK" : "API"} data`
     );
@@ -18,7 +23,7 @@ class UserStatsService {
 
   /**
    * Get user statistics
-   * Falls back to mock data if API call fails
+   * Returns empty stats object if user is not authenticated (401)
    */
   async getUserStats(): Promise<any> {
     if (this.useMockData) {
@@ -29,12 +34,19 @@ class UserStatsService {
     try {
       console.log("[API] Fetching user stats");
       return await athleteUnknownApiService.getUserStats();
-    } catch (error) {
-      console.warn(
-        "[API] Failed to fetch user stats, falling back to mock data:",
-        error
-      );
-      return MockDataService.getUserStats();
+    } catch (error: any) {
+      // Handle 401 (unauthorized) gracefully - user is not logged in
+      console.log("ERROR", error);
+      if (error?.status === 401) {
+        console.log("[API] User not authenticated, returning empty stats");
+        // load guestStats as user stats if availble
+        if (hasGuestStats()) {
+          return loadGuestStats();
+        }
+        return createInitialUserStats();
+      }
+      // Re-throw other errors
+      throw error;
     }
   }
 }

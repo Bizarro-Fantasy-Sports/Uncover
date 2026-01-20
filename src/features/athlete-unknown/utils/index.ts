@@ -1,22 +1,22 @@
-export { calculateNewScore, evaluateRank, generateHint } from "./scoring";
+export { calculateNewScore } from "./scoring";
 export {
   STORAGE_KEYS,
-  getGameSubmissionKey,
   getCurrentSessionKey,
+  getMockDataPlayerIndexKey,
   saveMidRoundProgress,
   loadMidRoundProgress,
   clearMidRoundProgress,
+  getMockDataPlayerIndex,
+  saveMockDataPlayerIndex,
+  clearMockDataPlayerIndex,
   type MidRoundProgress,
 } from "./storage";
-export {
-  calculateLevenshteinDistance,
-  normalize,
-  extractRoundNumber,
-} from "./stringMatching";
+export { calculateLevenshteinDistance, normalize } from "./stringMatching";
 export {
   loadGuestStats,
   updateGuestStats,
   clearGuestStats,
+  createInitialUserStats,
 } from "./guestStats";
 export { getCurrentDateString } from "./date";
 export {

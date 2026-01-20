@@ -2,7 +2,7 @@
   {
     "playDate": "2025-11-19",
     "sport": "football",
-    "roundId": "football001",
+    "roundId": "football#1",
     "created": "2025-11-11T10:00:00Z",
     "lastUpdated": "2025-11-12T00:00:00Z",
     "theme": "",
@@ -18,7 +18,9 @@
       "jerseyNumbers": "18",
       "careerStats": "71940 Pass Yards, 539 Pass TD, 251 INT, 271 AV",
       "personalAchievements": "HOF, 14x Pro Bowl, 7x All-Pro, 2x SB Champ, 5x MVP, 1x Comeback Player, 2x Off PoY",
-      "photo": "https://images.unsplash.com/photo-1521412644187-c49fa049e84d"
+      "photo": "https://images.unsplash.com/photo-1521412644187-c49fa049e84d",
+      "initials": "P.M.",
+      "nicknames": "The Sheriff"
     },
     "stats": {
       "playDate": "2025-11-19",
@@ -42,7 +44,9 @@
         "photo": 378,
         "playerInformation": 289,
         "teamsPlayedOn": 145,
-        "yearsActive": 134
+        "yearsActive": 134,
+        "initials": 245,
+        "nicknames": 289
       },
       "firstTileFlippedTracker": {
         "bio": 23,
@@ -53,7 +57,9 @@
         "photo": 8,
         "playerInformation": 78,
         "teamsPlayedOn": 34,
-        "yearsActive": 29
+        "yearsActive": 29,
+        "initials": 72,
+        "nicknames": 89
       },
       "lastTileFlippedTracker": {
         "bio": 29,
@@ -64,14 +70,16 @@
         "photo": 178,
         "playerInformation": 15,
         "teamsPlayedOn": 32,
-        "yearsActive": 31
+        "yearsActive": 31,
+        "initials": 48,
+        "nicknames": 56
       }
     }
   },
   {
     "playDate": "2025-11-20",
     "sport": "football",
-    "roundId": "football002",
+    "roundId": "football#2",
     "created": "2025-11-12T10:00:00Z",
     "lastUpdated": "2025-11-13T00:00:00Z",
     "theme": "",
@@ -87,7 +95,9 @@
       "jerseyNumbers": "28, 21, 23",
       "careerStats": "2163 Rush, 9651 Rush Yards, 55 Rush TD, 81 AV",
       "personalAchievements": "3x Pro Bowl, 1x All-Pro, 1x Off PoY",
-      "photo": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2"
+      "photo": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2",
+      "initials": "C.J.",
+      "nicknames": "CJ2K"
     },
     "stats": {
       "playDate": "2025-11-20",
@@ -111,7 +121,9 @@
         "photo": 201,
         "playerInformation": 178,
         "teamsPlayedOn": 134,
-        "yearsActive": 87
+        "yearsActive": 87,
+        "initials": 142,
+        "nicknames": 167
       },
       "firstTileFlippedTracker": {
         "bio": 14,
@@ -122,7 +134,9 @@
         "photo": 6,
         "playerInformation": 45,
         "teamsPlayedOn": 26,
-        "yearsActive": 18
+        "yearsActive": 18,
+        "initials": 39,
+        "nicknames": 48
       },
       "lastTileFlippedTracker": {
         "bio": 18,
@@ -133,14 +147,16 @@
         "photo": 102,
         "playerInformation": 12,
         "teamsPlayedOn": 21,
-        "yearsActive": 23
+        "yearsActive": 23,
+        "initials": 31,
+        "nicknames": 38
       }
     }
   },
   {
     "playDate": "2025-11-21",
     "sport": "football",
-    "roundId": "football003",
+    "roundId": "football#3",
     "created": "2025-11-13T10:00:00Z",
     "lastUpdated": "2025-11-14T00:00:00Z",
     "theme": "",
@@ -156,7 +172,9 @@
       "jerseyNumbers": "81",
       "careerStats": "731 Rec, 11619 Rec Yards, 83 Rec TD",
       "personalAchievements": "HOF, 6x Pro Bowl, 3x All-Pro",
-      "photo": "https://images.unsplash.com/photo-1517462964-21fdcec3a5a0"
+      "photo": "https://images.unsplash.com/photo-1517462964-21fdcec3a5a0",
+      "initials": "C.J.",
+      "nicknames": "Megatron"
     },
     "stats": {
       "playDate": "2025-11-21",
@@ -180,7 +198,9 @@
         "photo": 267,
         "playerInformation": 198,
         "teamsPlayedOn": 89,
-        "yearsActive": 112
+        "yearsActive": 112,
+        "initials": 178,
+        "nicknames": 201
       },
       "firstTileFlippedTracker": {
         "bio": 19,
@@ -191,7 +211,9 @@
         "photo": 7,
         "playerInformation": 49,
         "teamsPlayedOn": 16,
-        "yearsActive": 23
+        "yearsActive": 23,
+        "initials": 54,
+        "nicknames": 67
       },
       "lastTileFlippedTracker": {
         "bio": 22,
@@ -202,14 +224,16 @@
         "photo": 134,
         "playerInformation": 13,
         "teamsPlayedOn": 18,
-        "yearsActive": 25
+        "yearsActive": 25,
+        "initials": 42,
+        "nicknames": 49
       }
     }
   },
   {
     "playDate": "2025-11-22",
     "sport": "football",
-    "roundId": "football004",
+    "roundId": "football#4",
     "created": "2025-11-14T10:00:00Z",
     "lastUpdated": "2025-11-15T00:00:00Z",
     "theme": "",
@@ -225,7 +249,9 @@
       "jerseyNumbers": "72",
       "careerStats": "188 GS, 96 AV",
       "personalAchievements": "2x Pro Bowl",
-      "photo": "https://images.unsplash.com/photo-1546519638-68e109498ffc"
+      "photo": "https://images.unsplash.com/photo-1546519638-68e109498ffc",
+      "initials": "B.H.",
+      "nicknames": "The Sheriff"
     },
     "stats": {
       "playDate": "2025-11-22",
@@ -249,7 +275,9 @@
         "photo": 142,
         "playerInformation": 123,
         "teamsPlayedOn": 108,
-        "yearsActive": 134
+        "yearsActive": 134,
+        "initials": 95,
+        "nicknames": 78
       },
       "firstTileFlippedTracker": {
         "bio": 11,
@@ -260,7 +288,9 @@
         "photo": 4,
         "playerInformation": 28,
         "teamsPlayedOn": 42,
-        "yearsActive": 19
+        "yearsActive": 19,
+        "initials": 26,
+        "nicknames": 18
       },
       "lastTileFlippedTracker": {
         "bio": 14,
@@ -271,14 +301,16 @@
         "photo": 71,
         "playerInformation": 9,
         "teamsPlayedOn": 15,
-        "yearsActive": 17
+        "yearsActive": 17,
+        "initials": 21,
+        "nicknames": 14
       }
     }
   },
   {
     "playDate": "2025-11-23",
     "sport": "football",
-    "roundId": "football005",
+    "roundId": "football#5",
     "created": "2025-11-15T10:00:00Z",
     "lastUpdated": "2025-11-16T00:00:00Z",
     "theme": "",
@@ -294,7 +326,9 @@
       "jerseyNumbers": "78",
       "careerStats": "279 G, 1075 Solo Tackles, 200 Sacks, 229 AV",
       "personalAchievements": "HOF, 11x Pro Bowl, 8x All-Pro, 2x Def PoY",
-      "photo": "https://images.unsplash.com/photo-1521412644187-c49fa049e84d"
+      "photo": "https://images.unsplash.com/photo-1521412644187-c49fa049e84d",
+      "initials": "B.S.",
+      "nicknames": ""
     },
     "stats": {
       "playDate": "2025-11-23",
@@ -318,7 +352,9 @@
         "photo": 289,
         "playerInformation": 234,
         "teamsPlayedOn": 112,
-        "yearsActive": 123
+        "yearsActive": 123,
+        "initials": 189,
+        "nicknames": 156
       },
       "firstTileFlippedTracker": {
         "bio": 21,
@@ -329,7 +365,9 @@
         "photo": 7,
         "playerInformation": 64,
         "teamsPlayedOn": 23,
-        "yearsActive": 26
+        "yearsActive": 26,
+        "initials": 58,
+        "nicknames": 42
       },
       "lastTileFlippedTracker": {
         "bio": 25,
@@ -340,14 +378,16 @@
         "photo": 145,
         "playerInformation": 14,
         "teamsPlayedOn": 20,
-        "yearsActive": 28
+        "yearsActive": 28,
+        "initials": 37,
+        "nicknames": 29
       }
     }
   },
   {
     "playDate": "2025-11-24",
     "sport": "football",
-    "roundId": "football006",
+    "roundId": "football#6",
     "created": "2025-11-16T10:00:00Z",
     "lastUpdated": "2025-11-17T00:00:00Z",
     "theme": "",
@@ -363,7 +403,9 @@
       "jerseyNumbers": "41, 33, 41, 52, 42, 52",
       "careerStats": "106 G, 453 Solo Tackles, 6.5 Sacks, 42 AV",
       "personalAchievements": "N/A",
-      "photo": "https://images.unsplash.com/photo-1518609878373-06d740f60d8b"
+      "photo": "https://images.unsplash.com/photo-1518609878373-06d740f60d8b",
+      "initials": "Z.C.",
+      "nicknames": ""
     },
     "stats": {
       "playDate": "2025-11-24",
@@ -387,7 +429,9 @@
         "photo": 128,
         "playerInformation": 112,
         "teamsPlayedOn": 131,
-        "yearsActive": 76
+        "yearsActive": 76,
+        "initials": 87,
+        "nicknames": 45
       },
       "firstTileFlippedTracker": {
         "bio": 9,
@@ -398,7 +442,9 @@
         "photo": 3,
         "playerInformation": 27,
         "teamsPlayedOn": 51,
-        "yearsActive": 15
+        "yearsActive": 15,
+        "initials": 22,
+        "nicknames": 11
       },
       "lastTileFlippedTracker": {
         "bio": 12,
@@ -409,14 +455,16 @@
         "photo": 64,
         "playerInformation": 8,
         "teamsPlayedOn": 13,
-        "yearsActive": 16
+        "yearsActive": 16,
+        "initials": 18,
+        "nicknames": 9
       }
     }
   },
   {
     "playDate": "2025-11-25",
     "sport": "football",
-    "roundId": "football007",
+    "roundId": "football#7",
     "created": "2025-11-17T10:00:00Z",
     "lastUpdated": "2025-11-18T00:00:00Z",
     "theme": "",
@@ -432,7 +480,9 @@
       "jerseyNumbers": "21, 20, 21, 26, 49",
       "careerStats": "98 G, 417 Solo Tackles, 16 INT, 38 AV",
       "personalAchievements": "1x Pro Bowl",
-      "photo": "https://images.unsplash.com/photo-1502098364078-4ed452c67c36"
+      "photo": "https://images.unsplash.com/photo-1502098364078-4ed452c67c36",
+      "initials": "H.H.C.D.",
+      "nicknames": ""
     },
     "stats": {
       "playDate": "2025-11-25",
@@ -456,7 +506,9 @@
         "photo": 162,
         "playerInformation": 151,
         "teamsPlayedOn": 129,
-        "yearsActive": 82
+        "yearsActive": 82,
+        "initials": 106,
+        "nicknames": 67
       },
       "firstTileFlippedTracker": {
         "bio": 12,
@@ -467,7 +519,9 @@
         "photo": 5,
         "playerInformation": 52,
         "teamsPlayedOn": 28,
-        "yearsActive": 16
+        "yearsActive": 16,
+        "initials": 34,
+        "nicknames": 19
       },
       "lastTileFlippedTracker": {
         "bio": 15,
@@ -478,7 +532,9 @@
         "photo": 82,
         "playerInformation": 10,
         "teamsPlayedOn": 19,
-        "yearsActive": 17
+        "yearsActive": 17,
+        "initials": 24,
+        "nicknames": 13
       }
     }
   }

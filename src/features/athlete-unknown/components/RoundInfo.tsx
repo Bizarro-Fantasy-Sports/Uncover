@@ -2,49 +2,28 @@ import React from "react";
 import { formatDate } from "@/utils";
 
 interface RoundInfoProps {
-  roundNumber: number;
+  roundNumber: string;
   playDate?: string;
   theme?: string;
-  onRoundStatsClick: () => void;
+  onRoundResultsClick: () => void;
   onRulesClick: () => void;
-  isPlaytester?: boolean;
-  showDatePicker?: boolean;
-  selectedPlayDate?: string;
-  onTitleClick?: () => void;
-  onDateSelect?: (date: string) => void;
+  onRoundHistoryClick: () => void;
 }
 
 export function RoundInfo({
   roundNumber,
   playDate,
   theme,
-  onRoundStatsClick,
+  onRoundResultsClick,
   onRulesClick,
-  isPlaytester = false,
-  showDatePicker = false,
-  selectedPlayDate,
-  onTitleClick,
-  onDateSelect,
+  onRoundHistoryClick,
 }: RoundInfoProps): React.ReactElement {
   return (
     <div className="round-info">
-      <span
-        className={`round-number ${isPlaytester ? "playtester-clickable" : ""}`}
-        onClick={onTitleClick}
-        style={isPlaytester ? { cursor: "default" } : undefined}
-      >
+      <span className="round-number">
         Round #{roundNumber}
         {theme && ` - ${theme}`}
       </span>
-      {showDatePicker && isPlaytester && onDateSelect && (
-        <input
-          type="date"
-          className="date-picker"
-          value={selectedPlayDate || ""}
-          onChange={(e) => onDateSelect(e.target.value)}
-          onClick={(e) => e.stopPropagation()}
-        />
-      )}
       {playDate && (
         <>
           <span className="separator">•</span>
@@ -52,12 +31,16 @@ export function RoundInfo({
         </>
       )}
       <span className="separator">•</span>
-      <button className="round-stats-link" onClick={onRoundStatsClick}>
+      <button className="round-stats-link" onClick={onRoundResultsClick}>
         Today's Stats
       </button>
       <span className="separator">•</span>
       <button className="rules-link" onClick={onRulesClick}>
         Rules
+      </button>
+      <span className="separator">•</span>
+      <button className="history-link" onClick={onRoundHistoryClick}>
+        History
       </button>
     </div>
   );

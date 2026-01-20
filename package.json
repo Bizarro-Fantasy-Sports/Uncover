@@ -1,5 +1,5 @@
 {
-  "name": "athlete-unknown",
+  "name": "statsland-website",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -14,6 +14,8 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "build:dev": "env-cmd -f .env.dev craco build",
+    "build:prod": "env-cmd -f .env.prod craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
@@ -42,6 +44,7 @@
     "@types/node": "^25.0.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "env-cmd": "^11.0.0",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "prettier": "^3.7.4",

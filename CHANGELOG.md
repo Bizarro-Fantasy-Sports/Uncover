@@ -15,6 +15,50 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [v1.0.2] - 2026-01-11
+
+## [PR-46]
+
+### Added
+
+- New deploy-frontend.yml file. Deployments will only be made on release/ branches
+
+## [PR-45]
+
+### Added
+
+- Lots of refactoring and bug fixes
+- Round History to play rounds in the past (and in the future for playtester role)
+- Use history from userStats to autocomplete already finished rounds. If not found, use localStorage for guest users
+- For 401 Unauthorized failures for userStats, use localStorage for guest users' user stats
+- Pass timezone to POST /results for BE to accurately calculate currentDailyStreak
+
+## [PR-44]
+
+### Added
+
+- Added 2 more tiles that aren't part of the grid, Initials and Nicknames
+- Order of sports in header (and default sport) handled by environment variables
+
+### Changed
+
+- Changed models to reflect new tiles
+- Consolidated ResultsModal and RoundStatsModal into RoundResultsModal
+- Changed way tiles are displayed (no more boolean[] to keep track of flips)
+- Changed roundId separator to "#"
+- Removed unnecessary pieces of GameState
+- Now to get the round correct after a close guess, the next guess has to be closer than the previous to be accepted
+
+## [PR-43]
+
+### Added
+
+- New template.yaml file to be run by sam to deploy infrastructure stack to AWS
+
+### Changed
+
+- Centralized and refactored environment variable usage
+
 ## [PR-42]
 
 ### Added

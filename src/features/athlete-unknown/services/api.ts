@@ -1,5 +1,5 @@
 import { HttpClient } from "@/services";
-import { API_CONFIG } from "@/config";
+import { config, SportType } from "@/config";
 import type {
   GameResultResponse,
   Result,
@@ -16,7 +16,7 @@ class AthleteUnknownApiService {
   private httpClient: HttpClient;
 
   constructor() {
-    this.httpClient = new HttpClient(API_CONFIG.baseUrl, API_CONFIG.timeout);
+    this.httpClient = new HttpClient(config.api.baseUrl, config.api.timeout);
   }
 
   /**
@@ -67,7 +67,11 @@ class AthleteUnknownApiService {
     const endpoint = `/v1/results?sport=${sport}&playDate=${dateParam}`;
 
     try {
-      const result = await this.httpClient.post<any>(endpoint, gameResult);
+      // Detect user's timezone
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const result = await this.httpClient.post<any>(endpoint, gameResult, {
+        "X-User-Timezone": timezone,
+      });
 
       return {
         success: true,
@@ -135,6 +139,37 @@ class AthleteUnknownApiService {
     } catch (error) {
       console.error("Error updating username:", error);
       throw this.httpClient.formatError(error, "Failed to update username");
+    }
+  }
+
+  /**
+   * Get all rounds (for regular users)
+   */
+  async getRounds(sport: SportType): Promise<Round[]> {
+    const endpoint = `/v1/rounds?sport=${sport}`;
+
+    try {
+      return await this.httpClient.get<any>(endpoint);
+    } catch (error) {
+      console.error("Error fetching rounds:", error);
+      throw this.httpClient.formatError(error, "Failed to load rounds");
+    }
+  }
+
+  /**
+   * Get upcoming rounds (for playtesters)
+   */
+  async getUpcomingRounds(sport: SportType): Promise<Round[]> {
+    const endpoint = `/v1/upcoming-rounds?sport=${sport}`;
+
+    try {
+      return await this.httpClient.get<any>(endpoint);
+    } catch (error) {
+      console.error("Error fetching upcoming rounds:", error);
+      throw this.httpClient.formatError(
+        error,
+        "Failed to load upcoming rounds"
+      );
     }
   }
 }

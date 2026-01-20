@@ -1,5 +1,7 @@
 // Athlete Unknown API Types
 
+import { TileType } from "@/features/athlete-unknown/config";
+
 export interface Round {
   roundId: string;
   sport: string;
@@ -9,6 +11,12 @@ export interface Round {
   theme?: string;
   player: PlayerData;
   stats: RoundStats;
+}
+
+export interface RoundSummary {
+  roundId: string;
+  sport: string;
+  playDate: string;
 }
 
 export interface PlayerData {
@@ -25,13 +33,15 @@ export interface PlayerData {
   personalAchievements: string;
   photo: string;
   [key: string]: string | number | undefined;
+  initials?: string;
+  nicknames?: string;
 }
 
 // what is actually sent and returned from BE API
 export interface Result {
   score: number;
   isCorrect: boolean;
-  tilesFlipped: string[];
+  flippedTiles: TileType[];
   incorrectGuesses: number;
 }
 
@@ -92,4 +102,6 @@ export interface TileTracker {
   careerStats: number;
   personalAchievements: number;
   photo: number;
+  initials: number;
+  nicknames: number;
 }

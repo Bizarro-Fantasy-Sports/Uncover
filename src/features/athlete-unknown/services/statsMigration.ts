@@ -4,8 +4,11 @@
  */
 
 import { athleteUnknownApiService } from "./api";
-import { loadGuestStats, clearGuestStats } from "../utils/guestStats";
-import { getCurrentDateString } from "../utils";
+import {
+  getCurrentDateString,
+  loadGuestStats,
+  clearGuestStats,
+} from "@/features/athlete-unknown/utils";
 
 /**
  * Check if user has any guest stats in localStorage

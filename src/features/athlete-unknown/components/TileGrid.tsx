@@ -1,14 +1,18 @@
 import React from "react";
-import { TILE_NAMES, PHOTO_GRID } from "@/features/athlete-unknown/config";
+import {
+  GRID_TILES,
+  PHOTO_GRID,
+  TileType,
+} from "@/features/athlete-unknown/config";
 import { Tile } from "./Tile";
 import type { PlayerData } from "@/features/athlete-unknown/types";
 
 interface TileGridProps {
-  flippedTiles: boolean[];
+  flippedTiles: TileType[];
   photoRevealed: boolean;
   returningFromPhoto: boolean;
   playerData: PlayerData;
-  onTileClick: (index: number) => void;
+  onTileClick: (tileName: TileType) => void;
 }
 
 export function TileGrid({
@@ -35,19 +39,19 @@ export function TileGrid({
 
   return (
     <div className="grid">
-      {TILE_NAMES.map((tileName, index) => (
+      {GRID_TILES.map((tileName: TileType, index: number) => (
         <Tile
           key={index}
           tileName={tileName}
           index={index}
-          isFlipped={flippedTiles[index]}
+          isFlipped={flippedTiles.includes(tileName)}
           photoRevealed={photoRevealed}
           returningFromPhoto={returningFromPhoto}
           playerData={playerData}
           photoSegmentStyle={
             photoRevealed ? getPhotoSegmentStyle(index) : undefined
           }
-          onClick={() => onTileClick(index)}
+          onClick={() => onTileClick(tileName)}
         />
       ))}
     </div>
