@@ -121,6 +121,18 @@ class HttpClient {
   }
 
   /**
+   * PUT request
+   */
+  async put<T>(endpoint: string, body: any): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    const response = await this.fetchWithTimeout(url, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+    return this.handleResponse<T>(response);
+  }
+
+  /**
    * Format error for display
    */
   formatError(error: any, defaultMessage: string): ApiError {
