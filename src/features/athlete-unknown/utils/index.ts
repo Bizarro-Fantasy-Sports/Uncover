@@ -19,3 +19,8 @@ export {
   createInitialUserStats,
 } from "./guestStats";
 export { getCurrentDateString } from "./date";
+export {
+  validateUsername,
+  isInappropriateName,
+  generateDefaultUsername,
+} from "./username";

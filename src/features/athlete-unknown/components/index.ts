@@ -14,5 +14,6 @@ export { RoundInfo } from "./RoundInfo";
 export { RulesModal } from "./RulesModal";
 export { SportsReferenceCredit } from "./SportsReferenceCredit";
 export { UserStatsModal } from "./UserStatsModal";
+export { UsernameModal } from "./UsernameModal";
 export { HintTiles } from "./HintTiles";
 export { RoundHistoryModal } from "./RoundHistoryModal";
