@@ -4,6 +4,7 @@ import {
   faBookOpen,
   faBriefcase,
   faChartLine,
+  faUserSecret,
   faVolumeHigh,
   faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -80,11 +81,12 @@ export function UserAndSettings({
         size="lg"
         onClick={onRoundHistoryClick}
       />
-      <div className="au-user-identity-container">
+      <FontAwesomeIcon icon={faUserSecret} size="lg" onClick={onStatsClick} />
+      {/* <div className="au-user-identity-container">
         <button className="au-user-identity-button" onClick={onStatsClick}>
           <img src={TestUnknownPerson} alt="profile-image" />
         </button>
-      </div>
+      </div> */}
       <div className="au-settings-container">
         <audio
           ref={audioRef}

@@ -243,14 +243,14 @@ export function AthleteUnknown(): React.ReactElement {
     });
   }, [state.userStats, activeSport]);
 
-  // Show loading state
-  if (state.isLoading) {
-    return (
-      <div className="athlete-unknown-game">
-        <p>Loading player data and round statistics...</p>
-      </div>
-    );
-  }
+  // // Show loading state
+  // if (state.isLoading) {
+  //   return (
+  //     <div className="athlete-unknown-game">
+  //       <p>Loading player data and round statistics...</p>
+  //     </div>
+  //   );
+  // }
 
   // Show error state
   if (state.error) {
