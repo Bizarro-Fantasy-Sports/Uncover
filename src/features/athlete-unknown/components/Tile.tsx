@@ -103,7 +103,7 @@ export function Tile({
             <div>
               <span>
                 {tileContent}
-                {tileName === TILE_NAMES.CAREER_STATS && (
+                {tileName === TILE_NAMES.CAREER_STATS && isFlipped && (
                   <a
                     href={getAdvancedStatsUrl(playerData.sport)}
                     target="_blank"

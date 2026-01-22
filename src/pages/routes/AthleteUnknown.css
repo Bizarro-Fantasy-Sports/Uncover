@@ -440,48 +440,6 @@
       );
 
   /* Heavily torn/rough edges */
-  /* clip-path: polygon(
-    0% 4%,
-    8% 20%,
-    26% 5%,
-    46% 10%,
-    70% 16%,
-    74% 5%,
-    78% 0%,
-    82% 3%,
-    86% 0%,
-    90% 4%,
-    94% 1%,
-    97% 3%,
-    100% 0%,
-    100% 96%,
-    97% 100%,
-    94% 96%,
-    90% 100%,
-    86% 97%,
-    82% 100%,
-    78% 95%,
-    74% 100%,
-    70% 97%,
-    66% 100%,
-    62% 96%,
-    58% 100%,
-    54% 97%,
-    50% 100%,
-    46% 95%,
-    42% 100%,
-    38% 97%,
-    34% 100%,
-    30% 96%,
-    26% 100%,
-    22% 97%,
-    18% 100%,
-    14% 95%,
-    10% 100%,
-    6% 97%,
-    3% 100%,
-    0% 96%
-  ); */
   clip-path: polygon(
     /* Top edge - left to right */ 0% 6%,
     3% 0%,
@@ -671,10 +629,62 @@
 
 /* TileGrid */
 .grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, 125px);
   grid-gap: 0.2rem;
   justify-content: center;
+}
+
+/* Red String - Detective Board Connection (SVG) */
+.red-string-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  overflow: visible;
+}
+
+.red-string-path {
+  fill: none;
+  stroke: #8b0000;
+  stroke-width: 2;
+  stroke-linecap: round;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: string-draw 4s ease-out forwards; /* String drawing speed */
+}
+
+.red-string-pin {
+  fill: #8b0000;
+  opacity: 0;
+  animation: pin-appear 1s ease-out 1s forwards; /* Pin fade-in: duration, delay */
+}
+
+.red-string-group {
+  animation: string-fade 1s ease-out 1s forwards; /* Fade to string-fade opacity: duration, delay */
+}
+
+@keyframes string-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pin-appear {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes string-fade {
+  to {
+    opacity: 0.25;
+  }
 }
 
 /* Tile */
@@ -926,7 +936,7 @@
     inset 2px 2px 4px rgba(255, 255, 255, 0.3);
   z-index: 5;
   opacity: 1;
-  transition: opacity 0.15s ease-out 0.45s;
+  transition: opacity 0.25s ease-out 0.45s;
 }
 
 /* Pin needle/shaft */
