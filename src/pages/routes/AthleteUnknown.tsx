@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useParams } from "react-router";
+import { useParams, useLocation } from "react-router";
 import "./AthleteUnknown.css";
 import type { SportType } from "@/features/athlete-unknown/config";
 import {
@@ -41,6 +41,7 @@ import {
   UserSportStats,
 } from "@/features";
 import { getValidSport } from "@/features/athlete-unknown/utils/strings";
+import { hasAnyGameData } from "@/features/athlete-unknown/utils";
 import { config } from "@/config";
 import { Navbar } from "@/components";
 import PlaceholderLogo from "@/features/athlete-unknown/assets/placeholder-logo.png";
@@ -50,6 +51,7 @@ export function AthleteUnknown(): React.ReactElement {
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [migrationAttempted, setMigrationAttempted] = useState(false);
   const { sport } = useParams();
+  const location = useLocation();
 
   // Extract roles from access token
   useEffect(() => {
@@ -138,8 +140,19 @@ export function AthleteUnknown(): React.ReactElement {
     }
   }, [setVolume, volume]);
 
+  const shareUrl = useMemo(() => {
+    return (
+      window.location.origin +
+      location.pathname +
+      location.search +
+      location.hash
+    );
+  }, [location]);
+
   // Check if user is a playtester
-  const isPlaytester = userRoles.includes("Playtester");
+  const isPlaytester = useMemo(() => {
+    return userRoles.includes("Playtester");
+  }, [userRoles]);
 
   // Core state management - pass selectedPlayDate to ensure each puzzle has its own state
   const { state, updateState, clearProgress, clearMockData } = useGameState(
@@ -187,11 +200,18 @@ export function AthleteUnknown(): React.ReactElement {
   // Share functionality
   // updates the following fields in state:
   // copiedText
-  const { handleShare } = useShareResults({ state, updateState });
+  const { handleShare } = useShareResults({ state, updateState, shareUrl });
 
   useEffect(() => {
     setActiveSport(getValidSport(sport));
   }, [sport, setActiveSport]);
+
+  // Show RulesModal for first-time users
+  useEffect(() => {
+    if (!hasAnyGameData()) {
+      setIsRulesModalOpen(true);
+    }
+  }, []);
 
   // Clear localStorage when round is completed
   useEffect(() => {

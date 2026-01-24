@@ -74,6 +74,8 @@ function RulesModal({
     if (!isPageComplete) {
       // Skip to end of current page
       setDisplayedChars(currentPageText.length);
+    } else if (isLastPage) {
+      onClose();
     } else if (!isLastPage) {
       // Go to next page
       setCurrentPage((prev) => prev + 1);
@@ -100,17 +102,39 @@ function RulesModal({
       >
         <div className="au-rules-notebook-paper">
           <div className="au-rules-prologue-container">
-            <p
-              className={`au-rules-prologue au-rules-prologue-invisible ${currentPage === 3 ? "au-how-to-play" : ""}`}
-              aria-hidden="true"
-            >
-              {currentPageText}
-            </p>
-            <p
-              className={`au-rules-prologue au-rules-prologue-visible ${currentPage === 3 ? "au-how-to-play" : ""}`}
-            >
-              {currentPageText.slice(0, displayedChars)}
-            </p>
+            {currentPage === 3 ? (
+              <div className="au-case-file-paper">
+                <div className="au-paperclip"></div>
+                <div className="au-fingerprint-smudge"></div>
+                {/* <div className="au-case-file-header"> */}
+                {/* <div className="au-case-stamp">CASE BRIEFING</div> */}
+                {/* </div> */}
+
+                <div className="au-case-file-text-container">
+                  <p
+                    className={`au-rules-prologue au-rules-prologue-invisible au-how-to-play`}
+                    aria-hidden="true"
+                  >
+                    {currentPageText}
+                  </p>
+                  <p className="au-rules-prologue au-rules-prologue-visible au-how-to-play">
+                    {currentPageText.slice(0, displayedChars)}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <p
+                  className="au-rules-prologue au-rules-prologue-invisible"
+                  aria-hidden="true"
+                >
+                  {currentPageText}
+                </p>
+                <p className="au-rules-prologue au-rules-prologue-visible">
+                  {currentPageText.slice(0, displayedChars)}
+                </p>
+              </>
+            )}
           </div>
         </div>
         <div className="au-notebook-footer">
@@ -123,11 +147,8 @@ function RulesModal({
           <div className="au-page-indicator">
             {currentPage + 1} / {PROLOGUE_PAGES.length}
           </div>
-          <button
-            className={`au-prologue-nav-button ${isLastPage ? "au-prologue-nav-button--hidden" : ""}`}
-            onClick={handleNextPage}
-          >
-            {isPageComplete ? "Next" : "Skip"}
+          <button className={`au-prologue-nav-button`} onClick={handleNextPage}>
+            {isPageComplete ? (isLastPage ? "Close" : "Next") : "Skip"}
           </button>
         </div>
       </div>

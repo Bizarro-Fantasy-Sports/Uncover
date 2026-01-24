@@ -29,8 +29,8 @@ export function TileGrid({
   const getPhotoSegmentStyle = (index: number): React.CSSProperties => {
     const col = index % PHOTO_GRID.COLS;
     const row = Math.floor(index / PHOTO_GRID.COLS);
-    const xPos = col * PHOTO_GRID.TILE_WIDTH;
-    const yPos = row * PHOTO_GRID.TILE_HEIGHT;
+    const xPos = col * PHOTO_GRID.TILE_SIZE;
+    const yPos = row * PHOTO_GRID.TILE_SIZE;
 
     return {
       backgroundImage: `url(${photoUrl})`,
@@ -40,13 +40,12 @@ export function TileGrid({
 
   // Calculate SVG path for a curved string between two tile indices
   const getStringPath = (fromIndex: number, toIndex: number) => {
-    const TILE_SIZE = 125; // in px
     const GAP = 5; // 0.2rem * 16px
-    const CELL_SIZE = TILE_SIZE + GAP;
+    const CELL_SIZE = PHOTO_GRID.TILE_SIZE + GAP;
     const SAG_AMOUNT = 10; // How much the string droops
 
     const getPin = (index: number) => ({
-      x: (index % 3) * CELL_SIZE + TILE_SIZE / 2, // mid-point for x-axis
+      x: (index % 3) * CELL_SIZE + PHOTO_GRID.TILE_SIZE / 2, // mid-point for x-axis
       y: Math.floor(index / 3) * CELL_SIZE + 4, // top of post-it for y-axis
     });
 
@@ -85,9 +84,6 @@ export function TileGrid({
   const stringConnections: [TileType, TileType][] = filteredFlippedTiles
     .slice(0, -1)
     .map((value, index) => [value, filteredFlippedTiles[index + 1]]);
-  const activeStrings = stringConnections.filter(
-    ([from, to]) => flippedTiles.includes(from) && flippedTiles.includes(to)
-  );
 
   return (
     <div className="grid">

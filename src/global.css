@@ -4,7 +4,10 @@
   --color-secondary: #10b981;
   --spacing-unit: 0.5rem;
 
+  /* Athlete Unknown */
   --mobile-au-header-height: 5rem;
+  --au-tile-grid-size: 3; /* 3x3 grid */
+  --au-tile-size: 125px;
 }
 
 * {

@@ -73,7 +73,7 @@ function UserStatsModal({
             ✕
           </button>
           <div className="au-results-title-container">
-            <h2 className="au-results-title">Detective Profile</h2>
+            <h2 className="au-results-title">Investigator Profile</h2>
           </div>
 
           <div className="au-player-results-container">
@@ -88,7 +88,7 @@ function UserStatsModal({
             <div className="au-player-results-info-container">
               <div className="au-report-field">
                 <span className="au-report-label">Name:</span>
-                <span className="au-report-value">Test_UserName123</span>
+                <span className="au-report-value">TestUser123</span>
                 <div className="au-report-underline"></div>
               </div>
               <div className="au-report-field">
@@ -101,7 +101,9 @@ function UserStatsModal({
                 </span>
                 <span className="au-report-value">
                   <br />
-                  {getDateString(userStats.userCreated)}
+                  {userStats.userCreated !== ""
+                    ? getDateString(userStats.userCreated)
+                    : "N/A"}
                 </span>
                 <div className="au-report-underline"></div>
               </div>

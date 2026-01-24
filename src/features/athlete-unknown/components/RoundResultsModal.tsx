@@ -4,7 +4,8 @@ import type { SportType, TileType } from "@/features/athlete-unknown/config";
 import type { Round } from "@/features/athlete-unknown/types";
 import TestUnknownPerson from "@/features/athlete-unknown/assets/test-unknown-person.jpg";
 import { Button } from "./Button";
-import { getSportEmoji } from "../utils/strings";
+import { getSportEmoji } from "@/features/athlete-unknown/utils";
+import { formatDate } from "@/utils";
 
 const WIN_OR_LOSE = "winOrLose";
 
@@ -71,7 +72,9 @@ export function RoundResultsModal({
             ✕
           </button>
           <div className="au-results-title-container">
-            <h2 className="au-results-title">
+            <h2
+              className={`au-results-title ${isCompleted ? "au-results-title--completed" : ""}`}
+            >
               {isCompleted ? "Case Closed" : "Case Open"}
             </h2>
           </div>
@@ -114,17 +117,19 @@ export function RoundResultsModal({
               </div>
               <div className="au-report-field">
                 <span className="au-report-label">Date:</span>
-                <span className="au-report-value">{playDate}</span>
+                <span className="au-report-value">{formatDate(playDate)}</span>
                 <div className="au-report-underline"></div>
               </div>
               <div className="au-report-field">
                 <span className="au-report-label">Score:</span>
-                <span className="au-report-value">{score}</span>
+                <span className="au-report-value">
+                  {isCompleted ? score : "???"}
+                </span>
                 <div className="au-report-underline"></div>
               </div>
               <div className="au-report-field">
-                <span className="au-report-label">P.I. :</span>
-                <span className="au-report-value">Test_UserName123</span>
+                <span className="au-report-label">P.I.:</span>
+                <span className="au-report-value">TestUser123</span>
                 <div className="au-report-underline"></div>
               </div>
             </div>
@@ -152,14 +157,18 @@ export function RoundResultsModal({
                     }
                   )}
                 </div>
-                <Button onClick={onShare} size="md" variant="primary">
-                  Share Results
-                </Button>
-                {copiedText && (
-                  <div className="au-copied-message">
-                    <p>Copied results to clipboard</p>
-                  </div>
-                )}
+                <div className="au-share-container">
+                  <Button onClick={onShare} size="md" variant="primary">
+                    Share Results
+                  </Button>
+                  {copiedText && (
+                    <div className="au-copied-message">
+                      <p>
+                        Copied results <br /> to clipboard
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </>
           )}
@@ -179,7 +188,7 @@ export function RoundResultsModal({
                   <div className="au-report-field">
                     <span className="au-report-label">Solve Rate:</span>
                     <span className="au-report-value">
-                      {`${roundStats.percentageCorrect}%`}
+                      {`${Math.round(roundStats.percentageCorrect * 100) / 100}%`}
                     </span>
                   </div>
                 </div>
@@ -193,7 +202,7 @@ export function RoundResultsModal({
                   <div className="au-report-field">
                     <span className="au-report-label">Avg Solve Score:</span>
                     <span className="au-report-value">
-                      {roundStats.averageCorrectScore}
+                      {Math.round(roundStats.averageCorrectScore * 100) / 100}
                     </span>
                   </div>
                 </div>
@@ -201,7 +210,8 @@ export function RoundResultsModal({
                   <div className="au-report-field">
                     <span className="au-report-label">Avg Clues Used:</span>
                     <span className="au-report-value">
-                      {roundStats.averageNumberOfTileFlips}
+                      {Math.round(roundStats.averageNumberOfTileFlips * 100) /
+                        100}
                     </span>
                   </div>
                 </div>
@@ -215,35 +225,45 @@ export function RoundResultsModal({
                   <div className="au-stamp-field">
                     <span className="au-stamp-label">Most Used</span>
                     <div className="au-stamp-box">
-                      <span className="au-stamp-overlay">
-                        {formatTileName(roundStats.mostCommonTileFlipped)}
-                      </span>
+                      {roundStats.mostCommonTileFlipped !== "" && (
+                        <span className="au-stamp-overlay">
+                          {formatTileName(roundStats.mostCommonTileFlipped)}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="au-stamp-field">
                     <span className="au-stamp-label">Least Used</span>
                     <div className="au-stamp-box">
-                      <span className="au-stamp-overlay">
-                        {formatTileName(roundStats.leastCommonTileFlipped)}
-                      </span>
+                      {roundStats.leastCommonTileFlipped !== "" && (
+                        <span className="au-stamp-overlay">
+                          {formatTileName(roundStats.leastCommonTileFlipped)}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className="au-results-tile-tracker-stamp-row">
                   <div className="au-stamp-field">
-                    <span className="au-stamp-label">Most First Used</span>
+                    <span className="au-stamp-label">Most Used First</span>
                     <div className="au-stamp-box">
-                      <span className="au-stamp-overlay">
-                        {formatTileName(roundStats.mostCommonFirstTileFlipped)}
-                      </span>
+                      {roundStats.mostCommonFirstTileFlipped !== "" && (
+                        <span className="au-stamp-overlay">
+                          {formatTileName(
+                            roundStats.mostCommonFirstTileFlipped
+                          )}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="au-stamp-field">
-                    <span className="au-stamp-label">Most Last Used</span>
+                    <span className="au-stamp-label">Most Used Last</span>
                     <div className="au-stamp-box">
-                      <span className="au-stamp-overlay">
-                        {formatTileName(roundStats.mostCommonLastTileFlipped)}
-                      </span>
+                      {roundStats.mostCommonLastTileFlipped && (
+                        <span className="au-stamp-overlay">
+                          {formatTileName(roundStats.mostCommonLastTileFlipped)}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>

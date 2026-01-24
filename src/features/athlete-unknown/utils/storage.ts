@@ -141,3 +141,30 @@ export const clearMockDataPlayerIndex = (sport: string): void => {
     console.error("[Storage] Error clearing mock data player index:", error);
   }
 };
+
+/**
+ * Check if there are any game-related localStorage entries
+ * Returns true if the user has any saved game data (not a first-time visitor)
+ */
+export const hasAnyGameData = (): boolean => {
+  try {
+    // Check all localStorage keys for game-related entries
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) {
+        // Check if key matches any of our game data patterns
+        if (
+          key.startsWith(STORAGE_KEYS.CURRENT_SESSION_PREFIX) ||
+          key.startsWith(STORAGE_KEYS.MOCK_DATA_PLAYER_INDEX_PREFIX) ||
+          key === STORAGE_KEYS.GUEST_STATS_KEY
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  } catch (error) {
+    console.error("[Storage] Error checking for game data:", error);
+    return false;
+  }
+};

@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 interface GiveUpConfirmationModalProps {
   isOpen: boolean;
   onConfirm: () => void;
@@ -9,6 +11,11 @@ export function GiveUpConfirmationModal({
   onConfirm,
   onCancel,
 }: GiveUpConfirmationModalProps): React.ReactElement | null {
+  const onConfirmClick = useCallback(() => {
+    onConfirm();
+    onCancel(); // make sure to close modal too
+  }, [onConfirm, onCancel]);
+
   if (!isOpen) {
     return null;
   }
@@ -24,7 +31,7 @@ export function GiveUpConfirmationModal({
           <div className="au-giveup-note-buttons">
             <button
               className="au-giveup-btn au-giveup-btn-quit"
-              onClick={onConfirm}
+              onClick={onConfirmClick}
             >
               Drop the case
             </button>

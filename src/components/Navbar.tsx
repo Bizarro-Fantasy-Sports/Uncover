@@ -56,7 +56,9 @@ function Navbar() {
       </div> */}
       <div className="mobile-navbar-container">
         <div className="navbar-logo-container">
-          <img src={Logo} alt={"logo"} className="navbar-logo" />
+          <NavLink to="/">
+            <img src={Logo} alt={"logo"} className="navbar-logo" />
+          </NavLink>
         </div>
       </div>
     </>
