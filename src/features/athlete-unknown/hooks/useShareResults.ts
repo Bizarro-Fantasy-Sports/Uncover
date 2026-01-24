@@ -10,19 +10,19 @@ import {
   TIMING,
   TILES,
   ALL_TILES,
-  SPORT_BASEBALL,
-  SPORT_BASKETBALL,
-  SPORT_FOOTBALL,
 } from "@/features/athlete-unknown/config";
+import { getSportEmoji, getValidSport } from "../utils/strings";
 
 interface UseShareResultsProps {
   state: GameState;
   updateState: (patch: Partial<GameState>) => void;
+  shareUrl: string;
 }
 
 export const useShareResults = ({
   state,
   updateState,
+  shareUrl,
 }: UseShareResultsProps) => {
   const handleShare = useCallback(() => {
     // Get daily number from playerData or default to 1
@@ -33,18 +33,16 @@ export const useShareResults = ({
       : state.flippedTiles;
 
     // Build the share text
-    const sportEmoji =
-      sport === SPORT_BASEBALL
-        ? "⚾"
-        : sport === SPORT_BASKETBALL
-          ? "🏀"
-          : sport === SPORT_FOOTBALL
-            ? "🏈"
-            : "";
+    const sportEmoji = getSportEmoji(getValidSport(sport));
     let shareText = `Athlete Unknown \nCase #${sportEmoji}${roundNumber}\n`;
-
     // first tile is whether round is won or given up
     const isRoundWon = state.score > 0;
+
+    // Add score at the end if won round
+    if (isRoundWon) {
+      shareText += `Score: ${state.score}\n`;
+    }
+
     const correctOrIncorrectEmoji = isRoundWon ? "✅" : "❌";
     shareText += correctOrIncorrectEmoji;
 
@@ -62,10 +60,8 @@ export const useShareResults = ({
       }
     }
 
-    // Add score at the end if won round
-    if (isRoundWon) {
-      shareText += `Score: ${state.score}`;
-    }
+    // add url to share at the bottom
+    shareText += shareUrl;
 
     // Copy to clipboard
     navigator.clipboard
@@ -81,7 +77,7 @@ export const useShareResults = ({
       .catch((err) => {
         console.error("Failed to copy:", err);
       });
-  }, [state, updateState]);
+  }, [state, updateState, shareUrl]);
 
   return {
     handleShare,

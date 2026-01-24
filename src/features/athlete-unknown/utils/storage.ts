@@ -3,7 +3,11 @@
  * Centralized location for all localStorage keys used in the application
  */
 
-import type { SportType, TileType } from "@/features/athlete-unknown/config";
+import type {
+  SportType,
+  TileType,
+  GuessMessageType,
+} from "@/features/athlete-unknown/config";
 
 export const STORAGE_KEYS = {
   MOCK_DATA_PLAYER_INDEX_PREFIX: "mockDataPlayerIndex_",
@@ -36,10 +40,11 @@ export interface MidRoundProgress {
   playDate: string;
   isCompleted: boolean;
   flippedTiles: TileType[];
+  previousGuesses: string[];
   incorrectGuesses: number;
   lastSubmittedGuess: string;
   message: string;
-  messageType: string;
+  messageType: GuessMessageType;
   playerName: string;
   previousCloseGuess: string;
   score: number;
@@ -116,10 +121,7 @@ export const getMockDataPlayerIndex = (sport: string): number | null => {
 /**
  * Save mock data player index to localStorage
  */
-export const saveMockDataPlayerIndex = (
-  sport: string,
-  index: number
-): void => {
+export const saveMockDataPlayerIndex = (sport: string, index: number): void => {
   try {
     const key = getMockDataPlayerIndexKey(sport);
     localStorage.setItem(key, index.toString());
@@ -137,5 +139,32 @@ export const clearMockDataPlayerIndex = (sport: string): void => {
     localStorage.removeItem(key);
   } catch (error) {
     console.error("[Storage] Error clearing mock data player index:", error);
+  }
+};
+
+/**
+ * Check if there are any game-related localStorage entries
+ * Returns true if the user has any saved game data (not a first-time visitor)
+ */
+export const hasAnyGameData = (): boolean => {
+  try {
+    // Check all localStorage keys for game-related entries
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) {
+        // Check if key matches any of our game data patterns
+        if (
+          key.startsWith(STORAGE_KEYS.CURRENT_SESSION_PREFIX) ||
+          key.startsWith(STORAGE_KEYS.MOCK_DATA_PLAYER_INDEX_PREFIX) ||
+          key === STORAGE_KEYS.GUEST_STATS_KEY
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  } catch (error) {
+    console.error("[Storage] Error checking for game data:", error);
+    return false;
   }
 };

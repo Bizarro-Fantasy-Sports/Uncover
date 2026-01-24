@@ -1,5 +1,5 @@
 import React from "react";
-import "./RulesModal.css";
+import { useParams } from "react-router";
 import { RoundHistory, RoundSummary } from "@/features/athlete-unknown/types";
 
 interface RoundHistoryModalProps {
@@ -21,86 +21,97 @@ function RoundHistoryModal({
   userRoundHistory,
   onRoundSelect,
 }: RoundHistoryModalProps): React.ReactElement | null {
-  const handleRowClick = (playDate: string) => {
+  const { sport } = useParams();
+
+  if (!isOpen) {
+    return null;
+  }
+
+  const handleFolderClick = (playDate: string) => {
     if (onRoundSelect) {
       onRoundSelect(playDate);
       onClose();
     }
   };
-  if (!isOpen) {
-    return null;
-  }
 
   return (
-    <div className="rules-modal-overlay" onClick={onClose}>
-      <div className="rules-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="close-rules-button" onClick={onClose}>
-          ×
-        </button>
+    <div className="au-round-history-modal" onClick={onClose}>
+      <div
+        className="au-file-cabinet-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="au-file-cabinet-drawer">
+          <button className="au-file-cabinet-close" onClick={onClose}>
+            ×
+          </button>
 
-        <h2 className="rules-title">Round History</h2>
+          <div className="au-drawer-interior">
+            {isLoading && (
+              <div className="au-drawer-message">Loading case files...</div>
+            )}
 
-        <div className="rules-body">
-          {isLoading && <p>Loading rounds...</p>}
+            {error && (
+              <div className="au-drawer-message au-drawer-error">
+                Error: {error}
+              </div>
+            )}
 
-          {error && (
-            <div className="error-message">
-              <p>Error: {error}</p>
-            </div>
-          )}
+            {!isLoading && !error && roundHistory.length === 0 && (
+              <div className="au-drawer-message">No case files available.</div>
+            )}
 
-          {!isLoading && !error && roundHistory.length === 0 && (
-            <p>No round history available.</p>
-          )}
-
-          {!isLoading && !error && roundHistory.length > 0 && (
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr>
-                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    Play Date
-                  </th>
-                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    Round ID
-                  </th>
-                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    Score
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {roundHistory.map((round: RoundSummary) => {
-                  const roundPlayDate = round.playDate;
-                  const hasUserPlayedThisRoundArray = userRoundHistory.filter(
-                    (userRound: RoundHistory) => {
-                      return roundPlayDate === userRound.playDate;
-                    }
+            {!isLoading && !error && roundHistory.length > 0 && (
+              <div className="au-folders-container">
+                {roundHistory.map((round: RoundSummary, index: number) => {
+                  const userRound = userRoundHistory.find(
+                    (ur: RoundHistory) => ur.playDate === round.playDate
                   );
-                  const hasUserPlayedThisRound =
-                    hasUserPlayedThisRoundArray.length > 0;
+                  const zIndex = roundHistory.length - index;
+                  const tabPosition = index % 4;
+                  const tabLeftPercent = tabPosition * 25;
+                  const hasScore = userRound?.score !== undefined;
+
                   return (
-                    <tr
+                    <div
                       key={round.roundId}
-                      onClick={() => handleRowClick(round.playDate)}
-                      style={{ cursor: "pointer" }}
+                      className="au-file-cabinet-folder"
+                      style={{ zIndex }}
+                      onClick={() => handleFolderClick(round.playDate)}
                     >
-                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                        {round.playDate}
-                      </td>
-                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                        {round.roundId}
-                      </td>
-                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                        {hasUserPlayedThisRound
-                          ? hasUserPlayedThisRoundArray?.[0].score
-                          : "Play Now!"}
-                      </td>
-                    </tr>
+                      <div
+                        className="au-file-cabinet-folder-tab"
+                        style={{
+                          left: `${tabLeftPercent}%`,
+                          transform: "none",
+                        }}
+                      >
+                        {`Case #${round.roundId.split("#")[1]}`}
+                      </div>
+                      <div className="au-file-cabinet-folder-body">
+                        <div
+                          className={`au-folder-score ${hasScore ? "au-folder-score--solved" : ""}`}
+                          style={{
+                            left: `calc(${tabLeftPercent}% + 2.75rem)`,
+                          }}
+                        >
+                          {hasScore ? userRound?.score : "Unsolved"}
+                        </div>
+                      </div>
+                    </div>
                   );
                 })}
-              </tbody>
-            </table>
-          )}
+              </div>
+            )}
+          </div>
+
+          <div className="au-drawer-front" onClick={onClose}>
+            <div className="au-drawer-nameplate">
+              {sport}
+              <br />
+              Case History
+            </div>
+            <div className="au-drawer-handle"></div>
+          </div>
         </div>
       </div>
     </div>

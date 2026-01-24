@@ -1,4 +1,5 @@
 import type { Round, UserStats } from "@/features/athlete-unknown/types";
+import type { SportType } from "@/config";
 import {
   getMockDataPlayerIndex,
   saveMockDataPlayerIndex,
@@ -40,6 +41,40 @@ class MockDataService {
     const userStats: UserStats = await response.json();
 
     return userStats;
+  }
+
+  static async getRounds(sport: SportType): Promise<Round[]> {
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const sportFiles: Record<string, string> = {
+      baseball: "/sample-BaseballRoundSummary.json",
+      basketball: "/sample-BasketballRoundSummary.json",
+      football: "/sample-FootballRoundSummary.json",
+    };
+
+    const response = await fetch(sportFiles[sport]);
+    const data: Round[] = await response.json();
+
+    const filterLastPlaytesterOnlyData = data.slice(0, data.length);
+
+    return filterLastPlaytesterOnlyData;
+  }
+
+  static async getUpcomingRounds(sport: SportType): Promise<Round[]> {
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const sportFiles: Record<string, string> = {
+      baseball: "/sample-BaseballRoundSummary.json",
+      basketball: "/sample-BasketballRoundSummary.json",
+      football: "/sample-FootballRoundSummary.json",
+    };
+
+    const response = await fetch(sportFiles[sport]);
+    const data: Round[] = await response.json();
+
+    return data;
   }
 }
 

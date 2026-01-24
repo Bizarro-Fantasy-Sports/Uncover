@@ -1,6 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useParams } from "react-router";
+import { useParams, useLocation } from "react-router";
 import "./AthleteUnknown.css";
 import type { SportType } from "@/features/athlete-unknown/config";
 import {
@@ -14,31 +20,38 @@ import {
 } from "@/features/athlete-unknown/hooks";
 import {
   SportsReferenceAttribution,
-  GameHeader,
+  SportSelectorHeader,
   RoundInfo,
   ScoreDisplay,
   PlayerInput,
   TileGrid,
   RoundResultsModal,
   RulesModal,
-  SportsReferenceCredit,
   UserStatsModal,
   HintTiles,
   RoundHistoryModal,
+  UserAndSettings,
+  Button,
+  PreviousGuesses,
+  GiveUpConfirmationModal,
 } from "@/features/athlete-unknown/components";
 import {
   athleteUnknownApiService,
   migrateUserStats,
   UserSportStats,
 } from "@/features";
-import { getValidSport } from "@/features/athlete-unknown/utils/stringMatching";
+import { getValidSport } from "@/features/athlete-unknown/utils/strings";
+import { hasAnyGameData } from "@/features/athlete-unknown/utils";
 import { config } from "@/config";
+import { Navbar } from "@/components";
+import PlaceholderLogo from "@/features/athlete-unknown/assets/placeholder-logo.png";
 
 export function AthleteUnknown(): React.ReactElement {
   const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [migrationAttempted, setMigrationAttempted] = useState(false);
   const { sport } = useParams();
+  const location = useLocation();
 
   // Extract roles from access token
   useEffect(() => {
@@ -105,12 +118,41 @@ export function AthleteUnknown(): React.ReactElement {
   const [isRoundResultsModalOpen, setIsRoundResultsModalOpen] = useState(false);
   const [isUserStatsModalOpen, setIsUserStatsModalOpen] = useState(false);
   const [isRoundHistoryModalOpen, setIsRoundHistoryModalOpen] = useState(false);
+  const [isGiveUpConfirmationModalOpen, setIsGiveUpConfirmationModalOpen] =
+    useState(false);
   const [selectedPlayDate, setSelectedPlayDate] = useState<string | undefined>(
     undefined
   );
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [volume, setVolume] = useState(0);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
+
+  const onHandleVolumeClick = useCallback(() => {
+    if (volume === 0) {
+      setVolume(0.5);
+    } else {
+      setVolume(0);
+    }
+  }, [setVolume, volume]);
+
+  const shareUrl = useMemo(() => {
+    return (
+      window.location.origin +
+      location.pathname +
+      location.search +
+      location.hash
+    );
+  }, [location]);
 
   // Check if user is a playtester
-  const isPlaytester = userRoles.includes("Playtester");
+  const isPlaytester = useMemo(() => {
+    return userRoles.includes("Playtester");
+  }, [userRoles]);
 
   // Core state management - pass selectedPlayDate to ensure each puzzle has its own state
   const { state, updateState, clearProgress, clearMockData } = useGameState(
@@ -140,7 +182,10 @@ export function AthleteUnknown(): React.ReactElement {
   // Tile interactions
   // updates the following fields in state:
   // photoRevealed, returningFromPhoto, flippedTiles, score
-  const { handleTileClick } = useTileFlip({ state, updateState });
+  const { handleTileClick, handleHintTileClick } = useTileFlip({
+    state,
+    updateState,
+  });
 
   // User Stats
   // updates the following fields in state:
@@ -155,11 +200,18 @@ export function AthleteUnknown(): React.ReactElement {
   // Share functionality
   // updates the following fields in state:
   // copiedText
-  const { handleShare } = useShareResults({ state, updateState });
+  const { handleShare } = useShareResults({ state, updateState, shareUrl });
 
   useEffect(() => {
     setActiveSport(getValidSport(sport));
   }, [sport, setActiveSport]);
+
+  // Show RulesModal for first-time users
+  useEffect(() => {
+    if (!hasAnyGameData()) {
+      setIsRulesModalOpen(true);
+    }
+  }, []);
 
   // Clear localStorage when round is completed
   useEffect(() => {
@@ -195,14 +247,38 @@ export function AthleteUnknown(): React.ReactElement {
     }
   }, [isUserStatsModalOpen, handleFetchUserStats]);
 
-  // Show loading state
-  if (state.isLoading) {
-    return (
-      <div className="athlete-unknown-game">
-        <p>Loading player data and round statistics...</p>
-      </div>
-    );
-  }
+  const playDate = useMemo(() => {
+    return state?.round?.playDate ?? "";
+  }, [state.round]);
+
+  const roundNumber = useMemo(() => {
+    const roundId = state?.round?.roundId ?? "";
+    const [, rNum] = roundId.split("#");
+    return rNum;
+  }, [state.round]);
+
+  const userRoundHistoryArray = useMemo(() => {
+    return state.userStats?.sports.filter((userSport: UserSportStats) => {
+      return userSport.sport === activeSport;
+    });
+  }, [state.userStats, activeSport]);
+
+  const handleSportAndDateChange = useCallback(
+    (sport: SportType) => {
+      setActiveSport(sport);
+      setSelectedPlayDate(undefined); // undefined will fallback to current day
+    },
+    [setActiveSport, setSelectedPlayDate]
+  );
+
+  // // Show loading state
+  // if (state.isLoading) {
+  //   return (
+  //     <div className="athlete-unknown-game">
+  //       <p>Loading player data and round statistics...</p>
+  //     </div>
+  //   );
+  // }
 
   // Show error state
   if (state.error) {
@@ -225,66 +301,110 @@ export function AthleteUnknown(): React.ReactElement {
     );
   }
 
-  //TODO memoize these
-  const playDate = state.round?.playDate as string | undefined;
-  const [, roundNumber] = state.round.roundId.split("#");
-
-  const userRoundHistoryArray = state.userStats?.sports.filter(
-    (userSport: UserSportStats) => {
-      return userSport.sport === activeSport;
-    }
-  );
-
   // console.log("STATE AU", state);
 
   return (
-    <div className="athlete-unknown-game">
-      <SportsReferenceAttribution activeSport={activeSport} />
+    <div className="au-container">
+      <div className="au-header-container">
+        <div className="au-left-header-container">
+          <Navbar />
+          <img
+            src={PlaceholderLogo}
+            alt="Athlete Unknown Logo"
+            className="au-placeholder-logo"
+          />
+        </div>
+        <UserAndSettings
+          onStatsClick={() => setIsUserStatsModalOpen(true)}
+          audioRef={audioRef}
+          onVolumeClick={onHandleVolumeClick}
+          volume={volume}
+          onRoundResultsClick={() => setIsRoundResultsModalOpen(true)}
+          onRulesClick={() => setIsRulesModalOpen(true)}
+          onRoundHistoryClick={() => setIsRoundHistoryModalOpen(true)}
+        />
+      </div>
+      <div className="au-body-container">
+        <div className="au-information-container">
+          <SportSelectorHeader
+            activeSport={activeSport}
+            onSportChange={handleSportAndDateChange}
+          />
+          <RoundInfo
+            roundNumber={roundNumber}
+            playDate={playDate}
+            theme={state.round.theme}
+            sport={activeSport}
+            onRoundResultsClick={() => setIsRoundResultsModalOpen(true)}
+            onRulesClick={() => setIsRulesModalOpen(true)}
+            onRoundHistoryClick={() => setIsRoundHistoryModalOpen(true)}
+          />
+        </div>
+        <div className="au-paper-container">
+          <div className="au-player-guess-container">
+            <PlayerInput
+              playerName={state.playerName}
+              isCompleted={state.isCompleted}
+              onPlayerNameChange={(name) => updateState({ playerName: name })}
+            />
+            <PreviousGuesses
+              guesses={state.previousGuesses}
+              correctName={state.round.player.name}
+            />
+          </div>
+        </div>
+        <div className="au-game-container au-bulletin-board">
+          <div className="au-scoring-container">
+            <div className="au-scoring-buttons-container">
+              <Button
+                onClick={handleNameSubmit}
+                size="md"
+                variant={state.isCompleted ? "ghost" : "primary"}
+                disabled={state.isCompleted || state.playerName === ""}
+              >
+                Submit
+              </Button>
+              <Button
+                onClick={() => setIsGiveUpConfirmationModalOpen(true)}
+                size="md"
+                variant={state.isCompleted ? "ghost" : "danger"}
+                disabled={state.isCompleted}
+              >
+                Give Up
+              </Button>
+            </div>
+            <ScoreDisplay score={state.score} />
+            <div className="au-hints-container">
+              <HintTiles
+                flippedTiles={state.flippedTiles}
+                playerData={state.round.player}
+                onHintTileClick={handleHintTileClick}
+              />
+            </div>
+          </div>
+          <div className="au-tile-grid-container">
+            <TileGrid
+              flippedTiles={state.flippedTiles}
+              photoRevealed={state.photoRevealed}
+              returningFromPhoto={state.returningFromPhoto}
+              playerData={state.round.player}
+              onTileClick={handleTileClick}
+            />
+          </div>
+        </div>
 
-      <GameHeader
-        activeSport={activeSport}
-        onSportChange={setActiveSport}
-        onStatsClick={() => setIsUserStatsModalOpen(true)}
-      />
-
-      <RoundInfo
-        roundNumber={roundNumber}
-        playDate={playDate}
-        theme={state.round.theme}
-        onRoundResultsClick={() => setIsRoundResultsModalOpen(true)}
-        onRulesClick={() => setIsRulesModalOpen(true)}
-        onRoundHistoryClick={() => setIsRoundHistoryModalOpen(true)}
-      />
-
-      <ScoreDisplay
-        score={state.score}
-        message={state.message}
-        messageType={state.messageType}
-        tilesFlippedCount={state.flippedTiles.length}
-        incorrectGuesses={state.incorrectGuesses}
-      />
-
-      <PlayerInput
-        playerName={state.playerName}
-        isCompleted={state.isCompleted}
-        onPlayerNameChange={(name) => updateState({ playerName: name })}
-        onSubmit={handleNameSubmit}
-        onGiveUp={handleGiveUp}
-      />
-
-      <HintTiles
-        flippedTiles={state.flippedTiles}
-        playerData={state.round.player}
-        onTileClick={handleTileClick}
-      />
-
-      <TileGrid
-        flippedTiles={state.flippedTiles}
-        photoRevealed={state.photoRevealed}
-        returningFromPhoto={state.returningFromPhoto}
-        playerData={state.round.player}
-        onTileClick={handleTileClick}
-      />
+        {/* <Typewriter
+          playerName={state.playerName}
+          isCompleted={state.isCompleted}
+          onPlayerNameChange={(name) => updateState({ playerName: name })}
+          guesses={state.previousGuesses}
+          correctName={state.round.player.name}
+        /> */}
+      </div>
+      <div className="au-footer-container">
+        <SportsReferenceAttribution activeSport={activeSport} />
+        <div>Credits</div>
+      </div>
 
       <RoundResultsModal
         isOpen={isRoundResultsModalOpen}
@@ -295,14 +415,14 @@ export function AthleteUnknown(): React.ReactElement {
             : state.flippedTiles
         }
         copiedText={state.copiedText}
-        roundStats={state.round.stats}
-        playerData={state.round.player}
+        round={state.round}
         onClose={() => setIsRoundResultsModalOpen(false)}
         onShare={handleShare}
         isCompleted={state.isCompleted}
+        sport={activeSport}
+        roundNumber={roundNumber}
+        playDate={playDate}
       />
-
-      <SportsReferenceCredit />
 
       <RulesModal
         isOpen={isRulesModalOpen}
@@ -325,6 +445,12 @@ export function AthleteUnknown(): React.ReactElement {
         roundHistory={state.roundHistory}
         userRoundHistory={userRoundHistoryArray?.[0]?.history ?? []}
         onRoundSelect={(playDate) => setSelectedPlayDate(playDate)}
+      />
+
+      <GiveUpConfirmationModal
+        isOpen={isGiveUpConfirmationModalOpen}
+        onConfirm={handleGiveUp}
+        onCancel={() => setIsGiveUpConfirmationModalOpen(false)}
       />
     </div>
   );

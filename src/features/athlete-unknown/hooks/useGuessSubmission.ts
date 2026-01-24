@@ -12,6 +12,7 @@ import {
 } from "@/features/athlete-unknown/utils";
 import {
   GUESS_ACCURACY,
+  GUESS_MESSAGE_TYPE,
   INCORRECT_GUESS,
 } from "@/features/athlete-unknown/config";
 
@@ -20,34 +21,38 @@ interface UseGuessSubmissionProps {
   updateState: (patch: Partial<GameState>) => void;
 }
 
-export const useGuessSubmission = ({ state, updateState }: UseGuessSubmissionProps) => {
+export const useGuessSubmission = ({
+  state,
+  updateState,
+}: UseGuessSubmissionProps) => {
   const handleNameSubmit = useCallback(() => {
     // Don't allow empty guesses
     if (!state.playerName.trim()) {
       return;
     }
 
-    const normalizedGuess = normalize(state.playerName);
+    const normalizedGuesseses = normalize(state.playerName);
     const normalizedAnswer = normalize(state.round?.player.name);
 
     // Prevent submitting the same incorrect guess consecutively
     if (
-      normalizedGuess !== normalizedAnswer &&
+      normalizedGuesseses !== normalizedAnswer &&
       state.lastSubmittedGuess &&
-      normalizedGuess === state.lastSubmittedGuess
+      normalizedGuesseses === state.lastSubmittedGuess
     ) {
       return;
     }
 
     // Correct answer - player wins!
-    if (normalizedGuess === normalizedAnswer) {
+    if (normalizedGuesseses === normalizedAnswer) {
       updateState({
         message: "You guessed it right!",
-        messageType: "success",
+        messageType: GUESS_MESSAGE_TYPE.SUCCESS,
+        previousGuesses: [...state.previousGuesses, state.playerName],
         previousCloseGuess: "",
         isCompleted: true,
         flippedTilesUponCompletion: [...state.flippedTiles],
-        lastSubmittedGuess: normalizedGuess,
+        lastSubmittedGuess: normalizedGuesseses,
       });
       return;
     }
@@ -55,7 +60,7 @@ export const useGuessSubmission = ({ state, updateState }: UseGuessSubmissionPro
     // Incorrect guess - deduct points
     const newScore = calculateNewScore(state.score, INCORRECT_GUESS);
     const distance = calculateLevenshteinDistance(
-      normalizedGuess,
+      normalizedGuesseses,
       normalizedAnswer
     );
 
@@ -64,11 +69,12 @@ export const useGuessSubmission = ({ state, updateState }: UseGuessSubmissionPro
       if (!state.previousCloseGuess) {
         // First close guess
         updateState({
-          message: `You're close! Spelling is off by a ${distance} letter${distance === 1 ? "" : "s"}.`,
-          messageType: "almost",
-          previousCloseGuess: normalizedGuess,
+          message: `Spelling is off by a ${distance} letter${distance === 1 ? "" : "s"}.`,
+          messageType: GUESS_MESSAGE_TYPE.ALMOST,
+          previousGuesses: [...state.previousGuesses, state.playerName],
+          previousCloseGuess: normalizedGuesseses,
           score: newScore,
-          lastSubmittedGuess: normalizedGuess,
+          lastSubmittedGuess: normalizedGuesseses,
         });
         return;
       }
@@ -80,11 +86,12 @@ export const useGuessSubmission = ({ state, updateState }: UseGuessSubmissionPro
       // If second closer guess, reveal answer
       if (distance < previousDistance) {
         updateState({
-          message: "Close enough to ID the player! Spelling is hard",
-          messageType: "close",
+          message: "Spelling accepted",
+          messageType: GUESS_MESSAGE_TYPE.SUCCESS,
+          previousGuesses: [...state.previousGuesses, normalizedGuesseses],
           previousCloseGuess: "",
           score: newScore,
-          lastSubmittedGuess: normalizedGuess,
+          lastSubmittedGuess: normalizedGuesseses,
           isCompleted: true,
           flippedTilesUponCompletion: [...state.flippedTiles],
         });
@@ -95,10 +102,11 @@ export const useGuessSubmission = ({ state, updateState }: UseGuessSubmissionPro
     // Wrong guess - not close
     updateState({
       message: `Incorrect: "${state.playerName}"`,
-      messageType: "error",
+      messageType: GUESS_MESSAGE_TYPE.ERROR,
+      previousGuesses: [...state.previousGuesses, state.playerName],
       score: newScore,
       incorrectGuesses: state.incorrectGuesses + 1,
-      lastSubmittedGuess: normalizedGuess,
+      lastSubmittedGuess: normalizedGuesseses,
     });
   }, [state, updateState]);
 

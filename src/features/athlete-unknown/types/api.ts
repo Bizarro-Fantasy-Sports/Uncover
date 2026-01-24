@@ -1,6 +1,6 @@
 // Athlete Unknown API Types
 
-import { TileType } from "@/features/athlete-unknown/config";
+import { SportType, TileType } from "@/features/athlete-unknown/config";
 
 export interface Round {
   roundId: string;
@@ -20,7 +20,7 @@ export interface RoundSummary {
 }
 
 export interface PlayerData {
-  sport: string;
+  sport: SportType;
   sportsReferenceURL: string;
   name: string;
   bio: string;

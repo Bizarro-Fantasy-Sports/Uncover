@@ -4,7 +4,7 @@
  */
 
 import { useCallback } from "react";
-import { athleteUnknownApiService } from "@/features/athlete-unknown/services";
+import { roundsService } from "@/features/athlete-unknown/services";
 import type { GameState } from "./useGameState";
 import { SportType } from "@/config";
 
@@ -19,8 +19,8 @@ export const useRoundHistory = ({ updateState }: UseRoundHistoryProps) => {
         updateState({ isLoading: true, error: null });
 
         const roundHistory = isPlaytester
-          ? await athleteUnknownApiService.getUpcomingRounds(sport)
-          : await athleteUnknownApiService.getRounds(sport);
+          ? await roundsService.getUpcomingRounds(sport)
+          : await roundsService.getRounds(sport);
 
         updateState({
           roundHistory,

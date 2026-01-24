@@ -9,7 +9,11 @@ import type {
   RoundSummary,
   UserStats,
 } from "@/features/athlete-unknown/types";
-import type { SportType, TileType } from "@/features/athlete-unknown/config";
+import type {
+  GuessMessageType,
+  SportType,
+  TileType,
+} from "@/features/athlete-unknown/config";
 import { INITIAL_SCORE } from "@/features/athlete-unknown/config";
 import {
   loadMidRoundProgress,
@@ -25,7 +29,7 @@ export interface GameState {
   userStats: UserStats | null;
   playerName: string;
   message: string;
-  messageType: string;
+  messageType: GuessMessageType;
   previousCloseGuess: string;
   flippedTiles: TileType[];
   flippedTilesUponCompletion: TileType[];
@@ -33,6 +37,7 @@ export interface GameState {
   returningFromPhoto: boolean;
   score: number;
   isCompleted: boolean;
+  previousGuesses: string[];
   incorrectGuesses: number;
   copiedText: string;
   lastSubmittedGuess: string;
@@ -55,6 +60,7 @@ const createInitialState = (): GameState => ({
   returningFromPhoto: false,
   score: INITIAL_SCORE,
   isCompleted: false,
+  previousGuesses: [],
   incorrectGuesses: 0,
   copiedText: "",
   lastSubmittedGuess: "",
@@ -75,6 +81,7 @@ const gameStateToProgress = (
   playDate,
   isCompleted: state.isCompleted,
   flippedTiles: state.flippedTiles,
+  previousGuesses: state.previousGuesses,
   incorrectGuesses: state.incorrectGuesses,
   lastSubmittedGuess: state.lastSubmittedGuess,
   message: state.message,
@@ -93,6 +100,7 @@ const progressToGameState = (
   isCompleted: progress.isCompleted,
   flippedTiles: progress.flippedTiles,
   incorrectGuesses: progress.incorrectGuesses,
+  previousGuesses: progress.previousGuesses,
   lastSubmittedGuess: progress.lastSubmittedGuess,
   message: progress.message,
   messageType: progress.messageType,

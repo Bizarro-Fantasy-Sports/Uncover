@@ -9,9 +9,14 @@ export {
   getMockDataPlayerIndex,
   saveMockDataPlayerIndex,
   clearMockDataPlayerIndex,
+  hasAnyGameData,
   type MidRoundProgress,
 } from "./storage";
-export { calculateLevenshteinDistance, normalize } from "./stringMatching";
+export {
+  calculateLevenshteinDistance,
+  normalize,
+  getSportEmoji,
+} from "./strings";
 export {
   loadGuestStats,
   updateGuestStats,

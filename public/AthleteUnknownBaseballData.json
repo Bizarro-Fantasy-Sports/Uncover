@@ -5,7 +5,7 @@
     "roundId": "baseball#1",
     "created": "2025-11-11T10:00:00Z",
     "lastUpdated": "2025-11-12T00:00:00Z",
-    "theme": "",
+    "theme": "The Case of Two-Way Goat",
     "player": {
       "sport": "baseball",
       "sportsReferenceURL": "o/ohtansh01",
@@ -82,7 +82,7 @@
     "roundId": "baseball#2",
     "created": "2025-11-12T10:00:00Z",
     "lastUpdated": "2025-11-13T00:00:00Z",
-    "theme": "",
+    "theme": "The Case of Front Office Giant",
     "player": {
       "sport": "baseball",
       "sportsReferenceURL": "p/poseybu01",
@@ -174,7 +174,7 @@
       "personalAchievements": "2x All-Star, 1x Silver Slugger",
       "photo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
       "initials": "N.C.",
-      "nicknames": ""
+      "nicknames": "Artist"
     },
     "stats": {
       "playDate": "2025-11-21",

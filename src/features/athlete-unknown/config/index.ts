@@ -5,6 +5,8 @@
  * without hunting through the codebase.
  */
 
+import { SPORT_BASEBALL, SPORT_BASKETBALL, SPORT_FOOTBALL } from "@/config";
+
 // ============================================================================
 // SPORT CONFIGURATION
 // ============================================================================
@@ -57,57 +59,57 @@ export type ScoreDeduction = typeof INCORRECT_GUESS | TileType;
 
 export const TILES = {
   [TILE_NAMES.INITIALS]: {
-    label: `Initials \n(-${TILE_PENALTIES[TILE_NAMES.INITIALS]} Points)`,
+    label: "Initials:",
     penalty: TILE_PENALTIES[TILE_NAMES.INITIALS],
     flippedEmoji: "💡",
   },
   [TILE_NAMES.NICKNAMES]: {
-    label: `Nicknames \n(-${TILE_PENALTIES[TILE_NAMES.NICKNAMES]} Points)`,
+    label: "Nicknames",
     penalty: TILE_PENALTIES[TILE_NAMES.NICKNAMES],
     flippedEmoji: "💡",
   },
   [TILE_NAMES.BIO]: {
-    label: `Bio \n(-${TILE_PENALTIES[TILE_NAMES.BIO]} Points)`,
+    label: `Bio \n(-${TILE_PENALTIES[TILE_NAMES.BIO]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.BIO],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.PLAYER_INFORMATION]: {
-    label: `Player Information \n(-${TILE_PENALTIES[TILE_NAMES.PLAYER_INFORMATION]} Points)`,
+    label: `Player Information \n(-${TILE_PENALTIES[TILE_NAMES.PLAYER_INFORMATION]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.PLAYER_INFORMATION],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.DRAFT_INFORMATION]: {
-    label: `Draft Information \n(-${TILE_PENALTIES[TILE_NAMES.DRAFT_INFORMATION]} Points)`,
+    label: `Draft Information \n(-${TILE_PENALTIES[TILE_NAMES.DRAFT_INFORMATION]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.DRAFT_INFORMATION],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.YEARS_ACTIVE]: {
-    label: `Years Active \n(-${TILE_PENALTIES[TILE_NAMES.YEARS_ACTIVE]} Points)`,
+    label: `Years Active \n(-${TILE_PENALTIES[TILE_NAMES.YEARS_ACTIVE]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.YEARS_ACTIVE],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.PHOTO]: {
-    label: `Photo \n(-${TILE_PENALTIES[TILE_NAMES.PHOTO]} Points)`,
+    label: `Photo \n(-${TILE_PENALTIES[TILE_NAMES.PHOTO]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.PHOTO],
     flippedEmoji: "📷",
   },
   [TILE_NAMES.TEAMS_PLAYED_ON]: {
-    label: `Teams Played On \n(-${TILE_PENALTIES[TILE_NAMES.TEAMS_PLAYED_ON]} Points)`,
+    label: `Teams Played On \n(-${TILE_PENALTIES[TILE_NAMES.TEAMS_PLAYED_ON]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.TEAMS_PLAYED_ON],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.JERSEY_NUMBERS]: {
-    label: `Jersey Numbers \n(-${TILE_PENALTIES[TILE_NAMES.JERSEY_NUMBERS]} Points)`,
+    label: `Jersey Numbers \n(-${TILE_PENALTIES[TILE_NAMES.JERSEY_NUMBERS]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.JERSEY_NUMBERS],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.CAREER_STATS]: {
-    label: `Career Stats \n(-${TILE_PENALTIES[TILE_NAMES.CAREER_STATS]} Points)`,
+    label: `Career Stats \n(-${TILE_PENALTIES[TILE_NAMES.CAREER_STATS]} PTS)`,
     penalty: TILE_PENALTIES[TILE_NAMES.CAREER_STATS],
     flippedEmoji: "🟨",
   },
   [TILE_NAMES.PERSONAL_ACHIEVEMENTS]: {
-    label: `Personal Achievements \n(-${TILE_PENALTIES[TILE_NAMES.PERSONAL_ACHIEVEMENTS]}) Points`,
+    label: `Personal Achievements \n(-${TILE_PENALTIES[TILE_NAMES.PERSONAL_ACHIEVEMENTS]}) PTS`,
     penalty: TILE_PENALTIES[TILE_NAMES.PERSONAL_ACHIEVEMENTS],
     flippedEmoji: "🟨",
   },
@@ -141,9 +143,10 @@ export const ALL_TILES = [...TOP_TILES, ...GRID_TILES] as const;
 // ============================================================================
 
 export const REFERENCE_URLS = {
-  BASEBALL_WAR: "https://www.baseball-reference.com/about/war_explained.shtml",
-  BASKETBALL_BPM: "https://www.basketball-reference.com/about/bpm2.html",
-  FOOTBALL_AV:
+  [SPORT_BASEBALL]:
+    "https://www.baseball-reference.com/about/war_explained.shtml",
+  [SPORT_BASKETBALL]: "https://www.basketball-reference.com/about/bpm2.html",
+  [SPORT_FOOTBALL]:
     "https://www.pro-football-reference.com/about/approximate_value.htm",
 } as const;
 
@@ -155,6 +158,18 @@ export const GUESS_ACCURACY = {
   // Maximum edit distance for "close" guess (requires second closer guess to reveal player name)
   VERY_CLOSE_DISTANCE: 2,
 } as const;
+
+export const GUESS_MESSAGE_TYPE = {
+  SUCCESS: "success",
+  ALMOST: "almost",
+  ERROR: "error",
+};
+
+export type GuessMessageType =
+  | typeof GUESS_MESSAGE_TYPE.SUCCESS
+  | typeof GUESS_MESSAGE_TYPE.ALMOST
+  | typeof GUESS_MESSAGE_TYPE.ERROR
+  | "";
 
 // ============================================================================
 // UI/UX TIMING
@@ -177,9 +192,8 @@ export const PHOTO_GRID = {
   ROWS: 3,
   COLS: 3,
 
-  // Width and height of each photo tile segment in pixels
-  TILE_WIDTH: 150,
-  TILE_HEIGHT: 150,
+  // Tile Size = Width & height of each photo tile segment in pixels
+  TILE_SIZE: 125,
 } as const;
 
 // ============================================================================

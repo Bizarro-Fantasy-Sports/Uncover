@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import "./UserStatsModal.css";
 import {
   TileTracker,
   UserSportStats,
   UserStats,
 } from "@/features/athlete-unknown/types";
 import { useParams } from "react-router";
+import TestUnknownPerson from "@/features/athlete-unknown/assets/test-unknown-person.jpg";
+import { getDateString } from "../utils/date";
+import { config, SportType } from "@/config";
 
 interface UserStatsModalProps {
   isOpen: boolean;
@@ -33,14 +35,6 @@ function UserStatsModal({
       .replace(/^./, (str) => str.toUpperCase());
   };
 
-  const formatDate = (dateString: string): string => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
   useEffect(() => {
     const stats = userStats?.sports.filter(
       (sportStats) => sportStats.sport === selectedSport
@@ -53,169 +47,167 @@ function UserStatsModal({
   }
 
   return (
-    <div className="user-stats-modal" onClick={onClose}>
-      <div
-        className="user-stats-modal-content"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button className="close-user-stats" onClick={onClose}>
-          ×
-        </button>
-        <div className="user-stats-container">
-          <h1 className="stats-title">User Statistics</h1>
+    <div className="au-results-modal" onClick={onClose}>
+      <div className="au-open-folder">
+        {config.athleteUnknown.sportsList.map(
+          (sport: SportType, index: number) => (
+            <button
+              key={sport}
+              className={`au-folder-tab ${selectedSport === sport ? "au-folder-tab--selected" : ""}`}
+              style={{ "--tab-index": index } as React.CSSProperties}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedSport(sport);
+              }}
+              aria-label={`${sport} folder tab`}
+            >
+              <h4 className="au-folder-tab-text">{sport}</h4>
+            </button>
+          )
+        )}
+        <div
+          className="au-results-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button className="au-close-results" onClick={onClose}>
+            ✕
+          </button>
+          <div className="au-results-title-container">
+            <h2 className="au-results-title">Investigator Profile</h2>
+          </div>
 
-          {isLoading && <p>Loading user stats...</p>}
-
-          {error && (
-            <div className="error-message">
-              <p>Error: {error}</p>
+          <div className="au-player-results-container">
+            <div className="au-player-container">
+              <img
+                src={TestUnknownPerson}
+                alt="unknown-player"
+                className="au-player-photo"
+              />
             </div>
-          )}
 
-          {!isLoading && userStats && (
+            <div className="au-player-results-info-container">
+              <div className="au-report-field">
+                <span className="au-report-label">Name:</span>
+                <span className="au-report-value">TestUser123</span>
+                <div className="au-report-underline"></div>
+              </div>
+              <div className="au-report-field">
+                <span className="au-report-label">
+                  Solving
+                  <br />
+                  Mysteries
+                  <br />
+                  Since:
+                </span>
+                <span className="au-report-value">
+                  <br />
+                  {userStats.userCreated !== ""
+                    ? getDateString(userStats.userCreated)
+                    : "N/A"}
+                </span>
+                <div className="au-report-underline"></div>
+              </div>
+              <div className="au-report-field">
+                <span className="au-report-label">
+                  Current Daily <br /> Streak:
+                </span>
+                <span className="au-report-value">
+                  {userStats.currentDailyStreak}
+                </span>
+                <div className="au-report-underline"></div>
+              </div>
+            </div>
+          </div>
+
+          {selectedSportStats && (
             <>
-              <div className="user-info">
-                <p>User: {userStats.userName}</p>
-                <p>Member Since: {formatDate(userStats.userCreated)}</p>
-                <p>Current Daily Streak: {userStats.currentDailyStreak}</p>
-              </div>
-
-              <div className="sport-selector">
-                {userStats.sports.map((sport) => (
-                  <button
-                    key={sport.sport}
-                    className={`sport-button ${selectedSport === sport.sport ? "active" : ""}`}
-                    onClick={() => setSelectedSport(sport.sport)}
-                  >
-                    {sport.sport.charAt(0).toUpperCase() + sport.sport.slice(1)}
-                  </button>
-                ))}
-              </div>
-
-              <div className="stats-section">
-                <h2>Overview</h2>
-                <div className="stats-grid">
-                  <div className="stat-card">
-                    <div className="stat-value">
+              <div className="au-results-modal-section-separator" />
+              <h3 className="au-results-round-stats-title">{`All ${selectedSport} Case Stats`}</h3>
+              <div className="au-results-round-stats">
+                <div className="au-results-round-stats-row">
+                  <div className="au-report-field">
+                    <span className="au-report-label">Total Plays:</span>
+                    <span className="au-report-value">
                       {selectedSportStats.stats.totalPlays}
-                    </div>
-                    <div className="stat-label">Total Plays</div>
+                    </span>
                   </div>
-                  <div className="stat-card">
-                    <div className="stat-value">
-                      {selectedSportStats.stats.percentageCorrect.toFixed(0)}%
-                    </div>
-                    <div className="stat-label">Accuracy</div>
+                  <div className="au-report-field">
+                    <span className="au-report-label">Solve Rate:</span>
+                    <span className="au-report-value">
+                      {`${selectedSportStats.stats.percentageCorrect}%`}
+                    </span>
                   </div>
-                  <div className="stat-card">
-                    <div className="stat-value">
-                      {selectedSportStats.stats.averageCorrectScore}
-                    </div>
-                    <div className="stat-label">Average Score</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-value">
+                </div>
+                <div className="au-results-round-stats-row">
+                  <div className="au-report-field">
+                    <span className="au-report-label">High Score:</span>
+                    <span className="au-report-value">
                       {selectedSportStats.stats.highestScore}
-                    </div>
-                    <div className="stat-label">Highest Score</div>
+                    </span>
                   </div>
-                  <div className="stat-card highlight">
-                    <div className="stat-value">
+                  <div className="au-report-field">
+                    <span className="au-report-label">Avg Solve Score:</span>
+                    <span className="au-report-value">
+                      {selectedSportStats.stats.averageCorrectScore}
+                    </span>
+                  </div>
+                </div>
+                <div className="au-results-round-stats-row">
+                  <div className="au-report-field">
+                    <span className="au-report-label">Avg Clues Used:</span>
+                    <span className="au-report-value">
                       {selectedSportStats.stats.averageNumberOfTileFlips}
-                    </div>
-                    <div className="stat-label">Average # of Tile Flips</div>
+                    </span>
                   </div>
                 </div>
               </div>
 
-              <div className="stats-section">
-                <h2>Tile Patterns</h2>
-                <div className="tile-patterns">
-                  <div className="pattern-card">
-                    <h3>Most Common</h3>
-                    <div className="pattern-item">
-                      <span className="pattern-label">First Tile:</span>
-                      <span className="pattern-value">
-                        {formatTileName(
-                          selectedSportStats.stats.mostCommonFirstTileFlipped
-                        )}
-                      </span>
-                    </div>
-                    <div className="pattern-item">
-                      <span className="pattern-label">Most Flipped:</span>
-                      <span className="pattern-value">
-                        {formatTileName(
-                          selectedSportStats.stats.mostCommonTileFlipped
-                        )}
-                      </span>
-                    </div>
-                    <div className="pattern-item">
-                      <span className="pattern-label">Last Tile:</span>
-                      <span className="pattern-value">
-                        {formatTileName(
-                          selectedSportStats.stats.mostCommonLastTileFlipped
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="pattern-card">
-                    <h3>Least Common</h3>
-                    <div className="pattern-item">
-                      <span className="pattern-label">Tile:</span>
-                      <span className="pattern-value">
-                        {formatTileName(
-                          selectedSportStats.stats.leastCommonTileFlipped
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div className="au-results-modal-section-separator" />
 
-              <div className="stats-section">
-                <h2>Tile Flip Details</h2>
-                <div className="tile-stats-table">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Tile Type</th>
-                        <th>First Flipped</th>
-                        <th>Last Flipped</th>
-                        <th>Most Flipped</th>
+              <h3 className="au-results-round-stats-title">Clue Tendencies</h3>
+              <div className="au-results-tile-tracker-stats">
+                <table className="au-tile-tracker-table">
+                  <thead>
+                    <tr>
+                      <th>Clue</th>
+                      <th>Most Used</th>
+                      <th>First Used</th>
+                      <th>Last Used</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.keys(
+                      selectedSportStats.stats.firstTileFlippedTracker
+                    ).map((tile) => (
+                      <tr key={tile}>
+                        <td className="au-tile-tracker-name">
+                          {formatTileName(tile)}
+                        </td>
+                        <td>
+                          {
+                            selectedSportStats.stats.mostTileFlippedTracker[
+                              tile as keyof TileTracker
+                            ]
+                          }
+                        </td>
+                        <td>
+                          {
+                            selectedSportStats.stats.firstTileFlippedTracker[
+                              tile as keyof TileTracker
+                            ]
+                          }
+                        </td>
+                        <td>
+                          {
+                            selectedSportStats.stats.lastTileFlippedTracker[
+                              tile as keyof TileTracker
+                            ]
+                          }
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {Object.keys(
-                        selectedSportStats.stats.firstTileFlippedTracker
-                      ).map((tile) => (
-                        <tr key={tile}>
-                          <td className="tile-name">{formatTileName(tile)}</td>
-                          <td>
-                            {
-                              selectedSportStats.stats.firstTileFlippedTracker[
-                                tile as keyof TileTracker
-                              ]
-                            }
-                          </td>
-                          <td>
-                            {
-                              selectedSportStats.stats.lastTileFlippedTracker[
-                                tile as keyof TileTracker
-                              ]
-                            }
-                          </td>
-                          <td>
-                            {
-                              selectedSportStats.stats.mostTileFlippedTracker[
-                                tile as keyof TileTracker
-                              ]
-                            }
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </>
           )}

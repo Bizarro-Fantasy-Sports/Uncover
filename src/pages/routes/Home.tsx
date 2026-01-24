@@ -1,3 +1,4 @@
+import { NavLink } from "react-router";
 import "./Home.css";
 
 export function Home() {
@@ -6,18 +7,52 @@ export function Home() {
       <div>
         <section className="content">
           <h2>Home</h2>
-          <p> Welcome to the Bizarro Fantasy Sports Home Page!</p>
+          <p>Welcome to the Statsland Home Page!</p>
         </section>
         <section className="content">
-          <h2>News</h2>
-          <p> Upcoming: New "Athlete Unknown" trivia game</p>
+          <h2>Message for Testers</h2>
+          <p>
+            Hi! Thank you for testing my website and first attraction of
+            Statsland
+          </p>
+          <NavLink to="/athlete-unknown" style={{ fontSize: "2rem" }}>
+            ATHLETE UNKNOWN
+          </NavLink>
+
+          <p>
+            What is ready right now and what I'd like you to test the
+            functionality of the game and the aesthetic of the game, both in
+            feeling immersive in its theme and its practical ease of playing.
+          </p>
+          <p>
+            What's NOT ready yet or needs to be cleaned up that I'm aware of:
+          </p>
+          <ul>
+            <li>
+              Desktop web view. Only mobile is correctly formatted right now.
+              (Mobile is where I'm guessing most of the users will play on,
+              being a free, quick, daily mobile trivia game, so I prioritized
+              this first.)
+            </li>
+            <li>
+              Being able to create an account and log in. (Stats are saved to
+              your device for now still).
+            </li>
+            <li>
+              Loading screens and error screens are not ready yet. So expect
+              clunky and unsightly loading screens for now.
+            </li>
+            <li>
+              The rest of the website is not ready yet, including this page. A
+              formal logo, color scheme, and fonts are coming soon!
+            </li>
+          </ul>
         </section>
       </div>
 
       <footer className="footer">
         <p>
-          © {new Date().getFullYear()} Bizarro Fantasy Sports. All rights
-          reserved.
+          © {new Date().getFullYear()} Statsland Fantasy. All rights reserved.
         </p>
       </footer>
     </div>
