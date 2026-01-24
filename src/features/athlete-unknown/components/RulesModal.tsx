@@ -108,7 +108,7 @@ function RulesModal({
 
                 <div className="au-case-file-text-container">
                   <p
-                    className={`au-rules-prologue au-rules-prologue-invisible au-how-to-play`}
+                    className={"au-rules-prologue au-rules-prologue-invisible au-how-to-play"}
                     aria-hidden="true"
                   >
                     {currentPageText}
@@ -143,7 +143,7 @@ function RulesModal({
           <div className="au-page-indicator">
             {currentPage + 1} / {PROLOGUE_PAGES.length}
           </div>
-          <button className={`au-prologue-nav-button`} onClick={handleNextPage}>
+          <button className={"au-prologue-nav-button"} onClick={handleNextPage}>
             {isPageComplete ? (isLastPage ? "Close" : "Next") : "Skip"}
           </button>
         </div>
